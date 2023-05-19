@@ -1,2 +1,4 @@
-/*/bin/
-/*/obj/
+/Views/bin/
+/Views/obj/
+/NotesApi/obj/
+/NotesApi/bin/
