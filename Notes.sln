@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotesApi", "NotesApi\NotesApi.csproj", "{F4EC79E3-F527-4C2E-8E09-DC2D958BA2EC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Models", "Models", "{6061AB10-8931-47CB-B49C-9F181A78E787}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Views", "Views\Views.csproj", "{2FCB0BAC-78D5-4099-BF25-C0A119240528}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F4EC79E3-F527-4C2E-8E09-DC2D958BA2EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4EC79E3-F527-4C2E-8E09-DC2D958BA2EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4EC79E3-F527-4C2E-8E09-DC2D958BA2EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4EC79E3-F527-4C2E-8E09-DC2D958BA2EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FCB0BAC-78D5-4099-BF25-C0A119240528}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FCB0BAC-78D5-4099-BF25-C0A119240528}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FCB0BAC-78D5-4099-BF25-C0A119240528}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FCB0BAC-78D5-4099-BF25-C0A119240528}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2FCB0BAC-78D5-4099-BF25-C0A119240528} = {6061AB10-8931-47CB-B49C-9F181A78E787}
+	EndGlobalSection
+EndGlobal
