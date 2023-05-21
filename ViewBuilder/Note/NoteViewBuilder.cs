@@ -15,8 +15,12 @@ public static class NoteViewBuilder
             Id = noteDomain.Id,
             Header = noteDomain.Header,
             UserId = noteDomain.UserId,
+            Text = noteDomain.Text,
             CreationDate = noteDomain.CreationDate,
-            LastEditDate = noteDomain.LastEditDate
+            LastEditDate = noteDomain.LastEditDate,
+            Tags = noteDomain.Tags
+                .Select(TagViewBuilder.Create)
+                .ToList()
         };
     }
 
@@ -29,7 +33,10 @@ public static class NoteViewBuilder
             Text = text,
             UserId = noteDomain.UserId,
             CreationDate = noteDomain.CreationDate,
-            LastEditDate = noteDomain.LastEditDate
+            LastEditDate = noteDomain.LastEditDate,
+            Tags = noteDomain.Tags
+                .Select(TagViewBuilder.Create)
+                .ToList()
         };
     }
 
