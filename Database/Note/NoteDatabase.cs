@@ -13,4 +13,6 @@ public class NoteDatabase
     public string? SourcePath { get; set; }
     
     public int UserId { get; set; }
+    
+    public Guid Guid { get; set; }
 }

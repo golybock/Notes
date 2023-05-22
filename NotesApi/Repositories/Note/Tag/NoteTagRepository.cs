@@ -1,5 +1,6 @@
 using Database.Note.Tag;
 using NotesApi.Repositories.Interfaces.Note.Tag;
+using NotesApi.Repositories.Readers.Note.Tag;
 using Npgsql;
 
 namespace NotesApi.Repositories.Note.Tag;
@@ -10,8 +11,6 @@ public class NoteTagRepository : RepositoryBase, INoteTagRepository
 
     public async Task<NoteTagDatabase?> Get(int id)
     {
-        NoteTagDatabase noteTagDatabase = new NoteTagDatabase();
-        
         string query = "select * from note_tag where id = $1";
 
         var connection = GetConnection();
@@ -26,17 +25,9 @@ public class NoteTagRepository : RepositoryBase, INoteTagRepository
             };
 
             await using var reader = await command.ExecuteReaderAsync();
-            
-            while (await reader.ReadAsync())
-            {
-                noteTagDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-                noteTagDatabase.NoteId = reader.GetInt32(reader.GetOrdinal("note_id"));
-                noteTagDatabase.TagId = reader.GetInt32(reader.GetOrdinal("tag_id"));
-                
-                return noteTagDatabase;
-            }
 
-            return null;
+            // returns readed value(null if not found)
+            return await NoteTagReader.ReadAsync(reader);
         }
         catch (Exception e)
         {
@@ -51,21 +42,53 @@ public class NoteTagRepository : RepositoryBase, INoteTagRepository
 
     public async Task<int> Create(NoteTagDatabase noteTagDatabase)
     {
-        throw new NotImplementedException();
+        string query = "insert into note_tag(note_id, tag_id) values ($1, $2) returning id";
+
+        var connection = GetConnection();
+
+        try
+        {
+            await connection.OpenAsync();
+
+            NpgsqlCommand command = new NpgsqlCommand(query, connection)
+            {
+                Parameters =
+                {
+                    new NpgsqlParameter() { Value = noteTagDatabase.NoteId },
+                    new NpgsqlParameter() { Value = noteTagDatabase.TagId }
+                }
+            };
+
+            await using var reader = await command.ExecuteReaderAsync();
+            
+            while (await reader.ReadAsync())
+                return reader.GetInt32(reader.GetOrdinal("id"));
+
+            return 1;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
     }
 
     public async Task<int> Delete(int id)
     {
-        throw new NotImplementedException();
+        return await DeleteAsync("note_tag", "id", id);
     }
 
     public async Task<int> DeleteByNote(int noteId)
     {
-        throw new NotImplementedException();
+        return await DeleteAsync("note_tag", "note_id", noteId);
     }
 
     public async Task<int> DeleteByTag(int tagId)
     {
-        throw new NotImplementedException();
+        return await DeleteAsync("note_tag", "tag_id", tagId);
     }
 }

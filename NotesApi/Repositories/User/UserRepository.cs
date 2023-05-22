@@ -1,6 +1,7 @@
 using Database.Note;
 using Database.User;
 using NotesApi.Repositories.Interfaces.User;
+using NotesApi.Repositories.Readers.User;
 using Npgsql;
 
 namespace NotesApi.Repositories.User;
@@ -11,8 +12,6 @@ public class UserRepository : RepositoryBase, IUserRepository
 
     public async Task<UserDatabase?> Get(int id)
     {
-        UserDatabase userDatabase = new UserDatabase();
-
         string query = "select * from user where id == $1";
 
         var connection = GetConnection();
@@ -27,19 +26,8 @@ public class UserRepository : RepositoryBase, IUserRepository
             };
 
             await using var reader = await command.ExecuteReaderAsync();
-            
-            while (await reader.ReadAsync())
-            {
-                userDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-                userDatabase.Email = reader.GetString(reader.GetOrdinal("email"));
-                
-                var passwordHash = reader.GetValue(reader.GetOrdinal("email"));
 
-                if (passwordHash != DBNull.Value)
-                    userDatabase.PasswordHash = passwordHash.ToString();
-            }
-
-            return null;
+            return await UserReader.ReadAsync(reader);
         }
         catch (Exception e)
         {
@@ -54,8 +42,6 @@ public class UserRepository : RepositoryBase, IUserRepository
 
     public async Task<UserDatabase?> Get(string email)
     {
-        UserDatabase userDatabase = new UserDatabase();
-
         string query = "select * from user where email == $1";
 
         var connection = GetConnection();
@@ -71,18 +57,7 @@ public class UserRepository : RepositoryBase, IUserRepository
 
             await using var reader = await command.ExecuteReaderAsync();
             
-            while (await reader.ReadAsync())
-            {
-                userDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-                userDatabase.Email = reader.GetString(reader.GetOrdinal("email"));
-                
-                var passwordHash = reader.GetValue(reader.GetOrdinal("email"));
-
-                if (passwordHash != DBNull.Value)
-                    userDatabase.PasswordHash = passwordHash.ToString();
-            }
-
-            return null;
+            return await UserReader.ReadAsync(reader);
         }
         catch (Exception e)
         {
@@ -97,16 +72,79 @@ public class UserRepository : RepositoryBase, IUserRepository
 
     public async Task<int> Create(UserDatabase userDatabase)
     {
-        throw new NotImplementedException();
+        string query = "insert into user(email, password_hash, name)" +
+                       "values ($1, $2, $3) returning id";
+
+        var connection = GetConnection();
+
+        try
+        {
+            await connection.OpenAsync();
+
+            NpgsqlCommand command = new NpgsqlCommand(query, connection)
+            {
+                Parameters =
+                {
+                    new NpgsqlParameter() { Value = userDatabase.Email },
+                    new NpgsqlParameter() { Value = userDatabase.PasswordHash },
+                    new NpgsqlParameter() { Value = userDatabase.Name }
+                }
+            };
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+                return reader.GetInt32(reader.GetOrdinal("id"));
+
+            return 1;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
     }
 
     public async Task<int> Update(int id, UserDatabase userDatabase)
     {
-        throw new NotImplementedException();
+        string query = "update user set password_hash = $2, name = $3 " +
+                       "where id = $1";
+
+        var connection = GetConnection();
+
+        try
+        {
+            await connection.OpenAsync();
+
+            NpgsqlCommand command = new NpgsqlCommand(query, connection)
+            {
+                Parameters =
+                {
+                    new NpgsqlParameter() { Value = userDatabase.Id },
+                    new NpgsqlParameter() { Value = userDatabase.PasswordHash },
+                    new NpgsqlParameter() { Value = userDatabase.Name }
+                }
+            };
+
+            return await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
     }
 
     public async Task<int> Delete(int id)
     {
-        throw new NotImplementedException();
+        return await DeleteAsync("user", "id", id);
     }
 }

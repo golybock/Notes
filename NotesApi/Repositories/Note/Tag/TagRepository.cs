@@ -1,20 +1,17 @@
 using Database.Note.Tag;
 using NotesApi.Repositories.Interfaces;
 using NotesApi.Repositories.Interfaces.Note.Tag;
+using NotesApi.Repositories.Readers.Note.Tag;
 using Npgsql;
 
 namespace NotesApi.Repositories.Note.Tag;
 
 public class TagRepository : RepositoryBase, ITagRepository
 {
-    public TagRepository(IConfiguration configuration) : base(configuration)
-    {
-    }
+    public TagRepository(IConfiguration configuration) : base(configuration) { }
 
     public async Task<TagDatabase?> Get(int id)
     {
-        TagDatabase tagDatabase = new TagDatabase();
-
         string query = "select * from tag where id = $1";
 
         var connection = GetConnection();
@@ -30,14 +27,8 @@ public class TagRepository : RepositoryBase, ITagRepository
 
             await using var reader = await command.ExecuteReaderAsync();
 
-            while (await reader.ReadAsync())
-            {
-                tagDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-                tagDatabase.Name = reader.GetString(reader.GetOrdinal("name"));
-                return tagDatabase;
-            }
-
-            return null;
+            // returns readed values(null if not found)
+            return await TagReader.ReadAsync(reader);
         }
         catch (Exception e)
         {
@@ -52,8 +43,6 @@ public class TagRepository : RepositoryBase, ITagRepository
 
     public async Task<List<TagDatabase>> Get()
     {
-        List<TagDatabase> tagDatabases = new List<TagDatabase>();
-
         string query = "select * from tag";
 
         var connection = GetConnection();
@@ -66,17 +55,8 @@ public class TagRepository : RepositoryBase, ITagRepository
 
             await using var reader = await command.ExecuteReaderAsync();
 
-            while (await reader.ReadAsync())
-            {
-                TagDatabase tagDatabase = new TagDatabase();
-
-                tagDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-                tagDatabase.Name = reader.GetString(reader.GetOrdinal("name"));
-
-                tagDatabases.Add(tagDatabase);
-            }
-
-            return tagDatabases;
+            // returns readed values
+            return await TagReader.ReadListAsync(reader);
         }
         catch (Exception e)
         {
@@ -91,8 +71,6 @@ public class TagRepository : RepositoryBase, ITagRepository
 
     public async Task<List<TagDatabase>> GetNoteTags(int noteId)
     {
-        List<TagDatabase> tagDatabases = new List<TagDatabase>();
-
         string query = "select * from tag join note_tag nt on tag.id = nt.tag_id where nt.note_id = $1";
 
         var connection = GetConnection();
@@ -107,18 +85,8 @@ public class TagRepository : RepositoryBase, ITagRepository
             };
 
             await using var reader = await command.ExecuteReaderAsync();
-
-            while (await reader.ReadAsync())
-            {
-                TagDatabase tagDatabase = new TagDatabase();
-
-                tagDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-                tagDatabase.Name = reader.GetString(reader.GetOrdinal("name"));
-
-                tagDatabases.Add(tagDatabase);
-            }
-
-            return tagDatabases;
+            
+            return await TagReader.ReadListAsync(reader);
         }
         catch (Exception e)
         {

@@ -15,6 +15,8 @@ public class NoteDomain
     public string? Text { get; set; }
     
     public int UserId { get; set; }
+    
+    public Guid Guid { get; set; }
 
     public List<TagDomain> Tags { get; set; } = new List<TagDomain>();
 }
