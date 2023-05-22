@@ -7,10 +7,10 @@ public class UserReader : IReader<UserDatabase>
 {
     public static async Task<UserDatabase?> ReadAsync(NpgsqlDataReader reader)
     {
-        UserDatabase userDatabase = new UserDatabase();
-        
         while (await reader.ReadAsync())
         {
+            UserDatabase userDatabase = new UserDatabase();
+            
             userDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
             userDatabase.Email = reader.GetString(reader.GetOrdinal("email"));
                 
@@ -18,9 +18,11 @@ public class UserReader : IReader<UserDatabase>
 
             if (passwordHash != DBNull.Value)
                 userDatabase.PasswordHash = passwordHash.ToString();
+            
+            return userDatabase;
         }
 
-        return userDatabase;
+        return null;
     }
 
     public static async Task<List<UserDatabase>> ReadListAsync(NpgsqlDataReader reader)

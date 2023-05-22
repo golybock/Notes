@@ -88,7 +88,8 @@ public class NoteService : INoteService
 
             noteDatabase.SourcePath = path;
         }
-
+        
+        noteDatabase.CreationDate = DateTime.Now;
         noteDatabase.EditedDate = DateTime.Now;
         noteDatabase.Guid = Guid.NewGuid();
 
@@ -112,7 +113,7 @@ public class NoteService : INoteService
                 await WriteNoteText(noteDatabase.SourcePath, blank.Text);
         }
 
-        noteDatabase.EditedDate = DateTime.Now;
+        newNoteDatabase.EditedDate = DateTime.Now;
 
         var result = await _noteRepository.Update(guid, newNoteDatabase);
 

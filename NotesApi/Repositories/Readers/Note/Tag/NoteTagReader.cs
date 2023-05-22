@@ -12,10 +12,10 @@ public class NoteTagReader : IReader<NoteTagDatabase>
 
     public static async Task<NoteTagDatabase?> ReadAsync(NpgsqlDataReader reader)
     {
-        NoteTagDatabase noteTagDatabase = new NoteTagDatabase();
-        
         while (await reader.ReadAsync())
         {
+            NoteTagDatabase noteTagDatabase = new NoteTagDatabase();
+            
             noteTagDatabase.Id = reader.GetInt32(reader.GetOrdinal(Id));
             noteTagDatabase.NoteId = reader.GetInt32(reader.GetOrdinal(NoteId));
             noteTagDatabase.TagId = reader.GetInt32(reader.GetOrdinal(TagId));

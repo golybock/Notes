@@ -10,15 +10,17 @@ public class TagReader : IReader<TagDatabase>
     
     public static async Task<TagDatabase?> ReadAsync(NpgsqlDataReader reader)
     {
-        TagDatabase tagDatabase = new TagDatabase();
-        
         while (await reader.ReadAsync())
         {
+            TagDatabase tagDatabase = new TagDatabase();
+            
             tagDatabase.Id = reader.GetInt32(reader.GetOrdinal(Id));
             tagDatabase.Name = reader.GetString(reader.GetOrdinal(Name));
+            
+            return tagDatabase;
         }
-        
-        return tagDatabase;
+
+        return null;
     }
 
     public static async Task<List<TagDatabase>> ReadListAsync(NpgsqlDataReader reader)

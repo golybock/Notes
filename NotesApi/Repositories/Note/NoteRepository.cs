@@ -182,8 +182,8 @@ public class NoteRepository : RepositoryBase, INoteRepository
     
     public async Task<int> Update(Guid guid, NoteDatabase noteDatabase)
     {
-        string query = "update note set header = $2, edited_date = $3," +
-                       " source_path = $4 where guid = $1";
+        string query = "update note set header = $2, edited_date = $3 " +
+                       "where guid = $1";
 
         var connection = GetConnection();
 
@@ -197,8 +197,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
                 {
                     new NpgsqlParameter() { Value = guid},
                     new NpgsqlParameter() { Value = noteDatabase.Header },
-                    new NpgsqlParameter() { Value = noteDatabase.EditedDate },
-                    new NpgsqlParameter() { Value = noteDatabase.SourcePath},
+                    new NpgsqlParameter() { Value = noteDatabase.EditedDate }
                 }
             };
 

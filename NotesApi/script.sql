@@ -18,14 +18,16 @@ create table if not exists "user"
 
 create table if not exists note
 (
-    id             serial
+    id            serial
         primary key,
-    header         varchar(250)             not null,
-    creation_date  timestamp with time zone not null,
-    last_edit_date timestamp with time zone not null,
-    source_path    text,
-    user_id        integer
-        references "user"
+    header        varchar(250)             not null,
+    creation_date timestamp with time zone not null,
+    edited_date   timestamp with time zone not null,
+    source_path   text,
+    user_id       integer
+        references "user",
+    guid          uuid                     not null
+        unique
 );
 
 create table if not exists note_tag
