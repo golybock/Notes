@@ -12,12 +12,12 @@ public static class NoteViewBuilder
     {
         return new NoteView()
         {
-            Id = noteDomain.Id,
             Header = noteDomain.Header,
             UserId = noteDomain.UserId,
             Text = noteDomain.Text,
             CreationDate = noteDomain.CreationDate,
             EditedDate = noteDomain.EditedDate,
+            Guid = noteDomain.Guid,
             Tags = noteDomain.Tags
                 .Select(TagViewBuilder.Create)
                 .ToList()
@@ -28,12 +28,12 @@ public static class NoteViewBuilder
     {
         return new NoteView()
         {
-            Id = noteDomain.Id,
             Header = noteDomain.Header,
             Text = text,
             UserId = noteDomain.UserId,
             CreationDate = noteDomain.CreationDate,
             EditedDate = noteDomain.EditedDate,
+            Guid = noteDomain.Guid,
             Tags = noteDomain.Tags
                 .Select(TagViewBuilder.Create)
                 .ToList()
@@ -44,12 +44,12 @@ public static class NoteViewBuilder
     {
         return new NoteView()
         {
-            Id = noteDomain.Id,
             Header = noteDomain.Header,
             Text = text,
             UserId = noteDomain.UserId,
             CreationDate = noteDomain.CreationDate,
             EditedDate = noteDomain.EditedDate,
+            Guid = noteDomain.Guid,
             Tags = tagDomains
                 .Select(TagViewBuilder.Create)
                 .ToList()
@@ -60,12 +60,12 @@ public static class NoteViewBuilder
     {
         return new NoteView()
         {
-            Id = noteDomain.Id,
             Header = noteDomain.Header,
             Text = text,
             UserId = noteDomain.UserId,
             CreationDate = noteDomain.CreationDate,
             EditedDate = noteDomain.EditedDate,
+            Guid = noteDomain.Guid,
             Tags = tagViews
         };
     }
