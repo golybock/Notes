@@ -4,3 +4,6 @@ class TagView {
         this.name = name;
     }
 }
+
+
+export default TagView

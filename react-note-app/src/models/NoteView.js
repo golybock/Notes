@@ -9,3 +9,5 @@ class NoteView {
         this.tags = tags;
     }
 }
+
+export default NoteView
