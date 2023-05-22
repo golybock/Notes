@@ -12,7 +12,7 @@ public interface INoteService
 
     public Task<IActionResult> Create(NoteBlank noteBlank);
 
-    public Task<IActionResult> Update(Guid guid, NoteBlank blank);
+    public Task<IActionResult> Update(Guid guid, NoteBlank noteBlank);
 
     public Task<IActionResult> Delete(Guid guid);
 }
