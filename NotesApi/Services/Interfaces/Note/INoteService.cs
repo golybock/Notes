@@ -7,12 +7,12 @@ namespace NotesApi.Services.Interfaces.Note;
 public interface INoteService
 {
     public Task<IActionResult> Get();
-    
-    public Task<IActionResult> Get(int id);
+
+    public Task<IActionResult> Get(Guid guid);
 
     public Task<IActionResult> Create(NoteBlank noteBlank);
 
-    public Task<IActionResult> Update(int id, NoteBlank blank);
+    public Task<IActionResult> Update(Guid guid, NoteBlank blank);
 
-    public Task<IActionResult> Delete(int id);
+    public Task<IActionResult> Delete(Guid guid);
 }

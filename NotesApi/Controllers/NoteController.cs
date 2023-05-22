@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using Blank.Note;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NotesApi.Services.Interfaces.Note;
 using NotesApi.Services.Note;
 
 namespace NotesApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class NoteController : ControllerBase
+public class NoteController : ControllerBase, INoteService
 {
     private readonly NoteService _noteService;
 
@@ -25,11 +26,11 @@ public class NoteController : ControllerBase
     {
         return await _noteService.Get();
     }
-    
+
     [HttpGet("Note")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(Guid guid)
     {
-        return await _noteService.Get(id);
+        return await _noteService.Get(guid);
     }
 
     [HttpPost("Note")]
@@ -37,16 +38,16 @@ public class NoteController : ControllerBase
     {
         return await _noteService.Create(blank);
     }
-    
+
     [HttpPut("Note")]
-    public async Task<IActionResult> Update(int id, NoteBlank blank)
+    public async Task<IActionResult> Update(Guid guid, NoteBlank blank)
     {
-        return await _noteService.Update(id, blank);
+        return await _noteService.Update(guid, blank);
     }
     
     [HttpDelete("Note")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid guid)
     {
-        return await _noteService.Delete(id);
+        return await _noteService.Delete(guid);
     }
 }

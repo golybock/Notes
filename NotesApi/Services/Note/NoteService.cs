@@ -50,18 +50,15 @@ public class NoteService : INoteService
             .Select(NoteViewBuilder.Create)
             .ToList();
 
-        foreach (var noteView in notesView)
-            noteView.Tags = await GetNoteTags(noteView.Id);
+        for (int i = 0; i < notesView.Count; i++)
+            notesView[i].Tags = await GetNoteTags(notesDatabase[i].Id);
 
         return new OkObjectResult(notesView);
     }
 
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(Guid guid)
     {
-        if (id <= 0)
-            return new BadRequestObjectResult("Not valid id");
-        
-        var noteDatabase = await _noteRepository.Get(id);
+        var noteDatabase = await _noteRepository.Get(guid);
 
         if (noteDatabase == null)
             return new NotFoundResult();
@@ -73,7 +70,7 @@ public class NoteService : INoteService
 
         var noteView = NoteViewBuilder.Create(noteDomain);
 
-        noteView.Tags = await GetNoteTags(noteView.Id);
+        noteView.Tags = await GetNoteTags(noteDatabase.Id);
         
         return new OkObjectResult(noteView);
     }
@@ -81,7 +78,7 @@ public class NoteService : INoteService
     public async Task<IActionResult> Create(NoteBlank noteBlank)
     {
         // userId
-        var userId = 3;
+        var userId = 1;
         
         var noteDatabase = NoteDatabaseBuilder.Create(noteBlank, userId);
 
@@ -93,15 +90,16 @@ public class NoteService : INoteService
         }
 
         noteDatabase.EditedDate = DateTime.Now;
+        noteDatabase.Guid = Guid.NewGuid();
 
         var result = await _noteRepository.Create(noteDatabase);
 
-        return result > 0 ? new OkObjectResult(result) : new BadRequestResult();
+        return result > 0 ? new OkObjectResult(noteDatabase.Guid) : new BadRequestResult();
     }
 
-    public async Task<IActionResult> Update(int id, NoteBlank blank)
+    public async Task<IActionResult> Update(Guid guid, NoteBlank blank)
     {
-        var noteDatabase = await _noteRepository.Get(id);
+        var noteDatabase = await _noteRepository.Get(guid);
 
         if (noteDatabase == null)
             return new NotFoundResult();
@@ -116,18 +114,18 @@ public class NoteService : INoteService
 
         noteDatabase.EditedDate = DateTime.Now;
 
-        var result = await _noteRepository.Update(id, newNoteDatabase);
+        var result = await _noteRepository.Update(guid, newNoteDatabase);
 
         return result > 0 ? new OkResult() : new BadRequestResult();
     }
 
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid guid)
     {
-        var result = await _noteRepository.Delete(id);
+        var result = await _noteRepository.Delete(guid);
         
         return result > 0 ? new OkResult() : new BadRequestResult();
     }
-
+    
     private async Task<List<TagView>> GetNoteTags(int noteId)
     {
         var tagsDatabase = await _tagRepository.GetNoteTags(noteId);
@@ -143,6 +141,11 @@ public class NoteService : INoteService
         return tagsView;
     }
 
+    /// <summary>
+    /// read text from source
+    /// </summary>
+    /// <param name="source"></param>
+    /// <returns></returns>
     private async Task<string?> GetNoteText(string source)
     {
         string path = "Files/" + source;
@@ -155,21 +158,35 @@ public class NoteService : INoteService
         return await sr.ReadToEndAsync();
     }
 
-    private async Task WriteNoteText(string source, string text)
+    /// <summary>
+    /// Write text into file by source 
+    /// </summary>
+    /// <param name="fileName">filName </param>
+    /// <param name="text">note text</param>
+    private async Task WriteNoteText(string fileName, string text)
     {
+        string source = $"Files/{fileName}";
+        
         await using StreamWriter sw = new StreamWriter(source);
         
         await sw.WriteLineAsync(text);
     }
     
+    /// <summary>
+    /// Generate path file, write into file text and returns filepath
+    /// </summary>
+    /// <param name="text">note text</param>
+    /// <returns>path to file</returns>
     private async Task<string> WriteNoteText(string text)
     {
-        string source = Guid.NewGuid().ToString();
+        string fileName = $"{Guid.NewGuid()}.txt";
+
+        string source = $"Files/{fileName}";
         
         await using StreamWriter sw = new StreamWriter(source);
         
         await sw.WriteLineAsync(text);
 
-        return source;
+        return fileName;
     }
 }

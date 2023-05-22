@@ -1,3 +1,4 @@
+using Blank.User;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Repositories.User;
 using NotesApi.Services.Interfaces.User;
@@ -19,6 +20,21 @@ public class UserService : IUserService
     }
 
     public async Task<IActionResult> Get(string email)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IActionResult> Create(UserBlank userBlank)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IActionResult> Update(int id, UserBlank userBlank)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IActionResult> Delete(int id)
     {
         throw new NotImplementedException();
     }
