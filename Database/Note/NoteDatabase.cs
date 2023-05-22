@@ -8,7 +8,7 @@ public class NoteDatabase
     
     public DateTime CreationDate { get; set; }
     
-    public DateTime LastEditDate { get; set; }
+    public DateTime EditedDate { get; set; }
     
     public string? SourcePath { get; set; }
     

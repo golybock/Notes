@@ -10,7 +10,7 @@ public class NoteView
     
     public DateTime CreationDate { get; set; }
     
-    public DateTime LastEditDate { get; set; }
+    public DateTime EditedDate { get; set; }
     
     public string? Text { get; set; }
     

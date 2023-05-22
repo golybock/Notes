@@ -92,7 +92,7 @@ public class NoteService : INoteService
             noteDatabase.SourcePath = path;
         }
 
-        noteDatabase.LastEditDate = DateTime.Now;
+        noteDatabase.EditedDate = DateTime.Now;
 
         var result = await _noteRepository.Create(noteDatabase);
 
@@ -114,7 +114,7 @@ public class NoteService : INoteService
                 await WriteNoteText(noteDatabase.SourcePath, blank.Text);
         }
 
-        noteDatabase.LastEditDate = DateTime.Now;
+        noteDatabase.EditedDate = DateTime.Now;
 
         var result = await _noteRepository.Update(id, newNoteDatabase);
 

@@ -14,7 +14,7 @@ public static class NoteDomainBuilder
             Header = noteDatabase.Header,
             UserId = noteDatabase.UserId,
             CreationDate = noteDatabase.CreationDate,
-            LastEditDate = noteDatabase.LastEditDate
+            EditedDate = noteDatabase.EditedDate
         };
     }
     
@@ -27,7 +27,7 @@ public static class NoteDomainBuilder
             Text = text,
             UserId = noteDatabase.UserId,
             CreationDate = noteDatabase.CreationDate,
-            LastEditDate = noteDatabase.LastEditDate
+            EditedDate = noteDatabase.EditedDate
         };
     }
     
@@ -40,7 +40,7 @@ public static class NoteDomainBuilder
             Text = text,
             UserId = noteDatabase.UserId,
             CreationDate = noteDatabase.CreationDate,
-            LastEditDate = noteDatabase.LastEditDate,
+            EditedDate = noteDatabase.EditedDate,
             Tags = tagDomains
         };
     }

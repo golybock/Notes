@@ -35,7 +35,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
                 noteTagDatabase.UserId = reader.GetInt32(reader.GetOrdinal("user_id"));
                 noteTagDatabase.Header = reader.GetString(reader.GetOrdinal("header"));
                 noteTagDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal("creation_date"));
-                noteTagDatabase.LastEditDate = reader.GetDateTime(reader.GetOrdinal("last_edit_date"));
+                noteTagDatabase.EditedDate = reader.GetDateTime(reader.GetOrdinal("edited_date"));
 
                 var sourcePath = reader.GetValue(reader.GetOrdinal("source_path"));
 
@@ -82,7 +82,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
                 noteTagDatabase.UserId = reader.GetInt32(reader.GetOrdinal("user_id"));
                 noteTagDatabase.Header = reader.GetString(reader.GetOrdinal("header"));
                 noteTagDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal("creation_date"));
-                noteTagDatabase.LastEditDate = reader.GetDateTime(reader.GetOrdinal("last_edit_date"));
+                noteTagDatabase.EditedDate = reader.GetDateTime(reader.GetOrdinal("edited_date"));
 
                 var sourcePath = reader.GetValue(reader.GetOrdinal("source_path"));
 
@@ -107,7 +107,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
 
     public async Task<int> Create(NoteDatabase noteDatabase)
     {
-        string query = "insert into note(header, creation_date, last_edit_date, source_path, user_id)" +
+        string query = "insert into note(header, creation_date, edited_date, source_path, user_id)" +
                        "values ($1, $2, $3, $4, $5) returning id";
 
         var connection = GetConnection();
@@ -122,7 +122,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
                 {
                     new NpgsqlParameter() { Value = noteDatabase.Header },
                     new NpgsqlParameter() { Value = noteDatabase.CreationDate },
-                    new NpgsqlParameter() { Value = noteDatabase.LastEditDate },
+                    new NpgsqlParameter() { Value = noteDatabase.EditedDate },
                     new NpgsqlParameter() { Value = noteDatabase.SourcePath},
                     new NpgsqlParameter() { Value = noteDatabase.UserId}
                 }
@@ -148,7 +148,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
 
     public async Task<int> Update(int id, NoteDatabase noteDatabase)
     {
-        string query = "update note set header = $2, last_edit_date = $3," +
+        string query = "update note set header = $2, edited_date = $3," +
                        " source_path = $4 where id = $1";
 
         var connection = GetConnection();
@@ -163,7 +163,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
                 {
                     new NpgsqlParameter() { Value = id},
                     new NpgsqlParameter() { Value = noteDatabase.Header },
-                    new NpgsqlParameter() { Value = noteDatabase.LastEditDate },
+                    new NpgsqlParameter() { Value = noteDatabase.EditedDate },
                     new NpgsqlParameter() { Value = noteDatabase.SourcePath},
                 }
             };
