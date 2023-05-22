@@ -14,6 +14,15 @@ public static class NoteDatabaseBuilder
         };
     }
     
+    public static NoteDatabase Create(NoteBlank noteBlank)
+    {
+        return new NoteDatabase()
+        {
+            Header = noteBlank.Header
+        };
+    }
+
+    
     public static NoteDatabase Create(int id, string sourcePath, NoteBlank noteBlank)
     {
         return new NoteDatabase()

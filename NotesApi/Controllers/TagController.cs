@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blank.Note.Tag;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Services.Note.Tag;
@@ -35,5 +36,23 @@ public class TagController : ControllerBase
     public async Task<IActionResult> GetByNote(int noteId)
     {
         return await _tagService.GetByNote(noteId);
+    }
+
+    [HttpPost("Tag")]
+    public async Task<IActionResult> Create(TagBlank tagBlank)
+    {
+        return await _tagService.Create(tagBlank);
+    }
+    
+    [HttpPut("Tag")]
+    public async Task<IActionResult> Update(int id, TagBlank tagBlank)
+    {
+        return await _tagService.Update(id, tagBlank);
+    }
+    
+    [HttpDelete("Tag")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        return await _tagService.Delete(id);
     }
 }

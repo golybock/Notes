@@ -1,3 +1,5 @@
+using Blank.Note.Tag;
+using DatabaseBuilder.Note.Tag;
 using DomainBuilder.Note.Tag;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Repositories.Note.Tag;
@@ -66,5 +68,52 @@ public class TagService : ITagService
             .ToList();
 
         return new OkObjectResult(viewTags);
+    }
+
+    public async Task<IActionResult> Create(TagBlank tagBlank)
+    {
+        if (string.IsNullOrEmpty(tagBlank.Name))
+            return new BadRequestObjectResult("Name not can be empty");
+
+        var tagDatabase = TagDatabaseBuilder.Create(tagBlank);
+        
+        try
+        {
+            var result = await _tagRepository.Create(tagDatabase);
+            return result > 0 ? new OkObjectResult(result) : new BadRequestResult();
+        }
+        catch (Exception e)
+        {
+            return new BadRequestObjectResult("tag already created");
+        }
+    }
+
+    public async Task<IActionResult> Update(int id, TagBlank tagBlank)
+    {
+        if (id <= 0)
+            return new BadRequestObjectResult("id not valid");
+        
+        if (string.IsNullOrEmpty(tagBlank.Name))
+            return new BadRequestObjectResult("Name not can be empty");
+
+        var tagDatabase = TagDatabaseBuilder.Create(tagBlank);
+
+        try
+        {
+            var result = await _tagRepository.Update(id, tagDatabase);
+
+            return result > 0 ? new OkResult() : new BadRequestResult();
+        }
+        catch (Exception e)
+        {
+            return new BadRequestObjectResult("tag already created");
+        }
+    }
+
+    public async Task<IActionResult> Delete(int id)
+    {
+        var result = await _tagRepository.Delete(id);
+        
+        return result > 0 ? new OkResult() : new BadRequestResult();
     }
 }

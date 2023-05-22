@@ -80,8 +80,6 @@ public class UserRepository : RepositoryBase, IUserRepository
 
                 if (passwordHash != DBNull.Value)
                     userDatabase.PasswordHash = passwordHash.ToString();
-                
-                
             }
 
             return null;
@@ -95,5 +93,20 @@ public class UserRepository : RepositoryBase, IUserRepository
         {
             await connection.CloseAsync();
         }
+    }
+
+    public async Task<int> Create(UserDatabase userDatabase)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<int> Update(int id, UserDatabase userDatabase)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<int> Delete(int id)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,4 +1,6 @@
+using Blank.Note;
 using Database.Note.Tag;
+using DatabaseBuilder.Note;
 using DomainBuilder.Note;
 using DomainBuilder.Note.Tag;
 using Microsoft.AspNetCore.Mvc;
@@ -76,6 +78,56 @@ public class NoteService : INoteService
         return new OkObjectResult(noteView);
     }
 
+    public async Task<IActionResult> Create(NoteBlank noteBlank)
+    {
+        // userId
+        var userId = 3;
+        
+        var noteDatabase = NoteDatabaseBuilder.Create(noteBlank, userId);
+
+        if (noteBlank.Text != null)
+        {
+            var path = await WriteNoteText(noteBlank.Text);
+
+            noteDatabase.SourcePath = path;
+        }
+
+        noteDatabase.LastEditDate = DateTime.Now;
+
+        var result = await _noteRepository.Create(noteDatabase);
+
+        return result > 0 ? new OkObjectResult(result) : new BadRequestResult();
+    }
+
+    public async Task<IActionResult> Update(int id, NoteBlank blank)
+    {
+        var noteDatabase = await _noteRepository.Get(id);
+
+        if (noteDatabase == null)
+            return new NotFoundResult();
+        
+        var newNoteDatabase = NoteDatabaseBuilder.Create(blank);
+
+        if (blank.Text != null)
+        {
+            if (noteDatabase.SourcePath != null)
+                await WriteNoteText(noteDatabase.SourcePath, blank.Text);
+        }
+
+        noteDatabase.LastEditDate = DateTime.Now;
+
+        var result = await _noteRepository.Update(id, newNoteDatabase);
+
+        return result > 0 ? new OkResult() : new BadRequestResult();
+    }
+
+    public async Task<IActionResult> Delete(int id)
+    {
+        var result = await _noteRepository.Delete(id);
+        
+        return result > 0 ? new OkResult() : new BadRequestResult();
+    }
+
     private async Task<List<TagView>> GetNoteTags(int noteId)
     {
         var tagsDatabase = await _tagRepository.GetNoteTags(noteId);
@@ -101,5 +153,23 @@ public class NoteService : INoteService
         using StreamReader sr = new StreamReader(path);
         
         return await sr.ReadToEndAsync();
+    }
+
+    private async Task WriteNoteText(string source, string text)
+    {
+        await using StreamWriter sw = new StreamWriter(source);
+        
+        await sw.WriteLineAsync(text);
+    }
+    
+    private async Task<string> WriteNoteText(string text)
+    {
+        string source = Guid.NewGuid().ToString();
+        
+        await using StreamWriter sw = new StreamWriter(source);
+        
+        await sw.WriteLineAsync(text);
+
+        return source;
     }
 }

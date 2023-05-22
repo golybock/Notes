@@ -48,4 +48,24 @@ public class NoteTagRepository : RepositoryBase, INoteTagRepository
             await connection.CloseAsync();
         }
     }
+
+    public async Task<int> Create(NoteTagDatabase noteTagDatabase)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<int> Delete(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<int> DeleteByNote(int noteId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<int> DeleteByTag(int tagId)
+    {
+        throw new NotImplementedException();
+    }
 }

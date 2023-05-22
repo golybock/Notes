@@ -1,3 +1,4 @@
+using Blank.Note;
 using Microsoft.AspNetCore.Mvc;
 using Views.Note;
 
@@ -8,4 +9,10 @@ public interface INoteService
     public Task<IActionResult> Get();
     
     public Task<IActionResult> Get(int id);
+
+    public Task<IActionResult> Create(NoteBlank noteBlank);
+
+    public Task<IActionResult> Update(int id, NoteBlank blank);
+
+    public Task<IActionResult> Delete(int id);
 }

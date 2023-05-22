@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blank.Note;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Services.Note;
@@ -29,5 +30,23 @@ public class NoteController : ControllerBase
     public async Task<IActionResult> Get(int id)
     {
         return await _noteService.Get(id);
+    }
+
+    [HttpPost("Note")]
+    public async Task<IActionResult> Create(NoteBlank blank)
+    {
+        return await _noteService.Create(blank);
+    }
+    
+    [HttpPut("Note")]
+    public async Task<IActionResult> Update(int id, NoteBlank blank)
+    {
+        return await _noteService.Update(id, blank);
+    }
+    
+    [HttpDelete("Note")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        return await _noteService.Delete(id);
     }
 }

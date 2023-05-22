@@ -1,3 +1,4 @@
+using Blank.Note.Tag;
 using Microsoft.AspNetCore.Mvc;
 using Views.Note.Tag;
 
@@ -10,4 +11,10 @@ public interface ITagService
     public Task<IActionResult> Get(int id);
 
     public Task<IActionResult> GetByNote(int noteId);
+
+    public Task<IActionResult> Create(TagBlank tagBlank);
+    
+    public Task<IActionResult> Update(int id, TagBlank tagBlank);
+    
+    public Task<IActionResult> Delete(int id);
 }
