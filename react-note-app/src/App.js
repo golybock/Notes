@@ -34,12 +34,26 @@ class MainApp extends React.Component {
                         }
                     </ul>
 
-
                     <ul>
                         {
                             this.state.notes
-                                .map(tag =>
-                                    <li key={tag.guid}>{tag.header}</li>
+                                .map(note =>
+                                    <div>
+                                        <li key={note.guid}>{note.header}</li>
+
+                                        <ul>
+                                            {
+                                                note.tags
+                                                    .map(tag =>
+                                                        <div>
+
+                                                            <li key={tag.id}>{tag.name}</li>
+                                                        </div>
+                                                    )
+                                            }
+                                        </ul>
+
+                                    </div>
                                 )
                         }
                     </ul>
