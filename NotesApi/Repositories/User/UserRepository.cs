@@ -12,7 +12,7 @@ public class UserRepository : RepositoryBase, IUserRepository
 
     public async Task<UserDatabase?> Get(int id)
     {
-        string query = "select * from user where id == $1";
+        string query = "select * from note_user where id = $1";
 
         var connection = GetConnection();
 
@@ -42,7 +42,7 @@ public class UserRepository : RepositoryBase, IUserRepository
 
     public async Task<UserDatabase?> Get(string email)
     {
-        string query = "select * from user where email == $1";
+        string query = "select * from note_user where email = $1";
 
         var connection = GetConnection();
 
@@ -72,7 +72,7 @@ public class UserRepository : RepositoryBase, IUserRepository
 
     public async Task<int> Create(UserDatabase userDatabase)
     {
-        string query = "insert into user(email, password_hash, name)" +
+        string query = "insert into note_user(email, password_hash, name)" +
                        "values ($1, $2, $3) returning id";
 
         var connection = GetConnection();
@@ -111,7 +111,7 @@ public class UserRepository : RepositoryBase, IUserRepository
 
     public async Task<int> Update(int id, UserDatabase userDatabase)
     {
-        string query = "update user set password_hash = $2, name = $3 " +
+        string query = "update note_user set password_hash = $2, name = $3 " +
                        "where id = $1";
 
         var connection = GetConnection();
