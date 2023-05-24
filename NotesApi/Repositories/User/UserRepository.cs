@@ -143,6 +143,39 @@ public class UserRepository : RepositoryBase, IUserRepository
         }
     }
 
+    public async Task<int> UpdatePassword(int id, string newPassword)
+    {
+        string query = "update note_user set password_hash = $2 " +
+                       "where id = $1";
+
+        var connection = GetConnection();
+
+        try
+        {
+            await connection.OpenAsync();
+
+            NpgsqlCommand command = new NpgsqlCommand(query, connection)
+            {
+                Parameters =
+                {
+                    new NpgsqlParameter() { Value = id },
+                    new NpgsqlParameter() { Value = newPassword }
+                }
+            };
+
+            return await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+    }
+
     public async Task<int> Delete(int id)
     {
         return await DeleteAsync("user", "id", id);

@@ -11,6 +11,8 @@ public interface IUserRepository
     public Task<int> Create(UserDatabase userDatabase);
 
     public Task<int> Update(int id, UserDatabase userDatabase);
+    
+    public Task<int> UpdatePassword(int id, string newPassword);
 
     public Task<int> Delete(int id);
 }

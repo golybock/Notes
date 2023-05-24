@@ -100,34 +100,60 @@ public class AuthService : IAuthService
         return new OkObjectResult(tokensView);
     }
 
-    public async Task<IActionResult> UpdatePassword(ClaimsPrincipal claimsPrincipal, string newPassword, HttpContext context)
+    public async Task<IActionResult> UpdatePassword(ClaimsPrincipal claimsPrincipal, string newPassword,
+        HttpContext context)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.Get(claimsPrincipal?.Identity?.Name);
+
+        if (user == null)
+            return new UnauthorizedResult();
+
+        await _userRepository.UpdatePassword(user.Id, HashPassword(newPassword));
+
+        #region generate and save tokens
+
+        var clientIp = GetIpAddress(context.Request.Host.Host);
+
+        var newTokens = GenerateTokens(user.Id, user.Email, clientIp);
+
+        var save = await SaveTokens(newTokens);
+
+        if (save == null)
+            return new BadRequestResult();
+
+        var tokensDomain = TokensDomainBuilder.Create(newTokens);
+
+        var tokensView = TokensViewBuilder.Create(tokensDomain);
+
+        #endregion
+
+        return new OkObjectResult(tokensView);
     }
 
+    // refresh tokens
     public async Task<IActionResult> RefreshTokens(TokensBlank tokens, HttpContext context)
     {
         var username = GetUsername(tokens.Token);
 
         if (username == null)
             return new BadRequestObjectResult("User not found");
-        
+
         var refreshToken = tokens.RefreshToken;
 
         #region tokens db and their validation
 
         var tokensDb = await _tokensRepository.Get(refreshToken);
-        
+
         if (tokensDb == null)
             return new BadRequestObjectResult("Token not valid");
-        
+
         // check expire date
         if (tokensDb.CreationDate.AddDays(7) < DateTime.Now)
             return new BadRequestObjectResult("Refresh token expired");
 
         if (!tokensDb.Active)
             return new BadRequestObjectResult("Token not active");
-        
+
         #endregion
 
         #region user db and their validation
@@ -136,12 +162,12 @@ public class AuthService : IAuthService
 
         if (userDb == null)
             return new UnauthorizedObjectResult("User not found");
-        
+
         if (tokensDb.UserId != userDb.Id)
             return new BadRequestObjectResult("Refresh token invalid");
-        
+
         #endregion
-        
+
         #region generate and save tokens
 
         var clientIp = GetIpAddress(context.Request.Host.Host);
@@ -273,12 +299,12 @@ public class AuthService : IAuthService
             return null;
         }
     }
-    
+
     // returns principal from expired token
     private ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
     {
         string secret = _configuration["JWT:Secret"]!;
-        
+
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateAudience = false,
@@ -305,9 +331,9 @@ public class AuthService : IAuthService
     {
         try
         {
-            if(ip == "localhost")
-                return IPAddress.Parse("127.0.0.1"); 
-            
+            if (ip == "localhost")
+                return IPAddress.Parse("127.0.0.1");
+
             return IPAddress.Parse(ip);
         }
         catch (Exception e)
