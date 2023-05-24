@@ -40,3 +40,15 @@ create table if not exists note_tag
         references tag
 );
 
+create table if not exists tokens
+(
+    id            serial
+        primary key,
+    user_id       integer
+        references "user",
+    token         text                                   not null,
+    refresh_token text                                   not null,
+    creation_date timestamp with time zone default now() not null,
+    ip            varchar(50)
+);
+

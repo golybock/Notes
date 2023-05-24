@@ -1,8 +1,9 @@
-import logo from './logo.svg';
 import './App.css';
 import React from "react";
 import tagApi from "./api/note/tag/TagApi";
 import noteApi from "./api/note/NoteApi";
+import tagView from "./models/TagView";
+import noteView from "./models/NoteView";
 
 class MainApp extends React.Component {
 
@@ -17,14 +18,18 @@ class MainApp extends React.Component {
         super(props);
         this.state = {
             tags: [],
-            notes : []
+            notes: []
         };
     }
 
     render() {
         return (
             <div className="App">
+                
                 <header className="App-header">
+
+                    <h1>Tags</h1>
+
                     <ul>
                         {
                             this.state.tags
@@ -34,12 +39,14 @@ class MainApp extends React.Component {
                         }
                     </ul>
 
+                    <h1>Notes</h1>
+
                     <ul>
                         {
                             this.state.notes
                                 .map(note =>
                                     <div>
-                                        <li key={note.guid}>{note.header}</li>
+                                        <li key={note["guid"]}>{note["header"]}</li>
 
                                         <ul>
                                             {
@@ -57,7 +64,9 @@ class MainApp extends React.Component {
                                 )
                         }
                     </ul>
+
                 </header>
+
             </div>
         );
     }
