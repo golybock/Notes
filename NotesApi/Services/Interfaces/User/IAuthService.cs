@@ -10,7 +10,7 @@ public interface IAuthService
     
     public Task<IActionResult> Registration(UserBlank userBlank, HttpContext context);
 
-    public Task<IActionResult> UpdatePassword(IEnumerable<Claim> claims, string newPassword);
+    public Task<IActionResult> UpdatePassword(ClaimsPrincipal claimsPrincipal, string newPassword, HttpContext context);
 
-    public Task<IActionResult> RefreshTokens(TokensBlank tokens);
+    public Task<IActionResult> RefreshTokens(TokensBlank tokens, HttpContext context);
 }

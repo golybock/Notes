@@ -1,3 +1,6 @@
+create sequence user_id_seq
+    as integer;
+
 create table if not exists tag
 (
     id   serial
@@ -6,15 +9,19 @@ create table if not exists tag
         unique
 );
 
-create table if not exists "user"
+create table if not exists note_user
 (
-    id            serial
-        primary key,
-    email         varchar(500) not null
-        unique,
+    id            integer default nextval('user_id_seq'::regclass) not null
+        constraint user_pkey
+            primary key,
+    email         varchar(500)                                     not null
+        constraint user_email_key
+            unique,
     password_hash text,
     name          varchar(500)
 );
+
+alter sequence user_id_seq owned by note_user.id;
 
 create table if not exists note
 (
@@ -32,7 +39,7 @@ create table if not exists note
 
 create table if not exists note_tag
 (
-    id      serial
+    id serial
         primary key,
     note_id integer
         references note,

@@ -28,28 +28,23 @@ public class AuthController : ControllerBase
     {
         return await _authService.Login(email, password, HttpContext);
     }
-
-    [HttpGet("GetEmail")]
-    public string? GetEmail(string expiredToken)
-    {
-        return _authService.GetEmail(expiredToken);
-    }
-
+    
     [HttpPost("Registration")]
     public async Task<IActionResult> Registration(UserBlank userBlank)
     {
         return await _authService.Registration(userBlank, HttpContext);
     }
 
+    [Authorize]
     [HttpPost("UpdatePassword")]
     public async Task<IActionResult> UpdatePassword(string newPassword)
     {
-        return await _authService.UpdatePassword(User.Claims, newPassword);
+        return await _authService.UpdatePassword(User, newPassword, HttpContext);
     }
 
     [HttpPost("RefreshTokens")]
     public async Task<IActionResult> RefreshTokens(TokensBlank tokens)
     {
-        return await _authService.RefreshTokens(tokens);
+        return await _authService.RefreshTokens(tokens, HttpContext);
     }
 }

@@ -11,7 +11,7 @@ public class TokensRepository : RepositoryBase, ITokenRepository
 
     public async Task<List<TokensDatabase>> GetList(int userId)
     {
-        string query = "select * from tokens where user_id == $1";
+        string query = "select * from tokens where user_id = $1";
 
         var connection = GetConnection();
 
@@ -41,7 +41,7 @@ public class TokensRepository : RepositoryBase, ITokenRepository
 
     public async Task<TokensDatabase?> Get(int id)
     {
-        string query = "select * from tokens where id == $1";
+        string query = "select * from tokens where id = $1";
 
         var connection = GetConnection();
 
@@ -71,7 +71,7 @@ public class TokensRepository : RepositoryBase, ITokenRepository
 
     public async Task<TokensDatabase?> Get(string refreshToken)
     {
-        string query = "select * from tokens where refresh_token == $1";
+        string query = "select * from tokens where refresh_token = $1";
 
         var connection = GetConnection();
 

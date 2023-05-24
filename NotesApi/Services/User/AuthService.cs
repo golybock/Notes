@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -29,18 +30,6 @@ public class AuthService : IAuthService
         _tokensRepository = new TokensRepository(configuration);
     }
 
-    public string? GetEmail(string token)
-    {
-        try
-        {
-            return GetEmailFromClaims(GetPrincipalFromExpiredToken(token)?.Claims);
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-    }
-
     public async Task<IActionResult> Login(string email, string password, HttpContext context)
     {
         #region check client
@@ -57,7 +46,7 @@ public class AuthService : IAuthService
 
         #region generate and save tokens
 
-        IPAddress clientIp = IPAddress.Parse(context.Request.Host.Host);
+        var clientIp = GetIpAddress(context.Request.Host.Host);
 
         var tokens = GenerateTokens(client.Id, client.Email, clientIp);
 
@@ -111,17 +100,72 @@ public class AuthService : IAuthService
         return new OkObjectResult(tokensView);
     }
 
-    public async Task<IActionResult> UpdatePassword(IEnumerable<Claim> claims, string newPassword)
+    public async Task<IActionResult> UpdatePassword(ClaimsPrincipal claimsPrincipal, string newPassword, HttpContext context)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<IActionResult> RefreshTokens(TokensBlank tokens)
+    public async Task<IActionResult> RefreshTokens(TokensBlank tokens, HttpContext context)
     {
-        throw new NotImplementedException();
+        var username = GetUsername(tokens.Token);
+
+        if (username == null)
+            return new BadRequestObjectResult("User not found");
+        
+        var refreshToken = tokens.RefreshToken;
+
+        #region tokens db and their validation
+
+        var tokensDb = await _tokensRepository.Get(refreshToken);
+        
+        if (tokensDb == null)
+            return new BadRequestObjectResult("Token not valid");
+        
+        // check expire date
+        if (tokensDb.CreationDate.AddDays(7) < DateTime.Now)
+            return new BadRequestObjectResult("Refresh token expired");
+
+        if (!tokensDb.Active)
+            return new BadRequestObjectResult("Token not active");
+        
+        #endregion
+
+        #region user db and their validation
+
+        var userDb = await _userRepository.Get(username);
+
+        if (userDb == null)
+            return new UnauthorizedObjectResult("User not found");
+        
+        if (tokensDb.UserId != userDb.Id)
+            return new BadRequestObjectResult("Refresh token invalid");
+        
+        #endregion
+        
+        #region generate and save tokens
+
+        var clientIp = GetIpAddress(context.Request.Host.Host);
+
+        var newTokens = GenerateTokens(userDb.Id, userDb.Email, clientIp);
+
+        var save = await SaveTokens(newTokens);
+
+        await _tokensRepository.SetNotActive(refreshToken);
+
+        if (save == null)
+            return new BadRequestResult();
+
+        var tokensDomain = TokensDomainBuilder.Create(newTokens);
+
+        var tokensView = TokensViewBuilder.Create(tokensDomain);
+
+        #endregion
+
+        return new OkObjectResult(tokensView);
     }
 
-    private TokensDatabase GenerateTokens(int userId, string email, IPAddress ipAddress)
+    // generate pair tokens
+    private TokensDatabase GenerateTokens(int userId, string email, IPAddress? ipAddress)
     {
         var claims = CreateClaims(email);
 
@@ -130,7 +174,7 @@ public class AuthService : IAuthService
                 GenerateToken(claims)
             );
 
-        string refreshToken = GetRefreshTokens();
+        string refreshToken = GetRefreshToken();
 
         var tokenDatabase = new TokensDatabase()
         {
@@ -144,6 +188,7 @@ public class AuthService : IAuthService
         return tokenDatabase;
     }
 
+    // save tokens in db and returns id
     private async Task<int?> SaveTokens(TokensDatabase tokensDatabase)
     {
         try
@@ -156,16 +201,17 @@ public class AuthService : IAuthService
         }
     }
 
+    // returns claims with user email
     private IEnumerable<Claim> CreateClaims(string email)
     {
-        return new List<Claim>() {new Claim(ClaimTypes.Email, email)};
+        return new List<Claim>()
+        {
+            new Claim(ClaimTypes.Email, email),
+            new Claim(ClaimTypes.Name, email)
+        };
     }
 
-    private string? GetEmailFromClaims(IEnumerable<Claim> claims)
-    {
-        return claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-    }
-
+    // creating user in db
     private async Task<int> CreateUser(UserBlank userBlank)
     {
         string hashedPassword = HashPassword(userBlank.Password);
@@ -175,11 +221,13 @@ public class AuthService : IAuthService
         return await _userRepository.Create(newUser);
     }
 
-    private string GetRefreshTokens()
+    // generate guid in string format
+    private string GetRefreshToken()
     {
         return Guid.NewGuid().ToString();
     }
 
+    // generate jwt-token
     private JwtSecurityToken GenerateToken(IEnumerable<Claim> claims)
     {
         string secret = _configuration["JWT:Secret"]!;
@@ -200,6 +248,7 @@ public class AuthService : IAuthService
         return token;
     }
 
+    // md5 hash password
     private string HashPassword(string password)
     {
         byte[] input = Encoding.UTF8.GetBytes(password);
@@ -210,14 +259,32 @@ public class AuthService : IAuthService
         return Convert.ToBase64String(output);
     }
 
+    // returns user email from expired token
+    private string? GetUsername(string token)
+    {
+        try
+        {
+            var principal = GetPrincipalFromExpiredToken(token);
+
+            return principal?.Identity?.Name;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+    
+    // returns principal from expired token
     private ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
     {
+        string secret = _configuration["JWT:Secret"]!;
+        
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateAudience = false,
             ValidateIssuer = false,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
             ValidateLifetime = false
         };
 
@@ -233,10 +300,14 @@ public class AuthService : IAuthService
         return principal;
     }
 
+    // try parse ipAddress
     private IPAddress? GetIpAddress(string ip)
     {
         try
         {
+            if(ip == "localhost")
+                return IPAddress.Parse("127.0.0.1"); 
+            
             return IPAddress.Parse(ip);
         }
         catch (Exception e)
@@ -245,6 +316,7 @@ public class AuthService : IAuthService
         }
     }
 
+    // validate password 
     private bool ValidatePassword(string password)
     {
         return password.Any(char.IsLetter) &&
@@ -252,5 +324,11 @@ public class AuthService : IAuthService
                password.Any(char.IsUpper) &&
                password.Any(char.IsLower) &&
                password.Length >= 8;
+    }
+
+    // validate email
+    private bool ValidateEmail(string email)
+    {
+        return new EmailAddressAttribute().IsValid(email);
     }
 }
