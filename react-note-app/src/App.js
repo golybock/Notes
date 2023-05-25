@@ -1,75 +1,46 @@
 import './App.css';
+import Cat from "./cat.webp"
 import React from "react";
-import tagApi from "./api/note/tag/TagApi";
-import noteApi from "./api/note/NoteApi";
-import tagView from "./models/TagView";
-import noteView from "./models/NoteView";
+import Notes from "./components/notes/Notes"
+import Login from "./components/Auth/Login"
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link,
+} from 'react-router-dom';
 
-class MainApp extends React.Component {
-
-    async componentDidMount() {
-
-        this.setState({notes: await noteApi.getNotes()})
-
-        this.setState({tags: await tagApi.getTags()})
-    }
+class App extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            tags: [],
-            notes: []
-        };
     }
 
     render() {
         return (
-            <div className="App">
-                
-                <header className="App-header">
+            <Router>
+                <div>
 
-                    <h1>Tags</h1>
+                    <nav>
+                        <div className="Nav-panel">
+                            <Link className="Navbar-item" to="/">
+                                <img src={Cat} alt={Cat} className="App-logo"/>
+                            </Link>
+                            <Link className="Navbar-item" to="/">Главная</Link>
+                            <Link className="Navbar-item" to="/login">Авторизация</Link>
+                        </div>
+                    </nav>
 
-                    <ul>
-                        {
-                            this.state.tags
-                                .map(tag =>
-                                    <li key={tag.id}>{tag.name}</li>
-                                )
-                        }
-                    </ul>
+                    <Routes>
+                        <Route path="/" element={<Notes/>}/>
+                        <Route path="/login" element={<Login/>}/>
+                    </Routes>
 
-                    <h1>Notes</h1>
-
-                    <ul>
-                        {
-                            this.state.notes
-                                .map(note =>
-                                    <div>
-                                        <li key={note["guid"]}>{note["header"]}</li>
-
-                                        <ul>
-                                            {
-                                                note.tags
-                                                    .map(tag =>
-                                                        <div>
-
-                                                            <li key={tag.id}>{tag.name}</li>
-                                                        </div>
-                                                    )
-                                            }
-                                        </ul>
-
-                                    </div>
-                                )
-                        }
-                    </ul>
-
-                </header>
-
-            </div>
+                </div>
+            </Router>
         );
     }
+
 }
 
-export default MainApp;
+export default App;

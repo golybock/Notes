@@ -61,6 +61,9 @@ public class AuthService : IAuthService
 
         #endregion
 
+        context.Response.Cookies.Append("token", tokensView.Token);
+        context.Response.Cookies.Append("refreshToken", tokensView.RefreshToken);
+        
         return new OkObjectResult(tokensView);
     }
 
@@ -100,6 +103,9 @@ public class AuthService : IAuthService
 
         #endregion
 
+        context.Response.Cookies.Append("token", tokensView.Token);
+        context.Response.Cookies.Append("refreshToken", tokensView.RefreshToken);
+        
         return new OkObjectResult(tokensView);
     }
 
@@ -131,6 +137,9 @@ public class AuthService : IAuthService
         var tokensView = TokensViewBuilder.Create(tokensDomain);
 
         #endregion
+        
+        context.Response.Cookies.Append("token", tokensView.Token);
+        context.Response.Cookies.Append("refreshToken", tokensView.RefreshToken);
 
         return new OkObjectResult(tokensView);
     }
@@ -179,6 +188,9 @@ public class AuthService : IAuthService
         var tokensView = TokensViewBuilder.Create(tokensDomain);
 
         #endregion
+        
+        context.Response.Cookies.Append("token", tokensView.Token);
+        context.Response.Cookies.Append("refreshToken", tokensView.RefreshToken);
 
         return new OkObjectResult(tokensView);
     }
