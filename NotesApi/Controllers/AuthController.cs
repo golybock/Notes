@@ -30,9 +30,9 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("Registration")]
-    public async Task<IActionResult> Registration(UserBlank userBlank)
+    public async Task<IActionResult> Registration(NoteUserBlank noteUserBlank)
     {
-        return await _authService.Registration(userBlank, HttpContext);
+        return await _authService.Registration(noteUserBlank, HttpContext);
     }
 
     [Authorize]

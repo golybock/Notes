@@ -2,7 +2,7 @@ using Views.Note;
 
 namespace Views.User;
 
-public class UserView
+public class NoteUserView
 {
     public string Email { get; set; } = null!;
 

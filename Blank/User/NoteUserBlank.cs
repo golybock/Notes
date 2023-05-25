@@ -1,6 +1,6 @@
 namespace Blank.User;
 
-public class UserBlank
+public class NoteUserBlank
 {
     public string Email { get; set; } = null!;
 

@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Blank.Note;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Services.Interfaces.Note;
@@ -11,7 +8,7 @@ using NotesApi.Services.Note;
 namespace NotesApi.Controllers;
 
 [Route("api/[controller]")]
-[ApiController]
+[ApiController, Authorize]
 public class NoteController : ControllerBase, INoteService
 {
     private readonly NoteService _noteService;

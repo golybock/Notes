@@ -2,7 +2,7 @@ using Domain.Note;
 
 namespace Domain.User;
 
-public class UserDomain
+public class NoteUserDomain
 {
     public string Email { get; set; } = null!;
 

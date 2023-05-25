@@ -20,13 +20,13 @@ namespace NotesApi.Services.User;
 public class AuthService : IAuthService
 {
     private readonly IConfiguration _configuration;
-    private readonly UserRepository _userRepository;
+    private readonly NoteUserRepository _noteUserRepository;
     private readonly TokensRepository _tokensRepository;
 
     public AuthService(IConfiguration configuration)
     {
         _configuration = configuration;
-        _userRepository = new UserRepository(configuration);
+        _noteUserRepository = new NoteUserRepository(configuration);
         _tokensRepository = new TokensRepository(configuration);
     }
 
@@ -34,7 +34,7 @@ public class AuthService : IAuthService
     {
         #region check client
 
-        var client = await _userRepository.Get(email);
+        var client = await _noteUserRepository.Get(email);
 
         if (client == null)
             return new UnauthorizedObjectResult("Неверный логин или пароль");
@@ -64,27 +64,30 @@ public class AuthService : IAuthService
         return new OkObjectResult(tokensView);
     }
 
-    public async Task<IActionResult> Registration(UserBlank userBlank, HttpContext context)
+    public async Task<IActionResult> Registration(NoteUserBlank noteUserBlank, HttpContext context)
     {
         #region check client data
 
-        var client = await _userRepository.Get(userBlank.Email);
+        var client = await _noteUserRepository.Get(noteUserBlank.Email);
 
         if (client != null)
             return new BadRequestObjectResult("Такой email уже зарегистрирован");
 
-        if (!ValidatePassword(userBlank.Password))
+        if (!ValidatePassword(noteUserBlank.Password))
             return new BadRequestObjectResult("Неверный формат пароля");
+        
+        if(!ValidateEmail(noteUserBlank.Email))
+            return new BadRequestObjectResult("Неверный формат почты");
 
         #endregion
 
         #region generate user and tokens
 
-        var id = await CreateUser(userBlank);
+        var id = await CreateUser(noteUserBlank);
 
         var clientIp = GetIpAddress(context.Request.Host.Host);
 
-        var tokens = GenerateTokens(id, userBlank.Email, clientIp);
+        var tokens = GenerateTokens(id, noteUserBlank.Email, clientIp);
 
         var save = await SaveTokens(tokens);
 
@@ -100,16 +103,18 @@ public class AuthService : IAuthService
         return new OkObjectResult(tokensView);
     }
 
-    public async Task<IActionResult> UpdatePassword(ClaimsPrincipal claimsPrincipal, string newPassword,
-        HttpContext context)
+    public async Task<IActionResult> UpdatePassword(ClaimsPrincipal claimsPrincipal, string newPassword, HttpContext context)
     {
-        var user = await _userRepository.Get(claimsPrincipal?.Identity?.Name);
+        var user = await _noteUserRepository.Get(claimsPrincipal.Identity?.Name!);
 
         if (user == null)
             return new UnauthorizedResult();
 
-        await _userRepository.UpdatePassword(user.Id, HashPassword(newPassword));
+        var res = await _noteUserRepository.UpdatePassword(user.Id, HashPassword(newPassword));
 
+        if (res <= 0)
+            return new BadRequestObjectResult("Не удалось обновить пароль");
+        
         #region generate and save tokens
 
         var clientIp = GetIpAddress(context.Request.Host.Host);
@@ -129,20 +134,15 @@ public class AuthService : IAuthService
 
         return new OkObjectResult(tokensView);
     }
-
-    // refresh tokens
+    
     public async Task<IActionResult> RefreshTokens(TokensBlank tokens, HttpContext context)
     {
-        var username = GetUsername(tokens.Token);
-
-        if (username == null)
-            return new BadRequestObjectResult("User not found");
-
+        var token = tokens.Token;
         var refreshToken = tokens.RefreshToken;
 
         #region tokens db and their validation
 
-        var tokensDb = await _tokensRepository.Get(refreshToken);
+        var tokensDb = await _tokensRepository.Get(token, refreshToken);
 
         if (tokensDb == null)
             return new BadRequestObjectResult("Token not valid");
@@ -156,27 +156,20 @@ public class AuthService : IAuthService
 
         #endregion
 
-        #region user db and their validation
+        var user = await _noteUserRepository.Get(GetUsername(token)!);
 
-        var userDb = await _userRepository.Get(username);
-
-        if (userDb == null)
-            return new UnauthorizedObjectResult("User not found");
-
-        if (tokensDb.UserId != userDb.Id)
-            return new BadRequestObjectResult("Refresh token invalid");
-
-        #endregion
-
+        if (user == null)
+            return new BadRequestObjectResult("User not found");
+        
         #region generate and save tokens
 
         var clientIp = GetIpAddress(context.Request.Host.Host);
 
-        var newTokens = GenerateTokens(userDb.Id, userDb.Email, clientIp);
+        var newTokens = GenerateTokens(user.Id, user.Email, clientIp);
 
         var save = await SaveTokens(newTokens);
 
-        await _tokensRepository.SetNotActive(refreshToken);
+        await _tokensRepository.SetNotActive(tokensDb.Id);
 
         if (save == null)
             return new BadRequestResult();
@@ -189,6 +182,35 @@ public class AuthService : IAuthService
 
         return new OkObjectResult(tokensView);
     }
+
+    #region save in db
+    
+    // save tokens in db and returns id
+    private async Task<int?> SaveTokens(TokensDatabase tokensDatabase)
+    {
+        try
+        {
+            return await _tokensRepository.Create(tokensDatabase);
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    // save user in db
+    private async Task<int> CreateUser(NoteUserBlank noteUserBlank)
+    {
+        string hashedPassword = HashPassword(noteUserBlank.Password);
+
+        var newUser = NoteUserDatabaseBuilder.Create(noteUserBlank, hashedPassword);
+
+        return await _noteUserRepository.Create(newUser);
+    }
+    
+    #endregion
+
+    #region generating data
 
     // generate pair tokens
     private TokensDatabase GenerateTokens(int userId, string email, IPAddress? ipAddress)
@@ -213,20 +235,7 @@ public class AuthService : IAuthService
 
         return tokenDatabase;
     }
-
-    // save tokens in db and returns id
-    private async Task<int?> SaveTokens(TokensDatabase tokensDatabase)
-    {
-        try
-        {
-            return await _tokensRepository.Create(tokensDatabase);
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-    }
-
+    
     // returns claims with user email
     private IEnumerable<Claim> CreateClaims(string email)
     {
@@ -236,17 +245,7 @@ public class AuthService : IAuthService
             new Claim(ClaimTypes.Name, email)
         };
     }
-
-    // creating user in db
-    private async Task<int> CreateUser(UserBlank userBlank)
-    {
-        string hashedPassword = HashPassword(userBlank.Password);
-
-        var newUser = UserDatabaseBuilder.Create(userBlank, hashedPassword);
-
-        return await _userRepository.Create(newUser);
-    }
-
+    
     // generate guid in string format
     private string GetRefreshToken()
     {
@@ -266,7 +265,7 @@ public class AuthService : IAuthService
         var token = new JwtSecurityToken(
             issuer: validIssuer,
             audience: validAudience,
-            expires: DateTime.Now.AddMinutes(tokenValidityInMinutes),
+            expires: DateTime.UtcNow.AddMinutes(tokenValidityInMinutes),
             claims: claims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );
@@ -284,6 +283,10 @@ public class AuthService : IAuthService
 
         return Convert.ToBase64String(output);
     }
+
+    #endregion
+
+    #region parsing
 
     // returns user email from expired token
     private string? GetUsername(string token)
@@ -342,19 +345,21 @@ public class AuthService : IAuthService
         }
     }
 
+    #endregion
+    
+    #region validation
+
     // validate password 
-    private bool ValidatePassword(string password)
-    {
-        return password.Any(char.IsLetter) &&
-               password.Any(char.IsDigit) &&
-               password.Any(char.IsUpper) &&
-               password.Any(char.IsLower) &&
-               password.Length >= 8;
-    }
+    private bool ValidatePassword(string password) =>
+        password.Any(char.IsLetter) &&
+        password.Any(char.IsDigit) &&
+        password.Any(char.IsUpper) &&
+        password.Any(char.IsLower) &&
+        password.Length >= 8;
 
     // validate email
-    private bool ValidateEmail(string email)
-    {
-        return new EmailAddressAttribute().IsValid(email);
-    }
+    private bool ValidateEmail(string email) =>
+        new EmailAddressAttribute().IsValid(email);
+
+    #endregion
 }

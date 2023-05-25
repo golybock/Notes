@@ -69,9 +69,9 @@ public class TokensRepository : RepositoryBase, ITokenRepository
         }
     }
 
-    public async Task<TokensDatabase?> Get(string refreshToken)
+    public async Task<TokensDatabase?> Get(string token, string refreshToken)
     {
-        string query = "select * from tokens where refresh_token = $1";
+        string query = "select * from tokens where token = $1 and refresh_token = $2";
 
         var connection = GetConnection();
 
@@ -81,7 +81,11 @@ public class TokensRepository : RepositoryBase, ITokenRepository
 
             NpgsqlCommand command = new NpgsqlCommand(query, connection)
             {
-                Parameters = {new NpgsqlParameter() {Value = refreshToken}}
+                Parameters =
+                {
+                    new NpgsqlParameter() {Value = token},
+                    new NpgsqlParameter() {Value = refreshToken}
+                }
             };
 
             await using var reader = await command.ExecuteReaderAsync();
@@ -114,37 +118,6 @@ public class TokensRepository : RepositoryBase, ITokenRepository
                 Parameters =
                 {
                     new NpgsqlParameter() {Value = id},
-                }
-            };
-
-            return await command.ExecuteNonQueryAsync();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        finally
-        {
-            await connection.CloseAsync();
-        }
-    }
-
-    public async Task<int> SetNotActive(string refreshToken)
-    {
-        string query = "update tokens set active = false where refresh_token = $1";
-
-        var connection = GetConnection();
-
-        try
-        {
-            await connection.OpenAsync();
-
-            NpgsqlCommand command = new NpgsqlCommand(query, connection)
-            {
-                Parameters =
-                {
-                    new NpgsqlParameter() {Value = refreshToken},
                 }
             };
 

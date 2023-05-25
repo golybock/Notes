@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blank.Note.Tag;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Services.Note.Tag;
@@ -10,7 +11,7 @@ using NotesApi.Services.Note.Tag;
 namespace NotesApi.Controllers;
 
 [Route("api/[controller]")]
-[ApiController]
+[ApiController, Authorize]
 public class TagController : ControllerBase
 {
     private readonly TagService _tagService;

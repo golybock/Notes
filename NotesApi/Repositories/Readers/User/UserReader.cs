@@ -3,43 +3,43 @@ using Npgsql;
 
 namespace NotesApi.Repositories.Readers.User;
 
-public class UserReader : IReader<UserDatabase>
+public class UserReader : IReader<NoteUserDatabase>
 {
-    public static async Task<UserDatabase?> ReadAsync(NpgsqlDataReader reader)
+    public static async Task<NoteUserDatabase?> ReadAsync(NpgsqlDataReader reader)
     {
         while (await reader.ReadAsync())
         {
-            UserDatabase userDatabase = new UserDatabase();
+            NoteUserDatabase noteUserDatabase = new NoteUserDatabase();
             
-            userDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-            userDatabase.Email = reader.GetString(reader.GetOrdinal("email"));
+            noteUserDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
+            noteUserDatabase.Email = reader.GetString(reader.GetOrdinal("email"));
                 
             var passwordHash = reader.GetValue(reader.GetOrdinal("password_hash"));
 
             if (passwordHash != DBNull.Value)
-                userDatabase.PasswordHash = passwordHash.ToString();
+                noteUserDatabase.PasswordHash = passwordHash.ToString();
             
-            return userDatabase;
+            return noteUserDatabase;
         }
 
         return null;
     }
 
-    public static async Task<List<UserDatabase>> ReadListAsync(NpgsqlDataReader reader)
+    public static async Task<List<NoteUserDatabase>> ReadListAsync(NpgsqlDataReader reader)
     {
-        List<UserDatabase> userDatabases = new List<UserDatabase>();
+        List<NoteUserDatabase> userDatabases = new List<NoteUserDatabase>();
 
         while (await reader.ReadAsync())
         {
-            UserDatabase userDatabase = new UserDatabase();
+            NoteUserDatabase noteUserDatabase = new NoteUserDatabase();
             
-            userDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-            userDatabase.Email = reader.GetString(reader.GetOrdinal("email"));
+            noteUserDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
+            noteUserDatabase.Email = reader.GetString(reader.GetOrdinal("email"));
                 
             var passwordHash = reader.GetValue(reader.GetOrdinal("password_hash"));
 
             if (passwordHash != DBNull.Value)
-                userDatabase.PasswordHash = passwordHash.ToString();
+                noteUserDatabase.PasswordHash = passwordHash.ToString();
         }
 
         return userDatabases;
