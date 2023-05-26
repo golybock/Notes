@@ -17,6 +17,8 @@ export default class AuthApi extends ApiBase {
 
                     this.setTokens(res.data.token, res.data.refreshToken);
 
+                    this.setAuthorization()
+
                     return true;
                 }
                 return false;
@@ -35,6 +37,8 @@ export default class AuthApi extends ApiBase {
                 if (res.status === 200) {
 
                     this.setTokens(res.data.token, res.data.refreshToken);
+
+                    this.setAuthorization()
 
                     return true;
                 }

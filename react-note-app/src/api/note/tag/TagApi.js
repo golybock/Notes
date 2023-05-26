@@ -5,15 +5,15 @@ export default class TagApi extends ApiBase{
 
     static async getTags() {
 
-        // let url = this.baseAddress + "/Tag/Tags";
-
-        let url = "http://localhost:5133/api/Tag/Tags"
-
-        this.setAuthorization()
+        let url = this.baseAddress + "/Tag/Tags";
 
         return await axios.get(url)
             .then(async res => {
                 return await res.data;
             })
+            .catch((e) => {
+                alert(e)
+                return false;
+            });
     }
 }
