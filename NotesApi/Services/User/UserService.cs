@@ -1,9 +1,10 @@
+using System.ComponentModel.DataAnnotations;
 using Blank.User;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Repositories.User;
 using NotesApi.Services.Interfaces.User;
 
-namespace NotesApi.Services.User;
+namespace NotesApi.Services.User;s
 
 public class UserService : IUserService
 {
@@ -13,28 +14,21 @@ public class UserService : IUserService
     {
         _noteUserRepository = new NoteUserRepository(configuration);
     }
-
-    public async Task<IActionResult> Get(int id)
-    {
-        throw new NotImplementedException();
-    }
-
+    
     public async Task<IActionResult> Get(string email)
     {
-        throw new NotImplementedException();
-    }
+        if (string.IsNullOrEmpty(email))
+            return new BadRequestObjectResult("Invalid email");
+        
+        var user =  await _noteUserRepository.Get(email);
 
-    public async Task<IActionResult> Create(NoteUserBlank noteUserBlank)
-    {
-        throw new NotImplementedException();
+        if (user == null)
+            return new NotFoundResult();
+
+        return new OkObjectResult(user);
     }
 
     public async Task<IActionResult> Update(int id, NoteUserBlank noteUserBlank)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IActionResult> Delete(int id)
     {
         throw new NotImplementedException();
     }
