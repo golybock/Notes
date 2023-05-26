@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using Blank.User;
+using DatabaseBuilder.User;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Repositories.User;
 using NotesApi.Services.Interfaces.User;
 
-namespace NotesApi.Services.User;s
+namespace NotesApi.Services.User;
 
 public class UserService : IUserService
 {
@@ -15,8 +17,13 @@ public class UserService : IUserService
         _noteUserRepository = new NoteUserRepository(configuration);
     }
     
-    public async Task<IActionResult> Get(string email)
+    public async Task<IActionResult> Get(ClaimsPrincipal claimsPrincipal)
     {
+        var email = claimsPrincipal.Identity?.Name;
+
+        if (email == null)
+            return new BadRequestResult();
+
         if (string.IsNullOrEmpty(email))
             return new BadRequestObjectResult("Invalid email");
         
@@ -28,8 +35,23 @@ public class UserService : IUserService
         return new OkObjectResult(user);
     }
 
-    public async Task<IActionResult> Update(int id, NoteUserBlank noteUserBlank)
+    public async Task<IActionResult> Update(ClaimsPrincipal claimsPrincipal, NoteUserBlank noteUserBlank)
     {
-        throw new NotImplementedException();
+        var email = claimsPrincipal.Identity?.Name;
+
+        if (email == null)
+            return new BadRequestResult();
+
+        if (string.IsNullOrEmpty(email))
+            return new BadRequestObjectResult("Invalid email");
+
+        var userDatabase = NoteUserDatabaseBuilder.Create(noteUserBlank);
+        
+        var user =  await _noteUserRepository.Update(email, userDatabase);
+
+        if (user <= 0)
+            return new BadRequestResult();
+
+        return new OkObjectResult(user);
     }
 }
