@@ -2,7 +2,7 @@ import './App.css';
 import Cat from "./cat.webp"
 import React from "react";
 import Notes from "./components/notes/Notes"
-import Login from "./components/Auth/Login"
+import Login from "./components/auth/Login"
 import {
     BrowserRouter as Router,
     Routes,

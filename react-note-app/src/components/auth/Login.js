@@ -35,7 +35,7 @@ class Login extends React.Component {
                                                   let res = await authApi.login(this.state.email, this.state.password);
 
                                                   if (res === false)
-                                                      alert("Неверный лошин или пароль")
+                                                      alert("Неверный логин или пароль")
                                               } catch (e) {
                                                   console.log(e)
                                                   alert(e)

@@ -1,13 +1,19 @@
 import axios from 'axios';
+import ApiBase from "../../ApiBase";
 
-class TagApi {
+export default class TagApi extends ApiBase{
 
     static async getTags() {
-        return await axios.get("https://localhost:7058/api/Tag/Tags")
+
+        // let url = this.baseAddress + "/Tag/Tags";
+
+        let url = "http://localhost:5133/api/Tag/Tags"
+
+        this.setAuthorization()
+
+        return await axios.get(url)
             .then(async res => {
                 return await res.data;
             })
     }
 }
-
-export default TagApi

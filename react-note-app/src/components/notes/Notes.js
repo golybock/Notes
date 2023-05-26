@@ -1,7 +1,6 @@
 import React from "react";
 import noteApi from "../../api/note/NoteApi";
 import tagApi from "../../api/note/tag/TagApi";
-import App from "../../App";
 
 class Notes extends React.Component{
 
