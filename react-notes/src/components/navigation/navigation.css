@@ -1,6 +1,6 @@
 .Nav-panel {
     flex-direction: row;
-    background-color: rebeccapurple;
+    background-color: #ee82ee;
     min-height: 5vh;
     display: flex;
     align-items: center;

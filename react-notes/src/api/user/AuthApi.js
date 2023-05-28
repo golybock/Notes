@@ -1,17 +1,20 @@
 import axios from 'axios';
 import ApiBase from "../ApiBase";
+import {LoginBlank} from "../../models/blank/user/LoginBlank";
 
 export default class AuthApi extends ApiBase {
 
     static async login(email, password) {
 
-        // let url = this.baseAddress + "/Auth/Login?email=" + email + "&password=" + password;
+        let url = this.baseAddress + "/Auth/Login";
 
-        let url = "https://localhost:7058/api/Auth/Login?email=aboba12%40aboba.com&password=Password1%21"
+        let blank = new LoginBlank(email, password);
+
+        // let url = "https://localhost:7058/api/Auth/Login?email=aboba12%40aboba.com&password=Password1%21"
 
         this.deleteTokens()
 
-        return await axios.post(url)
+        return await axios.post(url, blank)
             .then(async res => {
                 if (res.status === 200) {
 

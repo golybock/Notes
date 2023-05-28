@@ -6,7 +6,7 @@ namespace NotesApi.Services.Interfaces.User;
 
 public interface IAuthService
 {
-    public Task<IActionResult> Login(string email, string password, HttpContext context);
+    public Task<IActionResult> Login(LoginBlank loginBlank, HttpContext context);
     
     public Task<IActionResult> Registration(NoteUserBlank noteUserBlank, HttpContext context);
 

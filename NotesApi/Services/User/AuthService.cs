@@ -30,16 +30,16 @@ public class AuthService : IAuthService
         _tokensRepository = new TokensRepository(configuration);
     }
 
-    public async Task<IActionResult> Login(string email, string password, HttpContext context)
+    public async Task<IActionResult> Login(LoginBlank loginBlank, HttpContext context)
     {
         #region check client
 
-        var client = await _noteUserRepository.Get(email);
+        var client = await _noteUserRepository.Get(loginBlank.Email);
 
         if (client == null)
             return new UnauthorizedObjectResult("Неверный логин или пароль");
 
-        if (HashPassword(password) != client.PasswordHash)
+        if (HashPassword(loginBlank.Password) != client.PasswordHash)
             return new UnauthorizedObjectResult("Неверный пароль");
 
         #endregion

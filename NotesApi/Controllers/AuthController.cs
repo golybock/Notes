@@ -24,9 +24,9 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("Login")]
-    public async Task<IActionResult> Login(string email, string password)
+    public async Task<IActionResult> Login(LoginBlank loginBlank)
     {
-        return await _authService.Login(email, password, HttpContext);
+        return await _authService.Login(loginBlank, HttpContext);
     }
     
     [HttpPost("Registration")]
