@@ -1,0 +1,18 @@
+.Nav-panel {
+    flex-direction: row;
+    background-color: rebeccapurple;
+    min-height: 5vh;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    font-size: calc(10px + 1vmin);
+    color: white;
+}
+
+.Navbar-item{
+    text-decoration: none;
+    horiz-align: left;
+    color: black;
+    margin: 20px;
+    cursor: pointer;
+}
