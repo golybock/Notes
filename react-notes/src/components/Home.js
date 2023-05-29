@@ -1,71 +1,59 @@
 import React from "react";
 import NoteApi from "../api/note/NoteApi";
 import TagApi from "../api/note/tag/TagApi";
-class Notes extends React.Component{
 
-  async componentDidMount() {
+export default class Home extends React.Component {
 
-    this.setState({notes: await NoteApi.getNotes()})
+    async componentDidMount() {
 
-    this.setState({tags: await TagApi.getTags()})
-  }
+        this.setState({notes: await NoteApi.getNotes()})
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      tags: [],
-      notes: []
-    };
-  }
+        this.setState({tags: await TagApi.getTags()})
+    }
 
-  render() {
-    return (
-        <div className="App">
+    constructor(props) {
+        super(props);
+        this.state = {
+            tags: [],
+            notes: []
+        };
+    }
 
-          <header className="App-header">
+    render() {
+        return (
+            <div className="App">
 
-            <h1>Tags</h1>
+                <header className="App-header">
 
-            <ul>
-              {
-                this.state.tags
-                    .map(tag =>
-                        <li key={tag.id}>{tag.name}</li>
-                    )
-              }
-            </ul>
+                    <h1>Notes</h1>
 
-            <h1>Notes</h1>
+                    <ul>
+                        {
+                            this.state.notes
+                                .map(note =>
+                                    <div>
+                                        <li key={note["guid"]}>{note["header"]}</li>
 
-            <ul>
-              {
-                this.state.notes
-                    .map(note =>
-                        <div>
-                          <li key={note["guid"]}>{note["header"]}</li>
+                                        <ul>
+                                            {
+                                                note.tags
+                                                    .map(tag =>
+                                                        <div>
 
-                          <ul>
-                            {
-                              note.tags
-                                  .map(tag =>
-                                      <div>
+                                                            <li key={tag.id}>{tag.name}</li>
+                                                        </div>
+                                                    )
+                                            }
+                                        </ul>
 
-                                        <li key={tag.id}>{tag.name}</li>
-                                      </div>
-                                  )
-                            }
-                          </ul>
+                                    </div>
+                                )
+                        }
+                    </ul>
 
-                        </div>
-                    )
-              }
-            </ul>
+                </header>
 
-          </header>
-
-        </div>
-    );
-  }
+            </div>
+        );
+    }
 }
-
-export default Notes;

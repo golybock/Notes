@@ -10,8 +10,6 @@ export default class AuthApi extends ApiBase {
 
         let blank = new LoginBlank(email, password);
 
-        // let url = "https://localhost:7058/api/Auth/Login?email=aboba12%40aboba.com&password=Password1%21"
-
         this.deleteTokens()
 
         return await axios.post(url, blank)

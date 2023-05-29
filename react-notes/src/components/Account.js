@@ -1,20 +1,21 @@
 import AuthApi from "../api/user/AuthApi";
 import React from "react";
 
-export default class Account extends React.Component{
+export default class Account extends React.Component {
 
-  render() {
-    return(
-        <div>
+    render() {
+        return (
+            <div>
 
-          <label>Account page</label>
+                <label>Account page</label>
 
-          <button onClick={() => {
-            AuthApi.deleteTokens()
-          }}>Выйти</button>
+                <button onClick={() => {
+                    AuthApi.deleteTokens()
+                }}>Выйти
+                </button>
 
-        </div>
-    )
-  }
+            </div>
+        )
+    }
 
 }
