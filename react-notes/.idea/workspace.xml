@@ -4,20 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="fix">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="refactored">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ProtectedRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ProtectedRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Views.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Views.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/user/AuthApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/user/AuthApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/close.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Account.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Auth/Auth.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/Auth.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Auth/Registration.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/Registration.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Auth/SignIn.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/SignIn.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/navigation/Navigation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/navigation/Navigation.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +84,8 @@
       <option name="presentableId" value="Default" />
       <updated>1685288940597</updated>
       <workItem from="1685288941613" duration="12425000" />
-      <workItem from="1685343410629" duration="13069000" />
+      <workItem from="1685343410629" duration="13091000" />
+      <workItem from="1685389823990" duration="1696000" />
     </task>
     <task id="LOCAL-00001" summary="refactored">
       <created>1685297029817</created>
@@ -124,15 +115,22 @@
       <option name="project" value="LOCAL" />
       <updated>1685348479053</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="refactored">
+      <created>1685377237186</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1685377237186</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactored" />
     <MESSAGE value="fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix" />
+    <MESSAGE value="refactored" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactored" />
   </component>
 </project>

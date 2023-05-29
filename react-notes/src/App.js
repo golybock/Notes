@@ -6,8 +6,6 @@ import AuthApi from "./api/user/AuthApi";
 import SignIn from "./components/Auth/SignIn";
 
 export default class App extends React.Component {
-
-
     componentDidMount() {
         this.setState({isNotAuth: AuthApi.token() == null})
     }
