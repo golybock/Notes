@@ -1,9 +1,9 @@
-import React, {useContext} from "react";
+import React from "react";
 import "./Auth.css"
 import sakura from '/src/sakura.jpg'
 import AuthApi from "../../api/user/AuthApi";
 import {useLocation, useNavigate} from "react-router";
-import {UserContext} from "../../App";
+import {Navigate} from "react-router-dom";
 
 class SignIn extends React.Component {
 
@@ -36,13 +36,11 @@ class SignIn extends React.Component {
                                     if (r === true) {
                                         alert("signed")
 
-                                        const { user, setUser } = useContext(UserContext);
                                         const navigate = useNavigate();
                                         const location = useLocation();
 
-                                        setUser({ loggedIn: true });
-
-                                        navigate(location.state.from);
+                                        return <Navigate to="/home"/>
+                                        // navigate("/home")
                                     }
                                     else{
                                         alert("invalid sign")

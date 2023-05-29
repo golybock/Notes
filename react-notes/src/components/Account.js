@@ -1,5 +1,20 @@
-const Account = () => {
-  return <label>Account page</label>;
-};
+import AuthApi from "../api/user/AuthApi";
+import React from "react";
 
-export default Account;
+export default class Account extends React.Component{
+
+  render() {
+    return(
+        <div>
+
+          <label>Account page</label>
+
+          <button onClick={() => {
+            AuthApi.deleteTokens()
+          }}>Выйти</button>
+
+        </div>
+    )
+  }
+
+}

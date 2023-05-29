@@ -33,7 +33,6 @@ export default class ApiBase {
     static setTokens(token, refreshToken) {
         this.cookies.set("token", token, {path: '/'})
         this.cookies.set("refreshToken", refreshToken, {path: '/'})
-
     }
 
     static getTokens() {
@@ -54,7 +53,7 @@ export default class ApiBase {
         let tokens = this.getTokens()
 
         return await axios.post(url, tokens)
-            .then(async res => {
+            .then(res => {
                 if (res.status === 200) {
 
                     this.deleteTokens()

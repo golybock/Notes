@@ -12,8 +12,7 @@ export default class TagApi extends ApiBase{
                 return await res.data;
             })
             .catch((e) => {
-                alert(e)
-                return false;
+                return [];
             });
     }
 }
