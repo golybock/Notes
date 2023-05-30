@@ -9,7 +9,7 @@ namespace NotesApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController, Authorize]
-public class NoteController : ControllerBase, INoteService
+public class NoteController : ControllerBase
 {
     private readonly NoteService _noteService;
 
@@ -33,13 +33,13 @@ public class NoteController : ControllerBase, INoteService
     [HttpPost("Note")]
     public async Task<IActionResult> Create(NoteBlank blank)
     {
-        return await _noteService.Create(blank);
+        return await _noteService.Create(User, blank);
     }
 
     [HttpPut("Note")]
     public async Task<IActionResult> Update(Guid guid, NoteBlank blank)
     {
-        return await _noteService.Update(guid, blank);
+        return await _noteService.Update(User, guid, blank);
     }
     
     [HttpDelete("Note")]

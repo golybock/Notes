@@ -4,14 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="error when render rte">
+    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="log errors in console">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Views.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Views.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/ApiBase.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/ApiBase.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/note/NoteApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/note/NoteApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/navigation/Navigation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/navigation/Navigation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/note/Note.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/note/Note.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/note/Rte.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/note/Rte.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/blank/user/LoginBlank.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/blank/user/LoginBlank.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,28 +29,32 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectId" id="2QQbq9GEK4boxQEx23n625QPepo" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Coding/C#/Notes/react-notes/src&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2023.1.2\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Coding/C#/Notes/react-notes/src",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "node",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2023.1.2\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Coding\C#\Notes\react-notes\src" />
@@ -92,7 +93,7 @@
       <workItem from="1685343410629" duration="13091000" />
       <workItem from="1685389823990" duration="2221000" />
       <workItem from="1685429022524" duration="9078000" />
-      <workItem from="1685479547608" duration="2616000" />
+      <workItem from="1685479547608" duration="3015000" />
     </task>
     <task id="LOCAL-00001" summary="refactored">
       <created>1685297029817</created>
@@ -150,7 +151,21 @@
       <option name="project" value="LOCAL" />
       <updated>1685436680406</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="crud">
+      <created>1685482811060</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1685482811060</updated>
+    </task>
+    <task id="LOCAL-00010" summary="log errors in console">
+      <created>1685482942661</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1685482942661</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -161,6 +176,8 @@
     <MESSAGE value="refactored" />
     <MESSAGE value="created text editor page to note" />
     <MESSAGE value="error when render rte" />
-    <option name="LAST_COMMIT_MESSAGE" value="error when render rte" />
+    <MESSAGE value="crud" />
+    <MESSAGE value="log errors in console" />
+    <option name="LAST_COMMIT_MESSAGE" value="log errors in console" />
   </component>
 </project>

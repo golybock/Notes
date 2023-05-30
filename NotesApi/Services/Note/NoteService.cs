@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Blank.Note;
 using Database.Note.Tag;
 using DatabaseBuilder.Note;
@@ -6,10 +7,10 @@ using DomainBuilder.Note.Tag;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Repositories.Note;
 using NotesApi.Repositories.Note.Tag;
+using NotesApi.Repositories.User;
 using NotesApi.Services.Interfaces.Note;
 using ViewBuilder.Note;
 using ViewBuilder.Note.Tag;
-using Views.Note;
 using Views.Note.Tag;
 
 namespace NotesApi.Services.Note;
@@ -19,12 +20,14 @@ public class NoteService : INoteService
     private readonly NoteRepository _noteRepository;
     private readonly TagRepository _tagRepository;
     private readonly NoteTagRepository _noteTagRepository;
+    private readonly NoteUserRepository _noteUserRepository;
 
     public NoteService(IConfiguration configuration)
     {
         _noteRepository = new NoteRepository(configuration);
         _tagRepository = new TagRepository(configuration);
         _noteTagRepository = new NoteTagRepository(configuration);
+        _noteUserRepository = new NoteUserRepository(configuration);
     }
 
     public async Task<IActionResult> Get()
@@ -75,12 +78,14 @@ public class NoteService : INoteService
         return new OkObjectResult(noteView);
     }
 
-    public async Task<IActionResult> Create(NoteBlank noteBlank)
+    public async Task<IActionResult> Create(ClaimsPrincipal principal, NoteBlank noteBlank)
     {
-        // userId
-        var userId = 1;
+        var user = await _noteUserRepository.Get(principal.Identity?.Name!);
 
-        var noteDatabase = NoteDatabaseBuilder.Create(noteBlank, userId);
+        if (user == null)
+            return new BadRequestObjectResult("Invalid user");
+
+        var noteDatabase = NoteDatabaseBuilder.Create(noteBlank, user.Id);
 
         if (noteBlank.Text != null)
         {
@@ -100,7 +105,7 @@ public class NoteService : INoteService
         return result > 0 ? new OkObjectResult(noteDatabase.Guid) : new BadRequestResult();
     }
 
-    public async Task<IActionResult> Update(Guid guid, NoteBlank noteBlank)
+    public async Task<IActionResult> Update(ClaimsPrincipal principal, Guid guid, NoteBlank noteBlank)
     {
         var noteDatabase = await _noteRepository.Get(guid);
 

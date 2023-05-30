@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Blank.Note;
 using Microsoft.AspNetCore.Mvc;
 using Views.Note;
@@ -10,9 +11,9 @@ public interface INoteService
 
     public Task<IActionResult> Get(Guid guid);
 
-    public Task<IActionResult> Create(NoteBlank noteBlank);
+    public Task<IActionResult> Create(ClaimsPrincipal principal, NoteBlank noteBlank);
 
-    public Task<IActionResult> Update(Guid guid, NoteBlank noteBlank);
+    public Task<IActionResult> Update(ClaimsPrincipal principal, Guid guid, NoteBlank noteBlank);
 
     public Task<IActionResult> Delete(Guid guid);
 }
