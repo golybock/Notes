@@ -14,6 +14,7 @@ export default class NoteApi extends ApiBase {
                 return await res.data;
             })
             .catch((e) => {
+                console.log(e)
                 return [];
             });
     }
@@ -29,6 +30,7 @@ export default class NoteApi extends ApiBase {
                 return await res.data;
             })
             .catch((e) => {
+                console.log(e)
                 return null;
             });
     }
@@ -44,6 +46,7 @@ export default class NoteApi extends ApiBase {
                 return await res.data;
             })
             .catch((e) => {
+                console.log(e)
                 return null;
             });
     }
@@ -59,6 +62,7 @@ export default class NoteApi extends ApiBase {
                 return await res.data;
             })
             .catch((e) => {
+                console.log(e)
                 return null;
             });
     }

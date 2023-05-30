@@ -67,7 +67,8 @@ export default class ApiBase {
 
                 return false;
             })
-            .catch(() => {
+            .catch((e) => {
+                console.log(e)
                 return false;
             });
     }
