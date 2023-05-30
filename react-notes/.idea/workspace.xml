@@ -5,9 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="refactored">
+      <change afterPath="$PROJECT_DIR$/src/components/home/Home.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/home/Home.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/note/Note.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/note/Note.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/note/Rte.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Views.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Views.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/note/NoteApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/note/NoteApi.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Home.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +66,7 @@
       <recent name="C:\Coding\C#\Notes\react-notes\src\components" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Coding\C#\Notes\react-notes\src\components\home" />
       <recent name="C:\Coding\C#\Notes\react-notes\src\components\Auth" />
       <recent name="C:\Coding\C#\Notes\react-notes\src\components\navigation" />
     </key>
@@ -85,7 +96,8 @@
       <updated>1685288940597</updated>
       <workItem from="1685288941613" duration="12425000" />
       <workItem from="1685343410629" duration="13091000" />
-      <workItem from="1685389823990" duration="1696000" />
+      <workItem from="1685389823990" duration="2221000" />
+      <workItem from="1685429022524" duration="4533000" />
     </task>
     <task id="LOCAL-00001" summary="refactored">
       <created>1685297029817</created>
@@ -122,7 +134,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685377237186</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="refactored">
+      <created>1685394019501</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1685394019501</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

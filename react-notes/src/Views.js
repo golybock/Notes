@@ -1,7 +1,7 @@
 import {Route, Routes} from "react-router-dom";
 import React from "react";
 import Account from "./components/Account";
-import Home from "./components/Home";
+import Home from "./components/home/Home";
 import ProtectedRoutes from "./ProtectedRoutes";
 
 export default class Views extends React.Component {

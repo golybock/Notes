@@ -19,7 +19,7 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="App">
                 {!this.state.isNotAuth && <Navigation/>}
                 <Views/>
                 {this.state.isNotAuth && <SignIn onClose={async () => {
