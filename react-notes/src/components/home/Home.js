@@ -40,7 +40,7 @@ export default class Home extends React.Component {
 
                         {this.state.notes
                             .map(note =>
-                                <Card style={{ width: '16rem' }}>
+                                <Card style={{ width: '16rem' }} key={note.guid}>
                                     <Card.Img variant="top" src={Cat} />
                                     <Card.Body>
                                         <Card.Title style={{color: "black"}}>{note.header}</Card.Title>

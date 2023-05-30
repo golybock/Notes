@@ -10,6 +10,7 @@ const Navigation = () => {
             </Link>
             <Link className="Navbar-item" to="/">Главная</Link>
             <Link className="Navbar-item" to="/account">Акаунт</Link>
+            <Link className="Navbar-item" to="/create">Создать</Link>
         </div>
     </nav>);
 };

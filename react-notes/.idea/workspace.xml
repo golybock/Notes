@@ -4,8 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="created text editor page to note">
+    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="error when render rte">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Views.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Views.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/note/NoteApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/note/NoteApi.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/navigation/Navigation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/navigation/Navigation.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/note/Note.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/note/Note.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/note/Rte.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/note/Rte.js" afterDir="false" />
     </list>
@@ -87,7 +91,8 @@
       <workItem from="1685288941613" duration="12425000" />
       <workItem from="1685343410629" duration="13091000" />
       <workItem from="1685389823990" duration="2221000" />
-      <workItem from="1685429022524" duration="5162000" />
+      <workItem from="1685429022524" duration="9078000" />
+      <workItem from="1685479547608" duration="2616000" />
     </task>
     <task id="LOCAL-00001" summary="refactored">
       <created>1685297029817</created>
@@ -138,7 +143,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685435967941</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="error when render rte">
+      <created>1685436680406</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1685436680406</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -148,6 +160,7 @@
     <MESSAGE value="fix" />
     <MESSAGE value="refactored" />
     <MESSAGE value="created text editor page to note" />
-    <option name="LAST_COMMIT_MESSAGE" value="created text editor page to note" />
+    <MESSAGE value="error when render rte" />
+    <option name="LAST_COMMIT_MESSAGE" value="error when render rte" />
   </component>
 </project>
