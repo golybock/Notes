@@ -1,6 +1,6 @@
 namespace Database.Note;
 
-public class SharedNotesDatabase
+public class SharedNoteDatabase
 {
     public int Id { get; set; }
 

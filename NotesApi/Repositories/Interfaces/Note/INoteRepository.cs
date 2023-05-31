@@ -10,7 +10,7 @@ public interface INoteRepository
 
     public Task<Guid> Create(NoteDatabase noteDatabase);
 
-    public Task<Guid> Update(Guid id, NoteDatabase noteDatabase);
+    public Task<int> Update(Guid id, NoteDatabase noteDatabase);
 
-    public Task<Guid> Delete(Guid id);
+    public Task<int> Delete(Guid id);
 }

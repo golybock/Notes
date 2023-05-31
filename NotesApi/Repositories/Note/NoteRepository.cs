@@ -128,7 +128,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
             while (await reader.ReadAsync())
                 return reader.GetGuid(reader.GetOrdinal("id"));
 
-            return 1;
+            return Guid.Empty;
         }
         catch (Exception e)
         {
@@ -140,47 +140,6 @@ public class NoteRepository : RepositoryBase, INoteRepository
             await connection.CloseAsync();
         }
     }
-
-    public async Task<Guid> Update(int id, NoteDatabase noteDatabase)
-    {
-        string query = "update note set header = $2, edited_date = $3," +
-                       " source_path = $4 where id = $1";
-
-        var connection = GetConnection();
-
-        try
-        {
-            await connection.OpenAsync();
-
-            NpgsqlCommand command = new NpgsqlCommand(query, connection)
-            {
-                Parameters =
-                {
-                    new NpgsqlParameter() { Value = id},
-                    new NpgsqlParameter() { Value = noteDatabase.Header },
-                    new NpgsqlParameter() { Value = noteDatabase.EditedDate },
-                    new NpgsqlParameter() { Value = noteDatabase.SourcePath},
-                }
-            };
-
-            await using var reader = await command.ExecuteReaderAsync();
-
-            while (await reader.ReadAsync())
-                return reader.GetGuid(reader.GetOrdinal("id"));
-
-            return 1;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        finally
-        {
-            await connection.CloseAsync();
-        }
-    }
-    
     public async Task<int> Update(Guid guid, NoteDatabase noteDatabase)
     {
         string query = "update note set header = $2, edited_date = $3 " +
@@ -202,12 +161,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
                 }
             };
 
-            await using var reader = await command.ExecuteReaderAsync();
-
-            while (await reader.ReadAsync())
-                return reader.GetGuid(reader.GetOrdinal("id"));
-
-            return 1;
+            return await command.ExecuteNonQueryAsync();
         }
         catch (Exception e)
         {
