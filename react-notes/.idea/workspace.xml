@@ -6,9 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="log errors in console">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ProtectedRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/navigation/ProtectedRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Views.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/ApiBase.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/ApiBase.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/note/NoteApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/note/NoteApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/blank/user/LoginBlank.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/blank/user/LoginBlank.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Account.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/navigation/Navigation.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/navigation/navigation.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/note/Note.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/note/Note.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,33 +45,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Coding/C#/Notes/react-notes/src",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "node",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2023.1.2\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Coding/C#/Notes/react-notes/src&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2023.1.2\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Coding\C#\Notes\react-notes\src" />
       <recent name="C:\Coding\C#\Notes\react-notes\src\components" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Coding\C#\Notes\react-notes\src\components\navigation" />
       <recent name="C:\Coding\C#\Notes\react-notes\src\components\home" />
       <recent name="C:\Coding\C#\Notes\react-notes\src\components\Auth" />
-      <recent name="C:\Coding\C#\Notes\react-notes\src\components\navigation" />
     </key>
   </component>
   <component name="RunManager" selected="npm.npm start">
@@ -94,6 +102,7 @@
       <workItem from="1685389823990" duration="2221000" />
       <workItem from="1685429022524" duration="9078000" />
       <workItem from="1685479547608" duration="3015000" />
+      <workItem from="1685516438114" duration="6713000" />
     </task>
     <task id="LOCAL-00001" summary="refactored">
       <created>1685297029817</created>

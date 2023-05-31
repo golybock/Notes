@@ -13,6 +13,25 @@
   }
 }
 
+.Nav-panel {
+  flex-direction: row;
+  background-color: #ee82ee;
+  min-height: 5vh;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  font-size: calc(10px + 1vmin);
+  color: white;
+}
+
+.Navbar-item{
+  text-decoration: none;
+  horiz-align: left;
+  color: black;
+  margin: 20px;
+  cursor: pointer;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

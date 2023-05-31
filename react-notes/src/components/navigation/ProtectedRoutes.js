@@ -1,4 +1,4 @@
-import AuthApi from "./api/user/AuthApi";
+import AuthApi from "../../api/user/AuthApi";
 import {useLocation} from "react-router";
 import {Navigate, Outlet} from "react-router-dom";
 

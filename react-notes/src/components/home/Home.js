@@ -1,19 +1,25 @@
 import React from "react";
 import "./Home.css"
 import NoteApi from "../../api/note/NoteApi";
-import TagApi from "../../api/note/tag/TagApi";
 import Cat from "../../cat.webp";
 import Note from "../note/Note";
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
+
 export default class Home extends React.Component {
 
     async componentDidMount() {
+        await this.loadNotes();
+        // let tags = await TagApi.getTags();
+        //
+        // this.setState({tags: tags})
+    }
 
-        this.setState({notes: await NoteApi.getNotes()})
+    async loadNotes() {
+        let notes = await NoteApi.getNotes();
 
-        this.setState({tags: await TagApi.getTags()})
+        this.setState({notes: notes})
     }
 
     constructor(props) {
@@ -21,14 +27,21 @@ export default class Home extends React.Component {
         this.state = {
             tags: [],
             notes: [],
-            card_opened : false,
-            opened_card_guid : ""
+            card_opened: false,
+            opened_card_guid: ""
         };
     }
 
-    onClose =() =>{
-        this.setState({card_opened : false})
-        this.setState({opened_card_guid : null})
+    async onClose() {
+        this.setState({card_opened: false})
+        this.setState({opened_card_guid: null})
+
+        await this.loadNotes();
+    }
+
+    open(note) {
+        this.setState({card_opened: true})
+        this.setState({opened_card_guid: note.guid})
     }
 
     render() {
@@ -40,27 +53,30 @@ export default class Home extends React.Component {
 
                         {this.state.notes
                             .map(note =>
-                                <Card style={{ width: '16rem' }} key={note.guid}>
-                                    <Card.Img variant="top" src={Cat} />
+                                <Card style={{width: '16rem'}} key={note.guid}>
+                                    <Card.Img variant="top" src={Cat}/>
+                                    <Card.Title style={{color: "black", margin: 5}}>
+                                        {note.header}
+                                    </Card.Title>
                                     <Card.Body>
-                                        <Card.Title style={{color: "black"}}>{note.header}</Card.Title>
                                         <Card.Text style={{color: "black"}} className="">
                                             {note.text}
                                         </Card.Text>
-                                        <Button className="" variant="primary" onClick={
-                                            () => {
-                                                this.setState({card_opened : true})
-                                                this.setState({opened_card_guid : note.guid})
-                                            }
-                                        }>Open</Button>
                                     </Card.Body>
+                                    <Card.Footer>
+                                        <Button className="" variant="primary" onClick={() => this.open(note)}>
+                                            Open
+                                        </Button>
+                                    </Card.Footer>
                                 </Card>)
                         }
 
                     </div>
                 )}
 
-                {this.state.card_opened && (<Note guid={this.state.opened_card_guid} onClose={this.onClose}></Note>)}
+                {this.state.card_opened && (<Note guid={this.state.opened_card_guid} onClose={async () => {
+                    await this.onClose()
+                }}></Note>)}
 
             </div>
         );

@@ -48,10 +48,14 @@ export default class Home extends React.Component {
 
     async update(){
         await NoteApi.updateNote(this.props.guid, this.state.note)
+
+        this.props.onClose()
     }
 
     async create(){
         await NoteApi.createNote(this.state.note)
+
+        this.props.onClose()
     }
 
     onChange = (value) => {

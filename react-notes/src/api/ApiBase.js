@@ -4,7 +4,6 @@ import axios from "axios";
 
 export default class ApiBase {
 
-
     static baseAddress = "https://localhost:7058/api"
 
     static cookies = new Cookies();
@@ -18,9 +17,7 @@ export default class ApiBase {
     }
 
     static setAuthorization() {
-        if(this.token == null){
-        }
-        else{
+        if (this.token != null) {
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.token();
         }
     }
