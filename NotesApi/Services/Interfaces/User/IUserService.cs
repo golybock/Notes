@@ -7,5 +7,5 @@ namespace NotesApi.Services.Interfaces.User;
 public interface IUserService
 {
     public Task<IActionResult> Get(ClaimsPrincipal claimsPrincipal);
-    public Task<IActionResult> Update(ClaimsPrincipal claimsPrincipal, NoteUserBlank noteUserBlank);
+    public Task<IActionResult> Update(ClaimsPrincipal claimsPrincipal, UserBlank userBlank);
 }

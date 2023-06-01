@@ -67,30 +67,30 @@ public class AuthService : IAuthService
         return new OkObjectResult(tokensView);
     }
 
-    public async Task<IActionResult> Registration(NoteUserBlank noteUserBlank, HttpContext context)
+    public async Task<IActionResult> Registration(UserBlank userBlank, HttpContext context)
     {
         #region check client data
 
-        var client = await _noteUserRepository.Get(noteUserBlank.Email);
+        var client = await _noteUserRepository.Get(userBlank.Email);
 
         if (client != null)
             return new BadRequestObjectResult("Такой email уже зарегистрирован");
 
-        if (!ValidatePassword(noteUserBlank.Password))
+        if (!ValidatePassword(userBlank.Password))
             return new BadRequestObjectResult("Неверный формат пароля");
         
-        if(!ValidateEmail(noteUserBlank.Email))
+        if(!ValidateEmail(userBlank.Email))
             return new BadRequestObjectResult("Неверный формат почты");
 
         #endregion
 
         #region generate user and tokens
 
-        var id = await CreateUser(noteUserBlank);
+        var id = await CreateUser(userBlank);
 
         var clientIp = GetIpAddress(context.Request.Host.Host);
 
-        var tokens = GenerateTokens(id, noteUserBlank.Email, clientIp);
+        var tokens = GenerateTokens(id, userBlank.Email, clientIp);
 
         var save = await SaveTokens(tokens);
 
@@ -211,11 +211,11 @@ public class AuthService : IAuthService
     }
 
     // save user in db
-    private async Task<int> CreateUser(NoteUserBlank noteUserBlank)
+    private async Task<int> CreateUser(UserBlank userBlank)
     {
-        string hashedPassword = HashPassword(noteUserBlank.Password);
+        string hashedPassword = HashPassword(userBlank.Password);
 
-        var newUser = NoteUserDatabaseBuilder.Create(noteUserBlank, hashedPassword);
+        var newUser = UserDatabaseBuilder.Create(userBlank, hashedPassword);
 
         return await _noteUserRepository.Create(newUser);
     }

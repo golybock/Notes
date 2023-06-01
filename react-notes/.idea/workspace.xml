@@ -4,18 +4,38 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="log errors in console">
+    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="rebased routes to App">
+      <change afterPath="$PROJECT_DIR$/../Database/Note/NoteTypeDatabase.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Database/Note/PermissionsLevelDatabase.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Database/Note/SharedNotesDatabase.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Domain/Note/Tag/NoteTypeDomain.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../View/Note/Tag/NoteTypeView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Blank/User/NoteUserBlank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Blank/User/UserBlank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Database/Note/NoteDatabase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/Note/NoteDatabase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Database/Note/Tag/NoteTagDatabase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/Note/Tag/NoteTagDatabase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Database/User/NoteUserDatabase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/User/UserDatabase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DatabaseBuilder/User/NoteUserDatabaseBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../DatabaseBuilder/User/NoteUserDatabaseBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Domain/Note/NoteDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Domain/Note/NoteDomain.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Domain/User/NoteUserDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Domain/User/UserDomain.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DomainBuilder/User/NoteUserDomainBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../DomainBuilder/User/NoteUserDomainBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Controllers/AuthController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Controllers/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Controllers/UserController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Repositories/Interfaces/User/INoteUserRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Repositories/Interfaces/User/INoteUserRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Repositories/Readers/User/UserReader.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Repositories/Readers/User/UserReader.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Repositories/User/NoteUserRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Repositories/User/NoteUserRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Services/Interfaces/User/IAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Services/Interfaces/User/IAuthService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Services/Interfaces/User/IUserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Services/Interfaces/User/IUserService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Services/User/AuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Services/User/AuthService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Services/User/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Services/User/UserService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/script.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../View/Note/NoteView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../View/Note/NoteView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../View/User/NoteUserView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../View/User/UserView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ViewBuilder/User/NoteUserViewBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ViewBuilder/User/NoteUserViewBuilder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ProtectedRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/navigation/ProtectedRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Views.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/ApiBase.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/ApiBase.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Account.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Auth/Auth.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/Auth.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/home/Home.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home/Home.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/navigation/Navigation.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/navigation/navigation.css" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/note/Note.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/note/Note.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -102,7 +122,8 @@
       <workItem from="1685389823990" duration="2221000" />
       <workItem from="1685429022524" duration="9078000" />
       <workItem from="1685479547608" duration="3015000" />
-      <workItem from="1685516438114" duration="6713000" />
+      <workItem from="1685516438114" duration="7115000" />
+      <workItem from="1685597387932" duration="7153000" />
     </task>
     <task id="LOCAL-00001" summary="refactored">
       <created>1685297029817</created>
@@ -174,7 +195,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685482942661</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="rebased routes to App">
+      <created>1685528927277</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1685528927277</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -187,6 +215,7 @@
     <MESSAGE value="error when render rte" />
     <MESSAGE value="crud" />
     <MESSAGE value="log errors in console" />
-    <option name="LAST_COMMIT_MESSAGE" value="log errors in console" />
+    <MESSAGE value="rebased routes to App" />
+    <option name="LAST_COMMIT_MESSAGE" value="rebased routes to App" />
   </component>
 </project>

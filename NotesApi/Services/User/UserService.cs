@@ -35,7 +35,7 @@ public class UserService : IUserService
         return new OkObjectResult(user);
     }
 
-    public async Task<IActionResult> Update(ClaimsPrincipal claimsPrincipal, NoteUserBlank noteUserBlank)
+    public async Task<IActionResult> Update(ClaimsPrincipal claimsPrincipal, UserBlank userBlank)
     {
         var email = claimsPrincipal.Identity?.Name;
 
@@ -45,7 +45,7 @@ public class UserService : IUserService
         if (string.IsNullOrEmpty(email))
             return new BadRequestObjectResult("Invalid email");
 
-        var userDatabase = NoteUserDatabaseBuilder.Create(noteUserBlank);
+        var userDatabase = UserDatabaseBuilder.Create(userBlank);
         
         var user =  await _noteUserRepository.Update(email, userDatabase);
 

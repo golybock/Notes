@@ -11,9 +11,6 @@ export default class Home extends React.Component {
 
     async componentDidMount() {
         await this.loadNotes();
-        // let tags = await TagApi.getTags();
-        //
-        // this.setState({tags: tags})
     }
 
     async loadNotes() {
@@ -34,19 +31,28 @@ export default class Home extends React.Component {
 
     async onClose() {
         this.setState({card_opened: false})
-        this.setState({opened_card_guid: null})
+        this.setState({opened_card_guid: "null"})
 
         await this.loadNotes();
     }
 
     open(note) {
         this.setState({card_opened: true})
-        this.setState({opened_card_guid: note.guid})
+
+        this.setState({opened_card_guid: note})
     }
 
     render() {
         return (
             <div className="background">
+
+                {!this.state.card_opened && (
+                    <div className="buttons">
+                        <button className="btn btn-primary-submit" onClick={() => this.open("null")}>
+                            Create
+                        </button>
+                    </div>
+                )}
 
                 {!this.state.card_opened && (
                     <div className="cards">
@@ -64,7 +70,7 @@ export default class Home extends React.Component {
                                         </Card.Text>
                                     </Card.Body>
                                     <Card.Footer>
-                                        <Button className="" variant="primary" onClick={() => this.open(note)}>
+                                        <Button className="" variant="primary" onClick={() => this.open(note.guid)}>
                                             Open
                                         </Button>
                                     </Card.Footer>

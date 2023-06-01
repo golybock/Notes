@@ -10,9 +10,9 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
 {
     public NoteUserRepository(IConfiguration configuration) : base(configuration) { }
 
-    public async Task<NoteUserDatabase?> Get(int id)
+    public async Task<UserDatabase?> Get(int id)
     {
-        string query = "select * from note_user where id = $1";
+        string query = "select * from users where id = $1";
 
         var connection = GetConnection();
 
@@ -40,9 +40,9 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
         }
     }
 
-    public async Task<NoteUserDatabase?> Get(string email)
+    public async Task<UserDatabase?> Get(string email)
     {
-        string query = "select * from note_user where email = $1";
+        string query = "select * from users where email = $1";
 
         var connection = GetConnection();
 
@@ -70,9 +70,9 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
         }
     }
 
-    public async Task<int> Create(NoteUserDatabase noteUserDatabase)
+    public async Task<int> Create(UserDatabase userDatabase)
     {
-        string query = "insert into note_user(email, password_hash, name)" +
+        string query = "insert into users(email, password_hash, name)" +
                        "values ($1, $2, $3) returning id";
 
         var connection = GetConnection();
@@ -85,9 +85,9 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
             {
                 Parameters =
                 {
-                    new NpgsqlParameter() { Value = noteUserDatabase.Email },
-                    new NpgsqlParameter() { Value = noteUserDatabase.PasswordHash },
-                    new NpgsqlParameter() { Value = noteUserDatabase.Name }
+                    new NpgsqlParameter() { Value = userDatabase.Email },
+                    new NpgsqlParameter() { Value = userDatabase.PasswordHash },
+                    new NpgsqlParameter() { Value = userDatabase.Name }
                 }
             };
 
@@ -109,9 +109,9 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
         }
     }
 
-    public async Task<int> Update(int id, NoteUserDatabase noteUserDatabase)
+    public async Task<int> Update(int id, UserDatabase userDatabase)
     {
-        string query = "update note_user set password_hash = $2, name = $3 " +
+        string query = "update users set password_hash = $2, name = $3 " +
                        "where id = $1";
 
         var connection = GetConnection();
@@ -125,8 +125,8 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
                 Parameters =
                 {
                     new NpgsqlParameter() { Value = id },
-                    new NpgsqlParameter() { Value = noteUserDatabase.PasswordHash },
-                    new NpgsqlParameter() { Value = noteUserDatabase.Name }
+                    new NpgsqlParameter() { Value = userDatabase.PasswordHash },
+                    new NpgsqlParameter() { Value = userDatabase.Name }
                 }
             };
 
@@ -143,9 +143,9 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
         }
     }
 
-    public async Task<int> Update(string email, NoteUserDatabase noteUserDatabase)
+    public async Task<int> Update(string email, UserDatabase userDatabase)
     {
-        string query = "update note_user set password_hash = $2, name = $3 " +
+        string query = "update users set password_hash = $2, name = $3 " +
                        "where email = $1";
 
         var connection = GetConnection();
@@ -159,8 +159,8 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
                 Parameters =
                 {
                     new NpgsqlParameter() { Value = email },
-                    new NpgsqlParameter() { Value = noteUserDatabase.PasswordHash },
-                    new NpgsqlParameter() { Value = noteUserDatabase.Name }
+                    new NpgsqlParameter() { Value = userDatabase.PasswordHash },
+                    new NpgsqlParameter() { Value = userDatabase.Name }
                 }
             };
 
@@ -179,7 +179,7 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
     
     public async Task<int> UpdatePassword(int id, string newPassword)
     {
-        string query = "update note_user set password_hash = $2 " +
+        string query = "update users set password_hash = $2 " +
                        "where id = $1";
 
         var connection = GetConnection();

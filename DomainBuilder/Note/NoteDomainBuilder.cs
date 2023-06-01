@@ -12,10 +12,10 @@ public static class NoteDomainBuilder
         {
             Id = noteDatabase.Id,
             Header = noteDatabase.Header,
-            UserId = noteDatabase.UserId,
+            OwnerId = noteDatabase.OwnerId,
+            TypeId = noteDatabase.TypeId,
             CreationDate = noteDatabase.CreationDate,
-            EditedDate = noteDatabase.EditedDate,
-            Guid = noteDatabase.Guid
+            EditedDate = noteDatabase.EditedDate
         };
     }
     
@@ -26,25 +26,38 @@ public static class NoteDomainBuilder
             Id = noteDatabase.Id,
             Header = noteDatabase.Header,
             Text = text,
-            UserId = noteDatabase.UserId,
+            OwnerId = noteDatabase.OwnerId,
             CreationDate = noteDatabase.CreationDate,
-            EditedDate = noteDatabase.EditedDate,
-            Guid = noteDatabase.Guid
+            EditedDate = noteDatabase.EditedDate
         };
     }
     
-    public static NoteDomain Create(NoteDatabase noteDatabase, string text, List<TagDomain> tagDomains)
+    public static NoteDomain Create(NoteDatabase noteDatabase, string text, string sourcePath)
     {
         return new NoteDomain()
         {
             Id = noteDatabase.Id,
             Header = noteDatabase.Header,
             Text = text,
-            UserId = noteDatabase.UserId,
+            OwnerId = noteDatabase.OwnerId,
+            CreationDate = noteDatabase.CreationDate,
+            EditedDate = noteDatabase.EditedDate,
+            SourcePath = sourcePath
+        };
+    }
+    
+    public static NoteDomain Create(NoteDatabase noteDatabase, string text, string sourcePath, List<TagDomain> tagDomains)
+    {
+        return new NoteDomain()
+        {
+            Id = noteDatabase.Id,
+            Header = noteDatabase.Header,
+            Text = text,
+            OwnerId = noteDatabase.OwnerId,
             CreationDate = noteDatabase.CreationDate,
             EditedDate = noteDatabase.EditedDate,
             Tags = tagDomains,
-            Guid = noteDatabase.Guid
+            SourcePath = sourcePath
         };
     }
 }

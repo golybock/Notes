@@ -5,7 +5,7 @@ namespace DatabaseBuilder.Note;
 
 public static class NoteDatabaseBuilder
 {
-    public static NoteDatabase Create(int id, NoteBlank noteBlank)
+    public static NoteDatabase Create(Guid id, NoteBlank noteBlank)
     {
         return new NoteDatabase()
         {
@@ -23,7 +23,7 @@ public static class NoteDatabaseBuilder
     }
 
     
-    public static NoteDatabase Create(int id, string sourcePath, NoteBlank noteBlank)
+    public static NoteDatabase Create(Guid id, string sourcePath, NoteBlank noteBlank)
     {
         return new NoteDatabase()
         {
@@ -33,23 +33,23 @@ public static class NoteDatabaseBuilder
         };
     }
     
-    public static NoteDatabase Create(int id, string sourcePath, NoteBlank noteBlank, int userId)
+    public static NoteDatabase Create(Guid id, string sourcePath, NoteBlank noteBlank, int ownerId)
     {
         return new NoteDatabase()
         {
             Id = id,
             Header = noteBlank.Header,
             SourcePath = sourcePath,
-            UserId = userId
+            OwnerId = ownerId
         };
     }
     
-    public static NoteDatabase Create(NoteBlank noteBlank, int userId)
+    public static NoteDatabase Create(NoteBlank noteBlank, int ownerId)
     {
         return new NoteDatabase()
         {
             Header = noteBlank.Header,
-            UserId = userId
+            OwnerId = ownerId
         };
     }
 }

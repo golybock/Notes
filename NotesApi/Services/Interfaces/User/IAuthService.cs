@@ -8,7 +8,7 @@ public interface IAuthService
 {
     public Task<IActionResult> Login(LoginBlank loginBlank, HttpContext context);
     
-    public Task<IActionResult> Registration(NoteUserBlank noteUserBlank, HttpContext context);
+    public Task<IActionResult> Registration(UserBlank userBlank, HttpContext context);
 
     public Task<IActionResult> UpdatePassword(ClaimsPrincipal claimsPrincipal, string newPassword, HttpContext context);
 

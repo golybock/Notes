@@ -1,6 +1,6 @@
 namespace Database.User;
 
-public class NoteUserDatabase
+public class UserDatabase
 {
     public int Id { get; set; }
 

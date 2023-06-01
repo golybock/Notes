@@ -28,7 +28,7 @@ public class UserController : ControllerBase
     }
     
     [HttpPut("User"), Authorize]
-    public async Task<IActionResult> UpdateUser(NoteUserBlank userBlank)
+    public async Task<IActionResult> UpdateUser(UserBlank userBlank)
     {
         return await _userService.Update(User, userBlank);
     }

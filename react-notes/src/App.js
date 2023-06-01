@@ -22,28 +22,30 @@ export default class App extends React.Component {
         this.setState({isAuth: AuthApi.token() != null})
     }
 
-    auth(){
+    auth() {
         this.setState({isAuth: true});
     }
 
     render() {
         return (
             <div className="App">
-                {this.state.isAuth && (<nav>
-                    <div className="Nav-panel">
-                        <Link className="Navbar-item" to="/">
-                            <img src={Cat} alt={Cat} className="App-logo"/>
-                        </Link>
-                        <Link className="Navbar-item" to="/">Главная</Link>
-                        <Link className="Navbar-item" to="/account">Акаунт</Link>
-                        <Link className="Navbar-item" to="/note">Создать</Link>
-                    </div>
-                </nav>)}
+                {/*nav bar*/}
+                {this.state.isAuth && (
+                    <nav>
+                        <div className="Nav-panel">
+                            <Link className="Navbar-item" to="/">
+                                <img src={Cat} alt={Cat} className="App-logo"/>
+                            </Link>
+                            <Link className="Navbar-item" to="/">Главная</Link>
+                            <Link className="Navbar-item" to="/account">Акаунт</Link>
+                        </div>
+                    </nav>
+                )}
+                {/*routes*/}
                 <Routes>
                     <Route element={<ProtectedRoutes/>}>
                         <Route path="/" element={<Home/>}/>
                         <Route path="/account" element={<Account/>}/>
-                        <Route path="/note" element={<Note/>}/>
                     </Route>
                 </Routes>
                 {!this.state.isAuth && <SignIn onClose={() => this.auth()}/>}

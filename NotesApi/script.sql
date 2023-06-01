@@ -27,7 +27,7 @@ create table if not exists note
     edited_date   timestamp with time zone not null,
     source_path   text,
     user_id       integer
-        references note_user,
+        references users,
     guid          uuid                     not null
         unique
 );
@@ -47,7 +47,7 @@ create table if not exists tokens
     id            serial
         primary key,
     user_id       integer
-        references note_user,
+        references users,
     token         text                                   not null,
     refresh_token text                                   not null,
     creation_date timestamp with time zone default now() not null,

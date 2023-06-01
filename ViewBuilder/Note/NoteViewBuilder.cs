@@ -1,6 +1,7 @@
 using Domain.Note;
 using Domain.Note.Tag;
 using ViewBuilder.Note.Tag;
+using ViewBuilder.User;
 using Views.Note;
 using Views.Note.Tag;
 
@@ -12,61 +13,16 @@ public static class NoteViewBuilder
     {
         return new NoteView()
         {
+            Id = noteDomain.Id,
             Header = noteDomain.Header,
-            UserId = noteDomain.UserId,
             Text = noteDomain.Text,
             CreationDate = noteDomain.CreationDate,
             EditedDate = noteDomain.EditedDate,
-            Guid = noteDomain.Guid,
+            Type = NoteTypeViewBuilder.Create(noteDomain.Type),
+            User = UserViewBuilder.Create(noteDomain.User),
             Tags = noteDomain.Tags
                 .Select(TagViewBuilder.Create)
                 .ToList()
-        };
-    }
-
-    public static NoteView Create(NoteDomain noteDomain, string text)
-    {
-        return new NoteView()
-        {
-            Header = noteDomain.Header,
-            Text = text,
-            UserId = noteDomain.UserId,
-            CreationDate = noteDomain.CreationDate,
-            EditedDate = noteDomain.EditedDate,
-            Guid = noteDomain.Guid,
-            Tags = noteDomain.Tags
-                .Select(TagViewBuilder.Create)
-                .ToList()
-        };
-    }
-
-    public static NoteView Create(NoteDomain noteDomain, string text, List<TagDomain> tagDomains)
-    {
-        return new NoteView()
-        {
-            Header = noteDomain.Header,
-            Text = text,
-            UserId = noteDomain.UserId,
-            CreationDate = noteDomain.CreationDate,
-            EditedDate = noteDomain.EditedDate,
-            Guid = noteDomain.Guid,
-            Tags = tagDomains
-                .Select(TagViewBuilder.Create)
-                .ToList()
-        };
-    }
-
-    public static NoteView Create(NoteDomain noteDomain, string text, List<TagView> tagViews)
-    {
-        return new NoteView()
-        {
-            Header = noteDomain.Header,
-            Text = text,
-            UserId = noteDomain.UserId,
-            CreationDate = noteDomain.CreationDate,
-            EditedDate = noteDomain.EditedDate,
-            Guid = noteDomain.Guid,
-            Tags = tagViews
         };
     }
 }

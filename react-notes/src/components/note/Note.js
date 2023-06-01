@@ -16,7 +16,7 @@ export default class Home extends React.Component {
     }
 
     async componentDidMount() {
-        if (this.props.guid != null) {
+        if (this.props.guid !== "null") {
             await this.editMode();
         } else {
             this.createMode();
@@ -36,6 +36,7 @@ export default class Home extends React.Component {
     }
 
     createMode() {
+        // create empty obj
         let note = new NoteBlank("", "")
 
         this.setState({note: note})
