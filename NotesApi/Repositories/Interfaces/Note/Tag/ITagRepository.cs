@@ -8,7 +8,7 @@ public interface ITagRepository
     
     public Task<List<TagDatabase>> Get();
 
-    public Task<List<TagDatabase>> GetNoteTags(int noteId);
+    public Task<List<TagDatabase>> GetNoteTags(Guid noteId);
 
     public Task<int> Create(TagDatabase tagDatabase);
     

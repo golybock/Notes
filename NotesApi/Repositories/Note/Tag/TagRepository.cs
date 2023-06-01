@@ -69,7 +69,7 @@ public class TagRepository : RepositoryBase, ITagRepository
         }
     }
 
-    public async Task<List<TagDatabase>> GetNoteTags(int noteId)
+    public async Task<List<TagDatabase>> GetNoteTags(Guid noteId)
     {
         string query = "select * from tag join note_tag nt on tag.id = nt.tag_id where nt.note_id = $1";
 

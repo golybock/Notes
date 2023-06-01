@@ -5,38 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="rebased routes to App">
-      <change afterPath="$PROJECT_DIR$/../Database/Note/NoteTypeDatabase.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Database/Note/PermissionsLevelDatabase.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Database/Note/SharedNotesDatabase.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Domain/Note/Tag/NoteTypeDomain.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../View/Note/Tag/NoteTypeView.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Blank/User/NoteUserBlank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Blank/User/UserBlank.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Database/Note/NoteDatabase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/Note/NoteDatabase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Database/Note/Tag/NoteTagDatabase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/Note/Tag/NoteTagDatabase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Database/User/NoteUserDatabase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Database/User/UserDatabase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DatabaseBuilder/User/NoteUserDatabaseBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../DatabaseBuilder/User/NoteUserDatabaseBuilder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Domain/Note/NoteDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Domain/Note/NoteDomain.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Domain/User/NoteUserDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Domain/User/UserDomain.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../DomainBuilder/User/NoteUserDomainBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../DomainBuilder/User/NoteUserDomainBuilder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotesApi/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Controllers/AuthController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotesApi/Controllers/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Controllers/UserController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotesApi/Repositories/Interfaces/User/INoteUserRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Repositories/Interfaces/User/INoteUserRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotesApi/Repositories/Readers/User/UserReader.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Repositories/Readers/User/UserReader.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotesApi/Repositories/User/NoteUserRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Repositories/User/NoteUserRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotesApi/Services/Interfaces/User/IAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Services/Interfaces/User/IAuthService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotesApi/Services/Interfaces/User/IUserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Services/Interfaces/User/IUserService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotesApi/Services/User/AuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Services/User/AuthService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotesApi/Services/User/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Services/User/UserService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotesApi/script.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/script.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../View/Note/NoteView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../View/Note/NoteView.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../View/User/NoteUserView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../View/User/UserView.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ViewBuilder/User/NoteUserViewBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../ViewBuilder/User/NoteUserViewBuilder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Auth/Auth.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/Auth.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/home/Home.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home/Home.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/note/Note.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/note/Note.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,7 +92,7 @@
       <workItem from="1685429022524" duration="9078000" />
       <workItem from="1685479547608" duration="3015000" />
       <workItem from="1685516438114" duration="7115000" />
-      <workItem from="1685597387932" duration="7153000" />
+      <workItem from="1685597387932" duration="7739000" />
     </task>
     <task id="LOCAL-00001" summary="refactored">
       <created>1685297029817</created>

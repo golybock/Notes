@@ -1,3 +1,4 @@
+using System.Data;
 using Database.Note;
 using NotesApi.Repositories.Interfaces.Note;
 using NotesApi.Repositories.Readers.Note;
@@ -42,7 +43,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
     
     public async Task<NoteDatabase?> Get(Guid guid)
     {
-        string query = "select * from note where guid = $1";
+        string query = "select * from note where id = $1";
 
         var connection = GetConnection();
 
@@ -98,9 +99,9 @@ public class NoteRepository : RepositoryBase, INoteRepository
         }
     }
 
-    public async Task<int> Create(NoteDatabase noteDatabase)
+    public async Task<Guid> Create(NoteDatabase noteDatabase)
     {
-        string query = "insert into note(header, creation_date, edited_date, source_path, user_id, guid)" +
+        string query = "insert into note(header, creation_date, edited_date, source_path, owner_id, id, type_id)" +
                        "values ($1, $2, $3, $4, $5, $6) returning id";
 
         var connection = GetConnection();
@@ -117,15 +118,15 @@ public class NoteRepository : RepositoryBase, INoteRepository
                     new NpgsqlParameter() { Value = noteDatabase.CreationDate },
                     new NpgsqlParameter() { Value = noteDatabase.EditedDate },
                     new NpgsqlParameter() { Value = noteDatabase.SourcePath },
-                    new NpgsqlParameter() { Value = noteDatabase.UserId },
-                    new NpgsqlParameter() { Value = noteDatabase.Guid }
+                    new NpgsqlParameter() { Value = noteDatabase.OwnerId },
+                    new NpgsqlParameter() { Value = noteDatabase.Id }
                 }
             };
 
             await using var reader = await command.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
-                return reader.GetInt32(reader.GetOrdinal("id"));
+                return reader.GetGuid(reader.GetOrdinal("id"));
 
             return 1;
         }
@@ -140,7 +141,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
         }
     }
 
-    public async Task<int> Update(int id, NoteDatabase noteDatabase)
+    public async Task<Guid> Update(int id, NoteDatabase noteDatabase)
     {
         string query = "update note set header = $2, edited_date = $3," +
                        " source_path = $4 where id = $1";
@@ -165,7 +166,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
             await using var reader = await command.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
-                return reader.GetInt32(reader.GetOrdinal("id"));
+                return reader.GetGuid(reader.GetOrdinal("id"));
 
             return 1;
         }
@@ -183,7 +184,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
     public async Task<int> Update(Guid guid, NoteDatabase noteDatabase)
     {
         string query = "update note set header = $2, edited_date = $3 " +
-                       "where guid = $1";
+                       "where id = $1";
 
         var connection = GetConnection();
 
@@ -204,7 +205,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
             await using var reader = await command.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
-                return reader.GetInt32(reader.GetOrdinal("id"));
+                return reader.GetGuid(reader.GetOrdinal("id"));
 
             return 1;
         }
@@ -219,13 +220,8 @@ public class NoteRepository : RepositoryBase, INoteRepository
         }
     }
 
-    public async Task<int> Delete(int id)
+    public async Task<int> Delete(Guid id)
     {
         return await DeleteAsync("note", "id", id);
-    }
-    
-    public async Task<int> Delete(Guid guid)
-    {
-        return await DeleteAsync("note", "guid", guid);
     }
 }

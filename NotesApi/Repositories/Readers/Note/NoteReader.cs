@@ -11,13 +11,13 @@ public class NoteReader : IReader<NoteDatabase>
         {
             NoteDatabase noteDatabase = new NoteDatabase();
             
-            noteDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-            noteDatabase.UserId = reader.GetInt32(reader.GetOrdinal("user_id"));
+            noteDatabase.Id = reader.GetGuid(reader.GetOrdinal("id"));
+            noteDatabase.OwnerId = reader.GetInt32(reader.GetOrdinal("owner_id"));
             noteDatabase.Header = reader.GetString(reader.GetOrdinal("header"));
             noteDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal("creation_date"));
             noteDatabase.EditedDate = reader.GetDateTime(reader.GetOrdinal("edited_date"));
-            noteDatabase.Guid = reader.GetGuid(reader.GetOrdinal("guid"));
-
+            noteDatabase.TypeId = reader.GetInt32(reader.GetOrdinal("type_id"));
+            
             var sourcePath = reader.GetValue(reader.GetOrdinal("source_path"));
 
             if (sourcePath != DBNull.Value)
@@ -37,12 +37,12 @@ public class NoteReader : IReader<NoteDatabase>
         {
             NoteDatabase noteDatabase = new NoteDatabase();
 
-            noteDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-            noteDatabase.UserId = reader.GetInt32(reader.GetOrdinal("user_id"));
+            noteDatabase.Id = reader.GetGuid(reader.GetOrdinal("id"));
+            noteDatabase.OwnerId = reader.GetInt32(reader.GetOrdinal("user_id"));
             noteDatabase.Header = reader.GetString(reader.GetOrdinal("header"));
             noteDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal("creation_date"));
             noteDatabase.EditedDate = reader.GetDateTime(reader.GetOrdinal("edited_date"));
-            noteDatabase.Guid = reader.GetGuid(reader.GetOrdinal("guid"));
+            noteDatabase.TypeId = reader.GetInt32(reader.GetOrdinal("type_id"));
 
             var sourcePath = reader.GetValue(reader.GetOrdinal("source_path"));
 

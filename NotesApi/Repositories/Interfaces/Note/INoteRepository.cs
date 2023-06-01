@@ -4,13 +4,13 @@ namespace NotesApi.Repositories.Interfaces.Note;
 
 public interface INoteRepository
 {
-    public Task<NoteDatabase?> Get(int id);
+    public Task<NoteDatabase?> Get(Guid id);
     
     public Task<List<NoteDatabase>> Get();
 
-    public Task<int> Create(NoteDatabase noteDatabase);
+    public Task<Guid> Create(NoteDatabase noteDatabase);
 
-    public Task<int> Update(int id, NoteDatabase noteDatabase);
+    public Task<Guid> Update(Guid id, NoteDatabase noteDatabase);
 
-    public Task<int> Delete(int id);
+    public Task<Guid> Delete(Guid id);
 }
