@@ -110,9 +110,9 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
         }
     }
 
-    public async Task<int> Update(int id, SharedNoteDatabase sharedNoteDatabase)
+    public async Task<int> Update(Guid noteId, int userId, int permissionsLevel)
     {
-        string query = "update shared_notes set permissions_level_id = $2 where id = $1";
+        string query = "update shared_notes set permissions_level_id = $3 where note_id = $1 and user_id = $2";
 
         var connection = GetConnection();
 
@@ -124,8 +124,9 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
             {
                 Parameters =
                 {
-                    new NpgsqlParameter() { Value = id},
-                    new NpgsqlParameter() { Value = sharedNoteDatabase.PermissionsLevelId }
+                    new NpgsqlParameter() { Value = noteId},
+                    new NpgsqlParameter() { Value = userId},
+                    new NpgsqlParameter() { Value = permissionsLevel }
                 }
             };
 
@@ -142,12 +143,38 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
         }
     }
 
-    public async Task<int> Delete(int id)
+    public async Task<int> Delete(Guid noteId, int userId)
     {
-        return await DeleteAsync("shared_notes", "id", id);
+        var connection = GetConnection();
+
+        try
+        {
+            connection.Open();
+
+            var query = $"delete from shared_notes where note_id = $1 and user_id = $2";
+            
+            await using var cmd = new NpgsqlCommand(query, connection)
+            {
+                Parameters =
+                {
+                    new NpgsqlParameter {Value = noteId},
+                    new NpgsqlParameter {Value = userId}
+                }
+            };
+
+            return await cmd.ExecuteNonQueryAsync();
+        }
+        catch (Exception e)
+        {
+            return -1;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
     }
 
-    public async Task<int> Delete(Guid noteId)
+    public async Task<int> DeleteNote(Guid noteId)
     {
         return await DeleteAsync("shared_notes", "note_id", noteId);
     }
