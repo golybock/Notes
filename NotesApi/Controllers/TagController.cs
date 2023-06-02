@@ -33,8 +33,9 @@ public class TagController : ControllerBase
         return await _tagService.Get(id);
     }
     
-    [HttpGet("NoteTags")]
-    public async Task<IActionResult> GetByNote(int noteId)
+    // не нужно(подгружается вместе с заметкой)
+    [HttpGet("NoteTags"), Authorize]
+    public async Task<IActionResult> GetByNote(Guid noteId)
     {
         return await _tagService.GetByNote(noteId);
     }

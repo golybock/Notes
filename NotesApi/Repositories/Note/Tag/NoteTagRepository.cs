@@ -82,7 +82,7 @@ public class NoteTagRepository : RepositoryBase, INoteTagRepository
         return await DeleteAsync("note_tag", "id", id);
     }
 
-    public async Task<int> DeleteByNote(int noteId)
+    public async Task<int> DeleteByNote(Guid noteId)
     {
         return await DeleteAsync("note_tag", "note_id", noteId);
     }

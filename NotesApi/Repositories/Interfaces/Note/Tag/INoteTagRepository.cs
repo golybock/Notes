@@ -10,7 +10,7 @@ public interface INoteTagRepository
     
     public Task<int> Delete(int id);
     
-    public Task<int> DeleteByNote(int noteId);
+    public Task<int> DeleteByNote(Guid noteId);
     
     public Task<int> DeleteByTag(int tagId);
 }

@@ -18,33 +18,33 @@ public class NoteController : ControllerBase
         _noteService = new NoteService(configuration);
     }
 
-    [HttpGet("Notes")]
+    [HttpGet("Notes"), Authorize]
     public async Task<IActionResult> Get()
     {
-        return await _noteService.Get();
+        return await _noteService.Get(User);
     }
 
-    [HttpGet("Note")]
+    [HttpGet("Note"), Authorize]
     public async Task<IActionResult> Get(Guid guid)
     {
-        return await _noteService.Get(guid);
+        return await _noteService.Get(User, guid);
     }
 
-    [HttpPost("Note")]
+    [HttpPost("Note"), Authorize]
     public async Task<IActionResult> Create(NoteBlank blank)
     {
         return await _noteService.Create(User, blank);
     }
 
-    [HttpPut("Note")]
+    [HttpPut("Note"), Authorize]
     public async Task<IActionResult> Update(Guid guid, NoteBlank blank)
     {
         return await _noteService.Update(User, guid, blank);
     }
     
-    [HttpDelete("Note")]
+    [HttpDelete("Note"),Authorize]
     public async Task<IActionResult> Delete(Guid guid)
     {
-        return await _noteService.Delete(guid);
+        return await _noteService.Delete(User, guid);
     }
 }

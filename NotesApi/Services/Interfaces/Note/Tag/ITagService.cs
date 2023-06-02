@@ -10,7 +10,7 @@ public interface ITagService
     
     public Task<IActionResult> Get(int id);
 
-    public Task<IActionResult> GetByNote(int noteId);
+    public Task<IActionResult> GetByNote(Guid noteId);
 
     public Task<IActionResult> Create(TagBlank tagBlank);
     

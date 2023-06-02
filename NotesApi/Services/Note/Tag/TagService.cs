@@ -52,9 +52,9 @@ public class TagService : ITagService
         return new OkObjectResult(viewTag);
     }
 
-    public async Task<IActionResult> GetByNote(int noteId)
+    public async Task<IActionResult> GetByNote(Guid noteId)
     {
-        if (noteId <= 0)
+        if (noteId == Guid.Empty)
             return new BadRequestObjectResult("Not valid id");
         
         var databaseTags = await _tagRepository.GetNoteTags(noteId);
