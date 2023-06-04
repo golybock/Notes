@@ -10,14 +10,14 @@ export default class Home extends React.Component {
         super(props);
         this.state = {
             id: this.props.id,
-            note: new NoteBlank(-1),
+            note: new NoteBlank(-1, ""),
             value: RichTextEditor.createValueFromString("", "html")
         };
     }
 
     async componentDidMount() {
         // check created note
-        if (this.props.id === "null") {
+        if (this.state.id === "null") {
             // create new note and get id
             await this.createNote();
             // load note data
@@ -28,34 +28,40 @@ export default class Home extends React.Component {
         }
     }
 
+    // get note
     async loadNote() {
         // get note from api
         let note = await NoteApi.getNote(this.state.id);
 
-        // save in state
-        this.setState({note: note})
+        if (note !== null) {
+            // save in state
+            this.setState({note: note})
 
-        // render text
-        let text = RichTextEditor.createValueFromString(note.text, "html");
+            // render text
+            let text = RichTextEditor.createValueFromString(note.text, "html");
 
-        // save text in html mode in state
-        this.setState({value: text})
+            // save text in html mode in state
+            this.setState({value: text})
+        }
     }
 
+    // update note
     async update() {
         await NoteApi.updateNote(this.props.id, this.state.note)
     }
 
+    // create empty text and get id
     async createNote() {
 
-        let id = await NoteApi.createNote(this.state.note)
+        let id = await NoteApi.createNote(new NoteBlank("", ""))
 
         this.setState({id: id})
     }
 
+    // onchange text
     onChange = async (value) => {
 
-        if(this.state.note.header !== -1){
+        if (this.state.note.header !== -1) {
             // value in json
             this.setState({
                 note: {
@@ -73,6 +79,8 @@ export default class Home extends React.Component {
 
     render() {
         return (<div>
+
+                {/*command bar*/}
                 <div className="buttons">
                     <button className="btn btn-primary-note">
                         Share
@@ -84,7 +92,10 @@ export default class Home extends React.Component {
                         Back
                     </button>
                 </div>
+
+                {/*text editor*/}
                 <RichTextEditor value={this.state.value} onChange={this.onChange}/>
+
             </div>
         );
     }
