@@ -1,7 +1,6 @@
 import React from "react";
 import "./Note.css"
 import NoteApi from "../../api/note/NoteApi";
-import Button from "react-bootstrap/Button";
 import {NoteBlank} from "../../models/blank/note/NoteBlank";
 import RichTextEditor from "react-rte";
 
@@ -10,88 +9,82 @@ export default class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            note: new NoteBlank(),
+            id: this.props.id,
+            note: new NoteBlank(-1),
             value: RichTextEditor.createValueFromString("", "html")
         };
     }
 
     async componentDidMount() {
-        if (this.props.guid !== "null") {
-            await this.editMode();
+        // check created note
+        if (this.props.id === "null") {
+            // create new note and get id
+            await this.createNote();
+            // load note data
+            await this.loadNote();
         } else {
-            this.createMode();
+            // load exists note
+            await this.loadNote();
         }
     }
 
-    async editMode() {
+    async loadNote() {
         // get note from api
-        let note = await NoteApi.getNote(this.props.guid);
+        let note = await NoteApi.getNote(this.state.id);
 
+        // save in state
         this.setState({note: note})
 
         // render text
         let text = RichTextEditor.createValueFromString(note.text, "html");
 
+        // save text in html mode in state
         this.setState({value: text})
     }
 
-    createMode() {
-        // create empty obj
-        let note = new NoteBlank("", "")
-
-        this.setState({note: note})
-
-        // render text
-        let text = RichTextEditor.createValueFromString(note.text, "html");
-
-        this.setState({value: text})
+    async update() {
+        await NoteApi.updateNote(this.props.id, this.state.note)
     }
 
-    async update(){
-        await NoteApi.updateNote(this.props.guid, this.state.note)
+    async createNote() {
 
-        this.props.onClose()
+        let id = await NoteApi.createNote(this.state.note)
+
+        this.setState({id: id})
     }
 
-    async create(){
-        await NoteApi.createNote(this.state.note)
+    onChange = async (value) => {
 
-        this.props.onClose()
-    }
+        if(this.state.note.header !== -1){
+            // value in json
+            this.setState({
+                note: {
+                    ...this.state.note,
+                    text: value.toString("html")
+                }
+            })
 
-    onChange = (value) => {
+            // rendered value
+            this.setState({value: value})
 
-        // value in json
-        this.setState({
-            note: {
-                ...this.state.note,
-                text: value.toString("html")
-            }
-        })
-
-        // rendered value
-        this.setState({value: value})
+            await this.update()
+        }
     }
 
     render() {
         return (<div>
-                <p>{this.props.guid == null ? "create" : "edit"}</p>
-                {this.props.guid}
-                <Button onClick={this.props.onClose}>Закрыть</Button>
+                <div className="buttons">
+                    <button className="btn btn-primary-note">
+                        Share
+                    </button>
+                    <button className="btn btn-primary-delete">
+                        Delete
+                    </button>
+                    <button className="btn btn-primary-note" onClick={this.props.onClose}>
+                        Back
+                    </button>
+                </div>
                 <RichTextEditor value={this.state.value} onChange={this.onChange}/>
-                <button
-                    onClick={async () => {
-                        if (this.props.guid == null) {
-                            await this.create()
-                        }
-                        else{
-                            await this.update()
-                        }
-                    }}
-                >
-                    Submit
-                </button>
-                <p>{this.state.note.text}</p>
             </div>
         );
     }

@@ -19,6 +19,22 @@ export default class NoteApi extends ApiBase {
             });
     }
 
+    static async getSharedNotes() {
+
+        await this.refreshTokens();
+
+        let url = this.baseAddress + "/Note/SharedNotes";
+
+        return await axios.get(url)
+            .then(async res => {
+                return await res.data;
+            })
+            .catch((e) => {
+                console.log(e)
+                return [];
+            });
+    }
+
     static async getNote(guid) {
 
         await this.refreshTokens();

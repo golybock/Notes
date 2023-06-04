@@ -23,7 +23,7 @@
 .btn.btn-primary-submit {
     background-color: #ee82ee;
     border: 0;
-    width: 10rem;
+    /*width: 10rem;*/
     padding: 10px;
     font-size: 14px;
 }

@@ -2,7 +2,8 @@ import React from "react";
 import "./Auth.css"
 import sakura from '/src/sakura.jpg'
 import AuthApi from "../../api/user/AuthApi";
-import {Modal, Button} from "react-bootstrap";
+import {Modal} from "react-bootstrap";
+import {GoogleLogin} from 'react-google-login'
 
 
 class SignIn extends React.Component {
@@ -17,6 +18,8 @@ class SignIn extends React.Component {
         }
     }
 
+    client_id = "989073554490-lhcf948sulr8o8n5u85ivnbbluh3ve51.apps.googleusercontent.com"
+
     auth = async () => {
 
         let r = await AuthApi.login(this.state.email, this.state.password)
@@ -26,6 +29,14 @@ class SignIn extends React.Component {
         } else {
             this.setState({error: "Неверный логин или пароль"});
         }
+    }
+
+    onSuccess = (res) => {
+        console.log("es", res.profileObj)
+    }
+
+    onFailure = (res) => {
+        console.log("no", res)
     }
 
     render() {
@@ -75,9 +86,19 @@ class SignIn extends React.Component {
                                             />
                                         </div>
                                         <div className="d-grid">
-                                            <button onClick={async () => this.auth()} className="btn btn-primary-submit">
+                                            <button onClick={async () => this.auth()}
+                                                    className="btn btn-primary-submit">
                                                 Sign in
                                             </button>
+                                            <div id="signInButton">
+                                                <GoogleLogin clientId={this.client_id}
+                                                             buttonText="Login"
+                                                             onSuccess={this.onSuccess}
+                                                             onFailure={this.onFailure}
+                                                             cookiePolicy={'single_host_origin'}
+                                                             isSignedIn={true}/>
+
+                                            </div>
                                         </div>
                                         <div className="mt-3">
                                             <p className="mb-0 text-muted">Dont have an account?</p>
