@@ -83,11 +83,11 @@ public class NoteService : INoteService
             return new NotFoundResult();
 
         var noteView = NoteViewBuilder.Create(noteDomain);
-        
+
         return new OkObjectResult(noteView);
     }
 
-    
+
     public async Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank)
     {
         var user = await GetUser(claims);
@@ -139,47 +139,47 @@ public class NoteService : INoteService
         return result > 0 ? new OkResult() : new BadRequestResult();
     }
 
-    public async Task<IActionResult> Share(ClaimsPrincipal claims, Guid id, string email, int permissionLevel)
+    public async Task<IActionResult> Share(ClaimsPrincipal claims, ShareBlank shareBlank)
     {
         var user = await GetUser(claims);
 
         if (user == null)
             return new UnauthorizedResult();
 
-        var note = await GetNote(id);
+        var note = await GetNote(shareBlank.Id);
 
         if (note == null)
             return new NotFoundResult();
 
-        var sharedUser = await _noteUserRepository.Get(email);
+        var sharedUser = await _noteUserRepository.Get(shareBlank.Email);
 
         if (sharedUser == null)
             return new NotFoundResult();
 
         var res = await _shareNoteRepository.Create(new SharedNoteDatabase()
-            { NoteId = id, PermissionsLevelId = permissionLevel, UserId = sharedUser.Id });
+            {NoteId = shareBlank.Id, PermissionsLevelId = shareBlank.PermissionLevel, UserId = sharedUser.Id});
 
         return res > 0 ? new OkResult() : new BadRequestObjectResult("Invalid data");
     }
 
-    public async Task<IActionResult> UpdateShare(ClaimsPrincipal claims, Guid id, string email, int permissionLevel)
+    public async Task<IActionResult> UpdateShare(ClaimsPrincipal claims, ShareBlank shareBlank)
     {
         var user = await GetUser(claims);
 
         if (user == null)
             return new UnauthorizedResult();
 
-        var note = await GetNote(id);
+        var note = await GetNote(shareBlank.Id);
 
         if (note == null)
             return new NotFoundResult();
 
-        var sharedUser = await _noteUserRepository.Get(email);
+        var sharedUser = await _noteUserRepository.Get(shareBlank.Email);
 
         if (sharedUser == null)
             return new NotFoundResult();
 
-        var res = await _shareNoteRepository.Update(id, sharedUser.Id, permissionLevel);
+        var res = await _shareNoteRepository.Update(shareBlank.Id, sharedUser.Id, shareBlank.PermissionLevel);
 
         return res > 0 ? new OkResult() : new BadRequestObjectResult("Invalid data");
     }
@@ -262,7 +262,7 @@ public class NoteService : INoteService
                     t.Text = await GetNoteText(sourcePath);
             }
         }
-        
+
         return notesDomain;
     }
 
@@ -284,7 +284,7 @@ public class NoteService : INoteService
             var type = await _noteTypeRepository.Get(t.TypeId);
 
             t.Tags = await GetNoteTags(t.Id);
-            
+
             t.Type = NoteTypeDomainBuilder.Create(type);
 
             if (t.SourcePath != null)
@@ -295,7 +295,7 @@ public class NoteService : INoteService
                     t.Text = await GetNoteText(sourcePath);
             }
         }
-        
+
         return notesDomain;
     }
 
@@ -313,12 +313,12 @@ public class NoteService : INoteService
 
         var type = await _noteTypeRepository.Get(noteDomain.TypeId);
 
-        var user =  await _noteUserRepository.Get(noteDomain.OwnerId);
+        var user = await _noteUserRepository.Get(noteDomain.OwnerId);
 
         noteDomain.User = UserDomainBuilder.Create(user);
 
         noteDomain.Type = NoteTypeDomainBuilder.Create(type);
-        
+
         noteDomain.Tags = await GetNoteTags(noteDatabase.Id);
 
         return noteDomain;
@@ -327,7 +327,7 @@ public class NoteService : INoteService
     private async Task<UserDomain?> GetUser(ClaimsPrincipal claims)
     {
         var user = await _noteUserRepository.Get(claims.Identity?.Name!);
-        
+
         return UserDomainBuilder.Create(user);
     }
 
@@ -351,7 +351,7 @@ public class NoteService : INoteService
         await _noteTagRepository.DeleteByNote(noteId);
 
         foreach (var noteTagId in noteTags)
-            await _noteTagRepository.Create(new NoteTagDatabase() { NoteId = noteId, TagId = noteTagId });
+            await _noteTagRepository.Create(new NoteTagDatabase() {NoteId = noteId, TagId = noteTagId});
     }
 
     #endregion

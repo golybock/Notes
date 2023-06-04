@@ -47,4 +47,22 @@ public class NoteController : ControllerBase
     {
         return await _noteService.Delete(User, guid);
     }
+    
+    [HttpPost("Share"), Authorize]
+    public async Task<IActionResult> Share(ShareBlank shareBlank)
+    {
+        return await _noteService.Share(User, shareBlank);
+    }
+    
+    [HttpPut("UpdateShare"), Authorize]
+    public async Task<IActionResult> UpdateShare(ShareBlank shareBlank)
+    {
+        return await _noteService.UpdateShare(User, shareBlank);
+    }
+    
+    [HttpDelete("DeleteShare"), Authorize]
+    public async Task<IActionResult> DeleteShare(Guid id, string email)
+    {
+        return await _noteService.DeleteShare(User, id, email);
+    }
 }

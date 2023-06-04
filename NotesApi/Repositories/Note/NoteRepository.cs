@@ -149,7 +149,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
                     new NpgsqlParameter() { Value = noteDatabase.SourcePath },
                     new NpgsqlParameter() { Value = noteDatabase.OwnerId },
                     new NpgsqlParameter() { Value = noteDatabase.Id },
-                    new NpgsqlParameter() { Value = noteDatabase.TypeId },
+                    new NpgsqlParameter() { Value = 1 },
                 }
             };
 

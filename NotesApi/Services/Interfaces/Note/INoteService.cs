@@ -15,9 +15,9 @@ public interface INoteService
 
     public Task<IActionResult> Update(ClaimsPrincipal claims, Guid id, NoteBlank noteBlank);
 
-    public Task<IActionResult> Share(ClaimsPrincipal claims, Guid id, string email, int permissionLevel);
+    public Task<IActionResult> Share(ClaimsPrincipal claims, ShareBlank shareBlank);
 
-    public Task<IActionResult> UpdateShare(ClaimsPrincipal claims, Guid id, string email, int permissionLevel);
+    public Task<IActionResult> UpdateShare(ClaimsPrincipal claims, ShareBlank shareBlank);
 
     public Task<IActionResult> DeleteShare(ClaimsPrincipal claims, Guid id, string email);
 
