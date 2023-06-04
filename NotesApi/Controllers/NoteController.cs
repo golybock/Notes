@@ -48,6 +48,12 @@ public class NoteController : ControllerBase
         return await _noteService.Delete(User, guid);
     }
     
+    [HttpGet("SharedNotes"), Authorize]
+    public async Task<IActionResult> GetSharedNotes()
+    {
+        return await _noteService.GetShared(User);
+    }
+    
     [HttpPost("Share"), Authorize]
     public async Task<IActionResult> Share(ShareBlank shareBlank)
     {

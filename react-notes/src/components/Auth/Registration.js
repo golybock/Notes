@@ -1,7 +1,7 @@
 import React from "react";
 import "./Auth.css"
 import sakura from '/src/sakura.jpg'
-import AuthApi from "../../api/user/AuthApi";
+// import AuthApi from "../../api/user/AuthApi";
 
 
 class Registration extends React.Component {

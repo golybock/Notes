@@ -38,7 +38,7 @@ public class NoteReader : IReader<NoteDatabase>
             NoteDatabase noteDatabase = new NoteDatabase();
 
             noteDatabase.Id = reader.GetGuid(reader.GetOrdinal("id"));
-            noteDatabase.OwnerId = reader.GetInt32(reader.GetOrdinal("user_id"));
+            noteDatabase.OwnerId = reader.GetInt32(reader.GetOrdinal("owner_id"));
             noteDatabase.Header = reader.GetString(reader.GetOrdinal("header"));
             noteDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal("creation_date"));
             noteDatabase.EditedDate = reader.GetDateTime(reader.GetOrdinal("edited_date"));

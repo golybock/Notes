@@ -56,7 +56,28 @@ public class NoteService : INoteService
         if (user == null)
             return new UnauthorizedResult();
 
-        var notesView = await GetNotes(user.Id);
+        var notesDomain = await GetNotes(user.Id);
+
+        var notesView = notesDomain.Select(NoteViewBuilder.Create).ToList();
+
+        return new OkObjectResult(notesView);
+    }
+    
+    /// <summary>
+    /// Get user notes
+    /// </summary>
+    /// <param name="claims">user identity</param>
+    /// <returns>user notes</returns>
+    public async Task<IActionResult> GetShared(ClaimsPrincipal claims)
+    {
+        var user = await GetUser(claims);
+
+        if (user == null)
+            return new UnauthorizedResult();
+
+        var notesDomain = await GetSharedNotes(user.Id);
+        
+        var notesView = notesDomain.Select(NoteViewBuilder.Create).ToList();
 
         return new OkObjectResult(notesView);
     }
@@ -86,8 +107,7 @@ public class NoteService : INoteService
 
         return new OkObjectResult(noteView);
     }
-
-
+    
     public async Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank)
     {
         var user = await GetUser(claims);
@@ -156,6 +176,8 @@ public class NoteService : INoteService
         if (sharedUser == null)
             return new NotFoundResult();
 
+        await _noteRepository.UpdateType(note.Id, 2);
+        
         var res = await _shareNoteRepository.Create(new SharedNoteDatabase()
             {NoteId = shareBlank.Id, PermissionsLevelId = shareBlank.PermissionLevel, UserId = sharedUser.Id});
 

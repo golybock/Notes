@@ -4,21 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="ыф">
-      <change afterPath="$PROJECT_DIR$/src/models/blank/note/ShareNoteBlank.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="real-time update">
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/note/NoteApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/note/NoteApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Account.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Account.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Auth/Auth.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/Auth.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Auth/SignIn.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/SignIn.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/home/Home.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home/Home.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/home/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/note/Note.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/note/Note.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/note/Note.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/note/Note.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/note/Rte.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Auth/Registration.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Auth/Registration.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,7 +98,7 @@
       <workItem from="1685639635164" duration="815000" />
       <workItem from="1685651409716" duration="1943000" />
       <workItem from="1685877710977" duration="1639000" />
-      <workItem from="1685892499210" duration="11067000" />
+      <workItem from="1685892499210" duration="11455000" />
     </task>
     <task id="LOCAL-00001" summary="refactored">
       <created>1685297029817</created>
@@ -188,7 +177,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685528927277</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="real-time update">
+      <created>1685916719608</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1685916719608</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -202,6 +198,7 @@
     <MESSAGE value="crud" />
     <MESSAGE value="log errors in console" />
     <MESSAGE value="rebased routes to App" />
-    <option name="LAST_COMMIT_MESSAGE" value="rebased routes to App" />
+    <MESSAGE value="real-time update" />
+    <option name="LAST_COMMIT_MESSAGE" value="real-time update" />
   </component>
 </project>

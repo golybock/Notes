@@ -7,7 +7,7 @@ import ProtectedRoutes from "./components/navigation/ProtectedRoutes";
 import Home from "./components/home/Home";
 import Account from "./components/Account";
 import Cat from "./cat.webp";
-import {gapi} from "gapi-script";
+// import {gapi} from "gapi-script";
 
 export default class App extends React.Component {
 
