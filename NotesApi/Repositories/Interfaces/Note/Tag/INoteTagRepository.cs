@@ -8,9 +8,9 @@ public interface INoteTagRepository
 
     public Task<int> Create(NoteTagDatabase noteTagDatabase);
     
-    public Task<int> Delete(int id);
+    public Task<bool> Delete(int id);
     
-    public Task<int> DeleteByNote(Guid noteId);
+    public Task<bool> DeleteByNote(Guid noteId);
     
-    public Task<int> DeleteByTag(int tagId);
+    public Task<bool> DeleteByTag(int tagId);
 }

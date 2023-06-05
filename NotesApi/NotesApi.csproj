@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
         <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.30.1" />
@@ -24,10 +25,6 @@
       <ProjectReference Include="..\Domain\Domain.csproj" />
       <ProjectReference Include="..\ViewBuilder\ViewBuilder.csproj" />
       <ProjectReference Include="..\View\View.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Controllers\" />
     </ItemGroup>
 
 </Project>

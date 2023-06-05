@@ -171,7 +171,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
         }
     }
     
-    public async Task<int> Update(Guid guid, NoteDatabase noteDatabase)
+    public async Task<bool> Update(Guid guid, NoteDatabase noteDatabase)
     {
         string query = "update note set header = $2, edited_date = $3 " +
                        "where id = $1";
@@ -192,7 +192,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
                 }
             };
 
-            return await command.ExecuteNonQueryAsync();
+            return await command.ExecuteNonQueryAsync() > 0;
         }
         catch (Exception e)
         {
@@ -205,7 +205,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
         }
     }
 
-    public async Task<int> UpdateType(Guid id, int type)
+    public async Task<bool> UpdateType(Guid id, int type)
     {
         string query = "update note set type_id = $2 where id = $1";
 
@@ -224,7 +224,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
                 }
             };
 
-            return await command.ExecuteNonQueryAsync();
+            return await command.ExecuteNonQueryAsync() > 0;
         }
         catch (Exception e)
         {
@@ -237,8 +237,8 @@ public class NoteRepository : RepositoryBase, INoteRepository
         }
     }
 
-    public async Task<int> Delete(Guid id)
+    public async Task<bool> Delete(Guid id)
     {
-        return await DeleteAsync("note", "id", id);
+        return await DeleteAsync("note", "id", id) > 0;
     }
 }

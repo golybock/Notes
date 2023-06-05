@@ -12,7 +12,7 @@ public interface ITagRepository
 
     public Task<int> Create(TagDatabase tagDatabase);
     
-    public Task<int> Update(int id, TagDatabase tagDatabase);
+    public Task<bool> Update(int id, TagDatabase tagDatabase);
 
-    public Task<int> Delete(int id);
+    public Task<bool> Delete(int id);
 }

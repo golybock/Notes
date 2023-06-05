@@ -1,20 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Blank.User;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NotesApi.Services.Interfaces.User;
-using NotesApi.Services.User;
+using NotesApi.Services.Auth;
 
-namespace NotesApi.Controllers;
+namespace NotesApi.Controllers.Auth;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController : ControllerBase
+public class AuthController : ControllerBase 
 {
     private readonly AuthService _authService;
 
@@ -42,9 +35,9 @@ public class AuthController : ControllerBase
         return await _authService.UpdatePassword(User, newPassword, HttpContext);
     }
 
-    [HttpPost("RefreshTokens")]
-    public async Task<IActionResult> RefreshTokens(TokensBlank tokens)
-    {
-        return await _authService.RefreshTokens(tokens, HttpContext);
-    }
+    // [HttpPost("RefreshTokens")]
+    // public async Task<IActionResult> RefreshTokens(TokensBlank tokens)
+    // {
+    //     return await _authService.RefreshTokens(tokens, HttpContext);
+    // }
 }

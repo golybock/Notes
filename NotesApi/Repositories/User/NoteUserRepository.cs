@@ -109,7 +109,7 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
         }
     }
 
-    public async Task<int> Update(int id, UserDatabase userDatabase)
+    public async Task<bool> Update(int id, UserDatabase userDatabase)
     {
         string query = "update users set password_hash = $2, name = $3 " +
                        "where id = $1";
@@ -130,7 +130,7 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
                 }
             };
 
-            return await command.ExecuteNonQueryAsync();
+            return await command.ExecuteNonQueryAsync() > 0;
         }
         catch (Exception e)
         {
@@ -143,7 +143,7 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
         }
     }
 
-    public async Task<int> Update(string email, UserDatabase userDatabase)
+    public async Task<bool> Update(string email, UserDatabase userDatabase)
     {
         string query = "update users set password_hash = $2, name = $3 " +
                        "where email = $1";
@@ -164,7 +164,7 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
                 }
             };
 
-            return await command.ExecuteNonQueryAsync();
+            return await command.ExecuteNonQueryAsync() > 0;
         }
         catch (Exception e)
         {
@@ -177,7 +177,7 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
         }
     }
     
-    public async Task<int> UpdatePassword(int id, string newPassword)
+    public async Task<bool> UpdatePassword(int id, string newPassword)
     {
         string query = "update users set password_hash = $2 " +
                        "where id = $1";
@@ -197,7 +197,7 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
                 }
             };
 
-            return await command.ExecuteNonQueryAsync();
+            return await command.ExecuteNonQueryAsync() > 0;
         }
         catch (Exception e)
         {
@@ -210,8 +210,8 @@ public class NoteUserRepository : RepositoryBase, INoteUserRepository
         }
     }
 
-    public async Task<int> Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        return await DeleteAsync("user", "id", id);
+        return await DeleteAsync("user", "id", id) > 0;
     }
 }

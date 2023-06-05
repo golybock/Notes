@@ -4,63 +4,48 @@ using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Unicode;
 using Blank.User;
 using Database.User;
 using DatabaseBuilder.User;
+using Domain.User;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using NotesApi.Repositories.User;
 using NotesApi.Services.Interfaces.User;
 using ViewBuilder.User;
+using Views.User;
 
-namespace NotesApi.Services.User;
+namespace NotesApi.Services.Auth;
 
 public class AuthService : IAuthService
 {
     private readonly IConfiguration _configuration;
+    
     private readonly NoteUserRepository _noteUserRepository;
     private readonly TokensRepository _tokensRepository;
 
     public AuthService(IConfiguration configuration)
     {
         _configuration = configuration;
+        
         _noteUserRepository = new NoteUserRepository(configuration);
         _tokensRepository = new TokensRepository(configuration);
     }
 
     public async Task<IActionResult> Login(LoginBlank loginBlank, HttpContext context)
     {
-        #region check client
+        var user = await GetUser(loginBlank.Email);
 
-        var client = await _noteUserRepository.Get(loginBlank.Email);
+        if (user == null)
+            return new UnauthorizedResult();
+        
+        if (HashPassword(loginBlank.Password) != user.PasswordHash)
+            return new UnauthorizedResult();
 
-        if (client == null)
-            return new UnauthorizedObjectResult("Неверный логин или пароль");
+        var tokensView = await CreateTokens(context, user);
 
-        if (HashPassword(loginBlank.Password) != client.PasswordHash)
-            return new UnauthorizedObjectResult("Неверный пароль");
-
-        #endregion
-
-        #region generate and save tokens
-
-        var clientIp = GetIpAddress(context.Request.Host.Host);
-
-        var tokens = GenerateTokens(client.Id, client.Email, clientIp);
-
-        var save = await SaveTokens(tokens);
-
-        if (save == null)
-            return new BadRequestResult();
-
-        var tokensDomain = TokensDomainBuilder.Create(tokens);
-
-        var tokensView = TokensViewBuilder.Create(tokensDomain);
-
-        #endregion
-
+        // refactor to cookie manager
         context.Response.Cookies.Append("token", tokensView.Token);
         context.Response.Cookies.Append("refreshToken", tokensView.RefreshToken);
         
@@ -71,9 +56,9 @@ public class AuthService : IAuthService
     {
         #region check client data
 
-        var client = await _noteUserRepository.Get(userBlank.Email);
+        var user = await GetUser(userBlank.Email);
 
-        if (client != null)
+        if (user != null)
             return new BadRequestObjectResult("Такой email уже зарегистрирован");
 
         if (!ValidatePassword(userBlank.Password))
@@ -88,62 +73,39 @@ public class AuthService : IAuthService
 
         var id = await CreateUser(userBlank);
 
-        var clientIp = GetIpAddress(context.Request.Host.Host);
-
-        var tokens = GenerateTokens(id, userBlank.Email, clientIp);
-
-        var save = await SaveTokens(tokens);
-
-        if (save == null)
-            return new BadRequestResult();
-
-        var tokensDomain = TokensDomainBuilder.Create(tokens);
-
-        var tokensView = TokensViewBuilder.Create(tokensDomain);
-
+        var tokensView = await CreateTokens(context, id);
+        
         #endregion
 
+        // refactor to cookie manager
         context.Response.Cookies.Append("token", tokensView.Token);
         context.Response.Cookies.Append("refreshToken", tokensView.RefreshToken);
         
         return new OkObjectResult(tokensView);
     }
 
-    public async Task<IActionResult> UpdatePassword(ClaimsPrincipal claimsPrincipal, string newPassword, HttpContext context)
+    public async Task<IActionResult> UpdatePassword(ClaimsPrincipal claims, string newPassword, HttpContext context)
     {
-        var user = await _noteUserRepository.Get(claimsPrincipal.Identity?.Name!);
+        var user = await GetUser(claims);
 
         if (user == null)
             return new UnauthorizedResult();
 
         var res = await _noteUserRepository.UpdatePassword(user.Id, HashPassword(newPassword));
 
-        if (res <= 0)
+        if (res)
             return new BadRequestObjectResult("Не удалось обновить пароль");
+
+        var tokensView = await CreateTokens(context, user);
         
-        #region generate and save tokens
-
-        var clientIp = GetIpAddress(context.Request.Host.Host);
-
-        var newTokens = GenerateTokens(user.Id, user.Email, clientIp);
-
-        var save = await SaveTokens(newTokens);
-
-        if (save == null)
-            return new BadRequestResult();
-
-        var tokensDomain = TokensDomainBuilder.Create(newTokens);
-
-        var tokensView = TokensViewBuilder.Create(tokensDomain);
-
-        #endregion
-        
+        // refactor to cookie manager
         context.Response.Cookies.Append("token", tokensView.Token);
         context.Response.Cookies.Append("refreshToken", tokensView.RefreshToken);
 
         return new OkObjectResult(tokensView);
     }
     
+    // need refactor
     public async Task<IActionResult> RefreshTokens(TokensBlank tokens, HttpContext context)
     {
         var token = tokens.Token;
@@ -180,15 +142,13 @@ public class AuthService : IAuthService
 
         await _tokensRepository.SetNotActive(tokensDb.Id);
 
-        if (save == null)
-            return new BadRequestResult();
-
         var tokensDomain = TokensDomainBuilder.Create(newTokens);
 
         var tokensView = TokensViewBuilder.Create(tokensDomain);
 
         #endregion
         
+        // refactor to cookie manager
         context.Response.Cookies.Append("token", tokensView.Token);
         context.Response.Cookies.Append("refreshToken", tokensView.RefreshToken);
 
@@ -197,20 +157,11 @@ public class AuthService : IAuthService
 
     #region save in db
     
-    // save tokens in db and returns id
-    private async Task<int?> SaveTokens(TokensDatabase tokensDatabase)
+    private async Task<bool> SaveTokens(TokensDatabase tokensDatabase)
     {
-        try
-        {
-            return await _tokensRepository.Create(tokensDatabase);
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
+        return await _tokensRepository.Create(tokensDatabase) > 0;
     }
-
-    // save user in db
+    
     private async Task<int> CreateUser(UserBlank userBlank)
     {
         string hashedPassword = HashPassword(userBlank.Password);
@@ -230,9 +181,7 @@ public class AuthService : IAuthService
         var claims = CreateClaims(email);
 
         string token = new JwtSecurityTokenHandler()
-            .WriteToken(
-                GenerateToken(claims)
-            );
+            .WriteToken(GenerateToken(claims));
 
         string refreshToken = GetRefreshToken();
 
@@ -374,4 +323,65 @@ public class AuthService : IAuthService
         new EmailAddressAttribute().IsValid(email);
 
     #endregion
+    
+    private async Task<UserDomain?> GetUser(ClaimsPrincipal claims)
+    {
+        var email = claims.Identity?.Name;
+
+        if (string.IsNullOrEmpty(email))
+            return null;
+
+        var user = await _noteUserRepository.Get(email);
+
+        return UserDomainBuilder.Create(user);
+    }
+    
+    private async Task<UserDomain?> GetUser(string email)
+    {
+        var user = await _noteUserRepository.Get(email);
+
+        return UserDomainBuilder.Create(user);
+    }
+    
+    private async Task<UserDomain?> GetUser(int id)
+    {
+        var user = await _noteUserRepository.Get(id);
+
+        return UserDomainBuilder.Create(user);
+    }
+
+    private async Task<TokensView> CreateTokens(HttpContext context, UserDomain user)
+    {
+        var clientIp = GetIpAddress(context.Request.Host.Host);
+
+        var tokens = GenerateTokens(user.Id, user.Email, clientIp);
+
+        await SaveTokens(tokens);
+
+        var tokensDomain = TokensDomainBuilder.Create(tokens);
+
+        var tokensView = TokensViewBuilder.Create(tokensDomain);
+
+        return tokensView;
+    }
+    
+    private async Task<TokensView> CreateTokens(HttpContext context, int id)
+    {
+        var user = await GetUser(id);
+
+        if (user == null)
+            throw new Exception("Undefined user");
+        
+        var clientIp = GetIpAddress(context.Request.Host.Host);
+
+        var tokens = GenerateTokens(user.Id, user.Email, clientIp);
+
+        await SaveTokens(tokens);
+
+        var tokensDomain = TokensDomainBuilder.Create(tokens);
+
+        var tokensView = TokensViewBuilder.Create(tokensDomain);
+
+        return tokensView;
+    }
 }

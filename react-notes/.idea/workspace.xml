@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="real-time update">
+    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="error with refresh tokens">
+      <change afterPath="$PROJECT_DIR$/../NotesApi/Services/Auth/AuthHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/note/Note.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/note/Note.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +97,9 @@
       <workItem from="1685639635164" duration="815000" />
       <workItem from="1685651409716" duration="1943000" />
       <workItem from="1685877710977" duration="1639000" />
-      <workItem from="1685892499210" duration="12580000" />
+      <workItem from="1685892499210" duration="12601000" />
+      <workItem from="1685971071104" duration="632000" />
+      <workItem from="1685985199586" duration="1690000" />
     </task>
     <task id="LOCAL-00001" summary="refactored">
       <created>1685297029817</created>
@@ -183,7 +185,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685916719608</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="error with refresh tokens">
+      <created>1685917967387</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1685917967387</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -198,6 +207,7 @@
     <MESSAGE value="log errors in console" />
     <MESSAGE value="rebased routes to App" />
     <MESSAGE value="real-time update" />
-    <option name="LAST_COMMIT_MESSAGE" value="real-time update" />
+    <MESSAGE value="error with refresh tokens" />
+    <option name="LAST_COMMIT_MESSAGE" value="error with refresh tokens" />
   </component>
 </project>

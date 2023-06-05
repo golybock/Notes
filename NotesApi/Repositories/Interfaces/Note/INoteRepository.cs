@@ -14,9 +14,9 @@ public interface INoteRepository
 
     public Task<Guid> Create(NoteDatabase noteDatabase);
 
-    public Task<int> Update(Guid id, NoteDatabase noteDatabase);
+    public Task<bool> Update(Guid id, NoteDatabase noteDatabase);
     
-    public Task<int> UpdateType(Guid id, int type);
+    public Task<bool> UpdateType(Guid id, int type);
 
-    public Task<int> Delete(Guid id);
+    public Task<bool> Delete(Guid id);
 }

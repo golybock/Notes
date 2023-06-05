@@ -10,9 +10,9 @@ public interface ISharedNotesRepository
 
     public Task<int> Create(SharedNoteDatabase sharedNoteDatabase);
 
-    public Task<int> Update(Guid noteId, int userId, int permissionsLevel);
+    public Task<bool> Update(Guid noteId, int userId, int permissionsLevel);
 
-    public Task<int> Delete(Guid noteId, int userId);
+    public Task<bool> Delete(Guid noteId, int userId);
     
-    public Task<int> DeleteNote(Guid noteId);
+    public Task<bool> DeleteNote(Guid noteId);
 }

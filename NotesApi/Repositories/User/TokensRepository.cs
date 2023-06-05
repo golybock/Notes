@@ -103,7 +103,7 @@ public class TokensRepository : RepositoryBase, ITokenRepository
         }
     }
 
-    public async Task<int> SetNotActive(int id)
+    public async Task<bool> SetNotActive(int id)
     {
         string query = "update tokens set active = false where id = $1";
 
@@ -121,7 +121,7 @@ public class TokensRepository : RepositoryBase, ITokenRepository
                 }
             };
 
-            return await command.ExecuteNonQueryAsync();
+            return await command.ExecuteNonQueryAsync() > 0;
         }
         catch (Exception e)
         {
@@ -174,8 +174,8 @@ public class TokensRepository : RepositoryBase, ITokenRepository
         }
     }
 
-    public async Task<int> Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        return await DeleteAsync("tokens", "id", id);
+        return await DeleteAsync("tokens", "id", id) > 0;
     }
 }

@@ -102,11 +102,11 @@ public class TagService : ITagService
         {
             var result = await _tagRepository.Update(id, tagDatabase);
 
-            return result > 0 ? new OkResult() : new BadRequestResult();
+            return result ? new OkResult() : new BadRequestResult();
         }
         catch (Exception e)
         {
-            return new BadRequestObjectResult("tag already created");
+            return new BadRequestObjectResult("Tag already created");
         }
     }
 
@@ -114,6 +114,6 @@ public class TagService : ITagService
     {
         var result = await _tagRepository.Delete(id);
         
-        return result > 0 ? new OkResult() : new BadRequestResult();
+        return result ? new OkResult() : new BadRequestResult();
     }
 }

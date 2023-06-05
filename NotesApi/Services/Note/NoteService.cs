@@ -15,10 +15,6 @@ using NotesApi.Repositories.Note.Tag;
 using NotesApi.Repositories.User;
 using NotesApi.Services.Interfaces.Note;
 using ViewBuilder.Note;
-using ViewBuilder.Note.Tag;
-using Views.Note;
-using Views.Note.Tag;
-
 namespace NotesApi.Services.Note;
 
 public class NoteService : INoteService
@@ -43,12 +39,7 @@ public class NoteService : INoteService
     }
 
     #region controller funcs (use in controllers)
-
-    /// <summary>
-    /// Get user notes
-    /// </summary>
-    /// <param name="claims">user identity</param>
-    /// <returns>user notes</returns>
+    
     public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
         var user = await GetUser(claims);
@@ -58,16 +49,13 @@ public class NoteService : INoteService
 
         var notesDomain = await GetNotes(user.Id);
 
-        var notesView = notesDomain.Select(NoteViewBuilder.Create).ToList();
+        var notesView = notesDomain
+            .Select(NoteViewBuilder.Create)
+            .ToList();
 
         return new OkObjectResult(notesView);
     }
-    
-    /// <summary>
-    /// Get user notes
-    /// </summary>
-    /// <param name="claims">user identity</param>
-    /// <returns>user notes</returns>
+
     public async Task<IActionResult> GetShared(ClaimsPrincipal claims)
     {
         var user = await GetUser(claims);
@@ -76,18 +64,14 @@ public class NoteService : INoteService
             return new UnauthorizedResult();
 
         var notesDomain = await GetSharedNotes(user.Id);
-        
-        var notesView = notesDomain.Select(NoteViewBuilder.Create).ToList();
+
+        var notesView = notesDomain
+            .Select(NoteViewBuilder.Create)
+            .ToList();
 
         return new OkObjectResult(notesView);
     }
 
-    /// <summary>
-    /// Get full note
-    /// </summary>
-    /// <param name="claims">user identity</param>
-    /// <param name="id"></param>
-    /// <returns></returns>
     public async Task<IActionResult> Get(ClaimsPrincipal claims, Guid id)
     {
         var user = await GetUser(claims);
@@ -97,17 +81,17 @@ public class NoteService : INoteService
 
         var noteDomain = await GetNote(id);
 
-        if (noteDomain?.User?.Email != user.Email)
-            return new BadRequestObjectResult("Access denied");
-
         if (noteDomain == null)
             return new NotFoundResult();
+
+        if (noteDomain.User?.Email != user.Email)
+            return new BadRequestObjectResult("Access denied");
 
         var noteView = NoteViewBuilder.Create(noteDomain);
 
         return new OkObjectResult(noteView);
     }
-    
+
     public async Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank)
     {
         var user = await GetUser(claims);
@@ -119,7 +103,7 @@ public class NoteService : INoteService
 
         if (noteBlank.Text != null)
         {
-            var path = await WriteNoteText(noteBlank.Text);
+            var path = await NoteFileManager.CreateNoteText(noteBlank.Text);
 
             noteDatabase.SourcePath = path;
         }
@@ -147,7 +131,7 @@ public class NoteService : INoteService
         if (noteBlank.Text != null)
         {
             if (noteDatabase.SourcePath != null)
-                await WriteNoteText(noteDatabase.SourcePath, noteBlank.Text);
+                await NoteFileManager.UpdateNoteText(noteDatabase.SourcePath, noteBlank.Text);
         }
 
         newNoteDatabase.EditedDate = DateTime.Now;
@@ -156,7 +140,7 @@ public class NoteService : INoteService
 
         var result = await _noteRepository.Update(guid, newNoteDatabase);
 
-        return result > 0 ? new OkResult() : new BadRequestResult();
+        return result ? new OkResult() : new BadRequestResult();
     }
 
     public async Task<IActionResult> Share(ClaimsPrincipal claims, ShareBlank shareBlank)
@@ -177,9 +161,15 @@ public class NoteService : INoteService
             return new NotFoundResult();
 
         await _noteRepository.UpdateType(note.Id, 2);
-        
-        var res = await _shareNoteRepository.Create(new SharedNoteDatabase()
-            {NoteId = shareBlank.Id, PermissionsLevelId = shareBlank.PermissionLevel, UserId = sharedUser.Id});
+
+        var shareNote = new SharedNoteDatabase()
+        {
+            NoteId = shareBlank.Id,
+            PermissionsLevelId = shareBlank.PermissionLevel,
+            UserId = sharedUser.Id
+        };
+
+        var res = await _shareNoteRepository.Create(shareNote);
 
         return res > 0 ? new OkResult() : new BadRequestObjectResult("Invalid data");
     }
@@ -203,7 +193,7 @@ public class NoteService : INoteService
 
         var res = await _shareNoteRepository.Update(shareBlank.Id, sharedUser.Id, shareBlank.PermissionLevel);
 
-        return res > 0 ? new OkResult() : new BadRequestObjectResult("Invalid data");
+        return res ? new OkResult() : new BadRequestObjectResult("Invalid data");
     }
 
     public async Task<IActionResult> DeleteShare(ClaimsPrincipal claims, Guid id, string email)
@@ -225,7 +215,7 @@ public class NoteService : INoteService
 
         var res = await _shareNoteRepository.Delete(id, sharedUser.Id);
 
-        return res > 0 ? new OkResult() : new BadRequestObjectResult("Error delete");
+        return res ? new OkResult() : new BadRequestObjectResult("Error delete");
     }
 
     public async Task<IActionResult> Delete(ClaimsPrincipal claims, Guid id)
@@ -248,18 +238,13 @@ public class NoteService : INoteService
 
         var result = await _noteRepository.Delete(id);
 
-        return result > 0 ? new OkResult() : new BadRequestObjectResult("Error delete");
+        return result ? new OkResult() : new BadRequestObjectResult("Error delete");
     }
 
     #endregion
 
     #region get funcs
 
-    /// <summary>
-    /// Get user notes
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <returns>list of user notes</returns>
     private async Task<List<NoteDomain>> GetNotes(int userId)
     {
         var notesDatabase = await _noteRepository.Get(userId);
@@ -281,18 +266,13 @@ public class NoteService : INoteService
                 var sourcePath = t.SourcePath;
 
                 if (sourcePath != null)
-                    t.Text = await GetNoteText(sourcePath);
+                    t.Text = await NoteFileManager.GetNoteText(sourcePath);
             }
         }
 
         return notesDomain;
     }
 
-    /// <summary>
-    /// Get user notes
-    /// </summary>
-    /// <param name="userId"></param>
-    /// <returns>list of shared user notes</returns>
     private async Task<List<NoteDomain>> GetSharedNotes(int userId)
     {
         var notesDatabase = await _noteRepository.GetShared(userId);
@@ -314,7 +294,7 @@ public class NoteService : INoteService
                 var sourcePath = t.SourcePath;
 
                 if (sourcePath != null)
-                    t.Text = await GetNoteText(sourcePath);
+                    t.Text = await NoteFileManager.GetNoteText(sourcePath);
             }
         }
 
@@ -331,7 +311,7 @@ public class NoteService : INoteService
         var noteDomain = NoteDomainBuilder.Create(noteDatabase);
 
         if (noteDatabase.SourcePath != null)
-            noteDomain.Text = await GetNoteText(noteDatabase.SourcePath);
+            noteDomain.Text = await NoteFileManager.GetNoteText(noteDatabase.SourcePath);
 
         var type = await _noteTypeRepository.Get(noteDomain.TypeId);
 
@@ -348,7 +328,12 @@ public class NoteService : INoteService
 
     private async Task<UserDomain?> GetUser(ClaimsPrincipal claims)
     {
-        var user = await _noteUserRepository.Get(claims.Identity?.Name!);
+        var email = claims.Identity?.Name;
+
+        if (string.IsNullOrEmpty(email))
+            return null;
+
+        var user = await _noteUserRepository.Get(email);
 
         return UserDomainBuilder.Create(user);
     }
@@ -374,59 +359,6 @@ public class NoteService : INoteService
 
         foreach (var noteTagId in noteTags)
             await _noteTagRepository.Create(new NoteTagDatabase() {NoteId = noteId, TagId = noteTagId});
-    }
-
-    #endregion
-
-    #region note text
-
-    /// <summary>
-    /// read text from source
-    /// </summary>
-    /// <param name="source"></param>
-    /// <returns></returns>
-    private async Task<string?> GetNoteText(string source)
-    {
-        string path = "Files/" + source;
-
-        if (!File.Exists(path))
-            return null;
-
-        using StreamReader sr = new StreamReader(path);
-
-        return await sr.ReadToEndAsync();
-    }
-
-    /// <summary>
-    /// Write text into file by source 
-    /// </summary>
-    /// <param name="fileName">filName </param>
-    /// <param name="text">note text</param>
-    private async Task WriteNoteText(string fileName, string text)
-    {
-        string source = $"Files/{fileName}";
-
-        await using StreamWriter sw = new StreamWriter(source);
-
-        await sw.WriteLineAsync(text);
-    }
-
-    /// <summary>
-    /// Generate path file, write into file text and returns filepath
-    /// </summary>
-    /// <param name="text">note text</param>
-    /// <returns>path to file</returns>
-    private async Task<string> WriteNoteText(string text)
-    {
-        string fileName = $"{Guid.NewGuid()}.txt";
-
-        string source = $"Files/{fileName}";
-
-        await using StreamWriter sw = new StreamWriter(source);
-
-        await sw.WriteLineAsync(text);
-
-        return fileName;
     }
 
     #endregion

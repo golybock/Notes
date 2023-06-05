@@ -77,18 +77,18 @@ public class NoteTagRepository : RepositoryBase, INoteTagRepository
         }
     }
 
-    public async Task<int> Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        return await DeleteAsync("note_tag", "id", id);
+        return await DeleteAsync("note_tag", "id", id) > 0;
     }
 
-    public async Task<int> DeleteByNote(Guid noteId)
+    public async Task<bool> DeleteByNote(Guid noteId)
     {
-        return await DeleteAsync("note_tag", "note_id", noteId);
+        return await DeleteAsync("note_tag", "note_id", noteId) > 0;
     }
 
-    public async Task<int> DeleteByTag(int tagId)
+    public async Task<bool> DeleteByTag(int tagId)
     {
-        return await DeleteAsync("note_tag", "tag_id", tagId);
+        return await DeleteAsync("note_tag", "tag_id", tagId) > 0;
     }
 }

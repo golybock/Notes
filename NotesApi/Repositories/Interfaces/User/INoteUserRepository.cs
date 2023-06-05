@@ -10,9 +10,9 @@ public interface INoteUserRepository
 
     public Task<int> Create(UserDatabase userDatabase);
 
-    public Task<int> Update(int id, UserDatabase userDatabase);
+    public Task<bool> Update(string email, UserDatabase userDatabase);
     
-    public Task<int> UpdatePassword(int id, string newPassword);
+    public Task<bool> UpdatePassword(int id, string newPassword);
 
-    public Task<int> Delete(int id);
+    public Task<bool> Delete(int id);
 }

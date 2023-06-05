@@ -110,7 +110,7 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
         }
     }
 
-    public async Task<int> Update(Guid noteId, int userId, int permissionsLevel)
+    public async Task<bool> Update(Guid noteId, int userId, int permissionsLevel)
     {
         string query = "update shared_notes set permissions_level_id = $3 where note_id = $1 and user_id = $2";
 
@@ -130,7 +130,7 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
                 }
             };
 
-            return await command.ExecuteNonQueryAsync();
+            return await command.ExecuteNonQueryAsync() > 0;
         }
         catch (Exception e)
         {
@@ -143,7 +143,7 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
         }
     }
 
-    public async Task<int> Delete(Guid noteId, int userId)
+    public async Task<bool> Delete(Guid noteId, int userId)
     {
         var connection = GetConnection();
 
@@ -162,11 +162,12 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
                 }
             };
 
-            return await cmd.ExecuteNonQueryAsync();
+            return await cmd.ExecuteNonQueryAsync() > 0;
         }
         catch (Exception e)
         {
-            return -1;
+            Console.WriteLine(e);
+            throw;
         }
         finally
         {
@@ -174,8 +175,8 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
         }
     }
 
-    public async Task<int> DeleteNote(Guid noteId)
+    public async Task<bool> DeleteNote(Guid noteId)
     {
-        return await DeleteAsync("shared_notes", "note_id", noteId);
+        return await DeleteAsync("shared_notes", "note_id", noteId) > 0;
     }
 }

@@ -132,7 +132,7 @@ public class TagRepository : RepositoryBase, ITagRepository
         }
     }
 
-    public async Task<int> Update(int id, TagDatabase tagDatabase)
+    public async Task<bool> Update(int id, TagDatabase tagDatabase)
     {
         string query = "update tag set name = $2 where id = $1 ";
 
@@ -151,7 +151,7 @@ public class TagRepository : RepositoryBase, ITagRepository
                 }
             };
 
-            return await command.ExecuteNonQueryAsync();
+            return await command.ExecuteNonQueryAsync() > 0;
         }
         catch (Exception e)
         {
@@ -164,8 +164,8 @@ public class TagRepository : RepositoryBase, ITagRepository
         }
     }
 
-    public async Task<int> Delete(int id)
+    public async Task<bool> Delete(int id)
     {
-        return await DeleteAsync("tag", "id", id);
+        return await DeleteAsync("tag", "id", id) > 0;
     }
 }
