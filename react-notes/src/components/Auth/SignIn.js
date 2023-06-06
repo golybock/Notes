@@ -109,46 +109,10 @@ class SignIn extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                            {/*<span className="fas fa-times">*/}
-                            {/*    <img src={close} alt={close}/>*/}
-                            {/*</span>*/}
                         </div>
                     </div>
 
                 </Modal.Body>
-                {/*Кнопка добавления*/}
-                {/*<Button variant="success"*/}
-                {/*        style={this.props.isEdit ? {display: 'none'} : {display: 'flex'}}*/}
-                {/*        onClick={async () => {*/}
-                {/*            try {*/}
-                {/*                // создаем новый объект класса из введенных данных*/}
-                {/*                console.log(this.state.product)*/}
-                {/*                // отправляем запрос на добавление данных и получаем ответ в виде статуса*/}
-                {/*                let resCode = await Api.addProduct(this.state.product);*/}
-                {/*                // оповещаем об ответе сервера*/}
-                {/*                if (resCode !== 400) {*/}
-                {/*                    alert("Добавлено!");*/}
-                {/*                    this.props.onClose();*/}
-                {/*                } else if (resCode === 400) {*/}
-                {/*                    alert("Неверные данные!")*/}
-                {/*                }*/}
-                {/*            } catch (Ex) {*/}
-                {/*                alert(Ex);*/}
-                {/*            }*/}
-
-                {/*        }}>*/}
-                {/*    Добавить*/}
-                {/*</Button>*/}
-
-                {/*/!*Кнопка изменения*!/*/}
-                {/*<Button variant="success"*/}
-                {/*        style={this.props.isEdit ? {display: 'flex'} : {display: 'none'}}*/}
-                {/*        onClick={async () => {*/}
-
-                {/*        }}>*/}
-                {/*    Изменить*/}
-                {/*</Button>*/}
-
 
             </Modal.Dialog>
 

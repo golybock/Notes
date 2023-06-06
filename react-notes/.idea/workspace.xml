@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="error with refresh tokens">
-      <change afterPath="$PROJECT_DIR$/../NotesApi/Services/Auth/CookieManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotesApi/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../NotesApi/Services/Auth/AuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Services/Auth/AuthService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-    </list>
+    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="error with refresh tokens" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -105,6 +99,7 @@
       <workItem from="1685985199586" duration="1690000" />
       <workItem from="1686040456177" duration="102000" />
       <workItem from="1686041937341" duration="2935000" />
+      <workItem from="1686084834670" duration="614000" />
     </task>
     <task id="LOCAL-00001" summary="refactored">
       <created>1685297029817</created>
