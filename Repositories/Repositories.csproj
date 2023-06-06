@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Blank\Blank.csproj" />
+      <ProjectReference Include="..\DatabaseBuilder\DatabaseBuilder.csproj" />
+      <ProjectReference Include="..\DomainBuilder\DomainBuilder.csproj" />
+      <ProjectReference Include="..\Domain\Domain.csproj" />
+      <ProjectReference Include="..\ViewBuilder\ViewBuilder.csproj" />
+      <ProjectReference Include="..\View\View.csproj" />
+      <ProjectReference Include="..\Database\Database.csproj" />
+      <ProjectReference Include="..\Database\Database.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
+      <PackageReference Include="Npgsql" Version="7.0.4" />
+    </ItemGroup>
+
+</Project>

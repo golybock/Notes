@@ -10,10 +10,10 @@ using DomainBuilder.Note;
 using DomainBuilder.Note.Tag;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
-using NotesApi.Repositories.Note;
-using NotesApi.Repositories.Note.Tag;
-using NotesApi.Repositories.User;
 using NotesApi.Services.Interfaces.Note;
+using Repositories.Repositories.Note;
+using Repositories.Repositories.Note.Tag;
+using Repositories.Repositories.User;
 using ViewBuilder.Note;
 namespace NotesApi.Services.Note;
 

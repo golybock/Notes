@@ -5,8 +5,8 @@ using DatabaseBuilder.User;
 using Domain.User;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
-using NotesApi.Repositories.User;
 using NotesApi.Services.Interfaces.User;
+using Repositories.Repositories.User;
 using ViewBuilder.User;
 
 namespace NotesApi.Services.User;

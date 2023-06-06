@@ -2,8 +2,8 @@ using Blank.Note.Tag;
 using DatabaseBuilder.Note.Tag;
 using DomainBuilder.Note.Tag;
 using Microsoft.AspNetCore.Mvc;
-using NotesApi.Repositories.Note.Tag;
 using NotesApi.Services.Interfaces.Note.Tag;
+using Repositories.Repositories.Note.Tag;
 using ViewBuilder.Note.Tag;
 using Views.Note.Tag;
 

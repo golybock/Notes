@@ -7,7 +7,7 @@ import ProtectedRoutes from "./components/navigation/ProtectedRoutes";
 import Home from "./components/home/Home";
 import Account from "./components/Account";
 import Cat from "./cat.webp";
-// import {gapi} from "gapi-script";
+import {gapi} from "gapi-script";
 
 export default class App extends React.Component {
 
@@ -17,15 +17,15 @@ export default class App extends React.Component {
         super(props);
         this.state = {
             isAuth: false,
-            // token : gapi.auth().getToken().access_token,
-            // start : function () {
-            //     gapi.client.init({
-            //         clientId : "989073554490-lhcf948sulr8o8n5u85ivnbbluh3ve51.apps.googleusercontent.com",
-            //         scope: ""
-            //     })
-            //
-            //     gapi.load('client:auth2', this.start)
-            // }
+            token : gapi.auth().getToken().access_token,
+            start : function () {
+                gapi.client.init({
+                    clientId : "989073554490-lhcf948sulr8o8n5u85ivnbbluh3ve51.apps.googleusercontent.com",
+                    scope: ""
+                })
+
+                gapi.load('client:auth2', this.start)
+            }
         }
     }
 

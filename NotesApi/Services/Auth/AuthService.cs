@@ -11,8 +11,8 @@ using Domain.User;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using NotesApi.Repositories.User;
 using NotesApi.Services.Interfaces.User;
+using Repositories.Repositories.User;
 using ViewBuilder.User;
 using Views.User;
 
@@ -138,7 +138,7 @@ public class AuthService : IAuthService
 
         var newTokens = GenerateTokens(user.Id, user.Email, clientIp);
 
-        var save = await SaveTokens(newTokens);
+        await SaveTokens(newTokens);
 
         await _tokensRepository.SetNotActive(tokensDb.Id);
 
