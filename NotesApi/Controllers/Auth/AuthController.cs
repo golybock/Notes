@@ -15,19 +15,19 @@ public class AuthController : ControllerBase, IAuthController
         _authService = new AuthService(configuration);
     }
     
-    [HttpPost("Login")]
+    [HttpPost("SignIn")]
     public async Task<IActionResult> SignIn(LoginBlank loginBlank)
     {
         return await _authService.SignIn(HttpContext ,loginBlank);
     }
     
-    [HttpPost("Registration")]
+    [HttpPost("SignUp")]
     public async Task<IActionResult> SignUp(UserBlank userBlank)
     {
         return await _authService.SignUp(HttpContext ,userBlank);
     }
 
-    [HttpPost("UnLogin")]
+    [HttpPost("SignOut")]
     public new async Task<IActionResult> SignOut()
     {
         return await _authService.SignOut(HttpContext);
