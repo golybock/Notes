@@ -5,8 +5,8 @@ using NotesApi.Services.User;
 
 namespace NotesApi.Controllers.User;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class UserController : ControllerBase, IUserController
 {
     private readonly UserService _userService;
@@ -16,15 +16,15 @@ public class UserController : ControllerBase, IUserController
         _userService = new UserService(configuration);
     }
 
-    [HttpGet("User"), Authorize]
+    [HttpGet("User")]
     public async Task<IActionResult> GetUser()
     {
-        return await _userService.Get(User);
+        return await _userService.Get(HttpContext);
     }
     
-    [HttpPut("User"), Authorize]
+    [HttpPut("User")]
     public async Task<IActionResult> UpdateUser(UserBlank userBlank)
     {
-        return await _userService.Update(User, userBlank);
+        return await _userService.Update(HttpContext, userBlank);
     }
 }

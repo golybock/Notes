@@ -103,7 +103,9 @@ public class TokenManager : ITokenManager
     
     public string GenerateToken(IEnumerable<Claim> claims)
     {
-        return GenerateJwtSecurityToken(claims).ToString();
+        var token = GenerateJwtSecurityToken(claims);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
     
     public string GenerateRefreshToken()

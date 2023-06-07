@@ -5,20 +5,20 @@ namespace NotesApi.Auth.Cookie;
 public class CookieManager : CookieManagerBase
 {
     private readonly IConfiguration _configuration;
-    private readonly HttpContext _context;
+    // private readonly HttpContext _context;
 
-    public CookieManager(IConfiguration configuration, HttpContext context)
+    public CookieManager(IConfiguration configuration)
     {
         _configuration = configuration;
-        _context = context;
+        // _context = context;
     }
 
-    public TokensDomain GetTokens()
+    public TokensDomain GetTokens(HttpContext context)
     {
-        string token = GetRequestCookie(_context, CookiesList.Token) ??
+        string token = GetRequestCookie(context, CookiesList.Token) ??
                        throw new InvalidOperationException("Token not found");
 
-        string refreshToken = GetRequestCookie(_context, CookiesList.RefreshToken) ??
+        string refreshToken = GetRequestCookie(context, CookiesList.RefreshToken) ??
                               throw new InvalidOperationException("RefreshToken not found");
 
         var tokens = new TokensDomain()
@@ -30,7 +30,7 @@ public class CookieManager : CookieManagerBase
         return tokens;
     }
 
-    public void SetTokens(TokensDomain tokensDomain)
+    public void SetTokens(HttpContext context, TokensDomain tokensDomain)
     {
         // validation lifetime from appsettings
         int tokenValidityInMinutes = int.Parse(_configuration["JWT:TokenValidityInMinutes"]!);
@@ -42,13 +42,13 @@ public class CookieManager : CookieManagerBase
             Expires = expires
         };
 
-        AppendResponseCookie(_context, CookiesList.Token, tokensDomain.Token, options);
-        AppendResponseCookie(_context, CookiesList.RefreshToken, tokensDomain.RefreshToken, options);
+        AppendResponseCookie(context, CookiesList.Token, tokensDomain.Token, options);
+        AppendResponseCookie(context, CookiesList.RefreshToken, tokensDomain.RefreshToken, options);
     }
 
-    public void DeleteTokens()
+    public void DeleteTokens(HttpContext context)
     {
-        DeleteCookie(_context, CookiesList.Token);
-        DeleteCookie(_context, CookiesList.RefreshToken);
+        DeleteCookie(context, CookiesList.Token);
+        DeleteCookie(context, CookiesList.RefreshToken);
     }
 }

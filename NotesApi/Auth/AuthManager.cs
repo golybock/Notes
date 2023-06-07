@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using Database.User;
@@ -18,20 +17,20 @@ public class AuthManager
     private readonly TokensRepository _tokensRepository;
     private readonly UserRepository _userRepository;
 
-    private readonly HttpContext _context;
+    // private HttpContext _context;
 
-    public AuthManager(IConfiguration configuration, HttpContext context)
+    public AuthManager(IConfiguration configuration)
     {
-        _context = context;
+        // _context = context;
 
         _userRepository = new UserRepository(configuration);
         _tokenManager = new TokenManager(configuration);
         _tokensRepository = new TokensRepository(configuration);
-        _cookieManager = new CookieManager(configuration, context);
+        _cookieManager = new CookieManager(configuration);
     }
 
     // set new tokens in cookie and save it in db
-    public async Task SignInAsync(UserDomain userDomain)
+    public async Task SignInAsync(HttpContext context, UserDomain userDomain)
     {
         var email = userDomain.Email;
 
@@ -46,12 +45,12 @@ public class AuthManager
             RefreshToken = refreshToken
         };
 
-        await SaveTokensAsync(token, refreshToken, userDomain.Id);
+        await SaveTokensAsync(context, token, refreshToken, userDomain.Id);
 
-        _cookieManager.SetTokens(tokens);
+        _cookieManager.SetTokens(context, tokens);
     }
     
-    public void SignOut() => _cookieManager.DeleteTokens();
+    public void SignOut(HttpContext context) => _cookieManager.DeleteTokens(context);
 
     private async Task<UserDomain?> GetUser(string email)
     {
@@ -60,14 +59,14 @@ public class AuthManager
         return UserDomainBuilder.Create(user);
     }
 
-    public async Task<UserDomain?> IsSigned()
+    public async Task<UserDomain?> IsSigned(HttpContext context)
     {
-        var tokens = GetTokens();
+        var tokens = GetTokens(context);
 
         if (tokens == null)
             return null;
 
-        var user = await GetCurrentUser();
+        var user = await GetCurrentUser(context);
 
         if (user == null)
             return null;
@@ -75,7 +74,7 @@ public class AuthManager
         // token died
         if (!_tokenManager.TokenActive(tokens.Token))
         {
-            await SignInAsync(user);
+            await SignInAsync(context, user);
             await SetTokensNotActive(tokens);
 
             return user;
@@ -85,11 +84,11 @@ public class AuthManager
     }
 
     // override for simply
-    private TokensDomain? GetTokens()
+    private TokensDomain? GetTokens(HttpContext context)
     {
         try
         {
-            var tokens = _cookieManager.GetTokens();
+            var tokens = _cookieManager.GetTokens(context);
 
             return tokens;
         }
@@ -122,9 +121,9 @@ public class AuthManager
     }
 
     // get authed user
-    public async Task<UserDomain?> GetCurrentUser()
+    public async Task<UserDomain?> GetCurrentUser(HttpContext context)
     {
-        var tokens = GetTokens();
+        var tokens = GetTokens(context);
 
         if (tokens == null)
             return null;
@@ -148,13 +147,13 @@ public class AuthManager
     }
     
     // save tokens in db and return bool value saved or not
-    private async Task<bool> SaveTokensAsync(string token, string refreshToken, int userId)
+    private async Task<bool> SaveTokensAsync(HttpContext context, string token, string refreshToken, int userId)
     {
         var tokensDatabase = new TokensDatabase()
         {
             Token = token,
             RefreshToken = refreshToken,
-            Ip = GetIpAddress(_context.Request.Host.Host),
+            Ip = GetIpAddress(context.Request.Host.Host),
             Active = true,
             UserId = userId,
             CreationDate = DateTime.UtcNow
@@ -163,13 +162,13 @@ public class AuthManager
         return await _tokensRepository.Create(tokensDatabase) > 0;
     }
     
-    private async Task<bool> SaveTokensAsync(TokensDomain tokensDomain, int userId)
+    private async Task<bool> SaveTokensAsync(HttpContext context, TokensDomain tokensDomain, int userId)
     {
         var tokensDatabase = new TokensDatabase()
         {
             Token = tokensDomain.Token,
             RefreshToken = tokensDomain.RefreshToken,
-            Ip = GetIpAddress(_context.Request.Host.Host),
+            Ip = GetIpAddress(context.Request.Host.Host),
             Active = true,
             UserId = userId,
             CreationDate = DateTime.UtcNow

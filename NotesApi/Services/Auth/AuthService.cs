@@ -17,9 +17,9 @@ public class AuthService : IAuthService
     private readonly UserRepository _userRepository;
     private readonly AuthManager _authManager;
 
-    public AuthService(IConfiguration configuration, HttpContext context)
+    public AuthService(IConfiguration configuration)
     {
-        _authManager = new AuthManager(configuration, context);
+        _authManager = new AuthManager(configuration);
         _userRepository = new UserRepository(configuration);
     }
 
@@ -78,7 +78,7 @@ public class AuthService : IAuthService
         return UserDomainBuilder.Create(user);
     }
 
-    public async Task<IActionResult> SignIn(LoginBlank loginBlank)
+    public async Task<IActionResult> SignIn(HttpContext context, LoginBlank loginBlank)
     {
         var user = await GetUser(loginBlank.Email);
 
@@ -88,12 +88,12 @@ public class AuthService : IAuthService
         if (user.PasswordHash != HashPassword(loginBlank.Password))
             return new UnauthorizedResult();
 
-        await _authManager.SignInAsync(user);
+        await _authManager.SignInAsync(context, user);
 
         return new OkResult();
     }
 
-    public async Task<IActionResult> SignUp(UserBlank userBlank)
+    public async Task<IActionResult> SignUp(HttpContext context, UserBlank userBlank)
     {
         #region check client data
 
@@ -116,16 +116,16 @@ public class AuthService : IAuthService
 
         var newUser = await GetUser(id);
         
-        await _authManager.SignInAsync(newUser);
+        await _authManager.SignInAsync(context, newUser);
         
         #endregion
 
         return new OkResult();
     }
 
-    public Task<IActionResult> SignOut()
+    public Task<IActionResult> SignOut(HttpContext context)
     {
-        _authManager.SignOut();
+        _authManager.SignOut(context);
 
         return Task.FromResult<IActionResult>(new OkResult());
     }

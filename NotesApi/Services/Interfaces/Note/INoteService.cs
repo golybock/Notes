@@ -7,19 +7,19 @@ namespace NotesApi.Services.Interfaces.Note;
 
 public interface INoteService
 {
-    public Task<IActionResult> Get(string email);
+    public Task<IActionResult> Get(HttpContext context, string email);
 
-    public Task<IActionResult> Get(ClaimsPrincipal claims, Guid id);
+    public Task<IActionResult> Get(HttpContext context, Guid id);
 
-    public Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank);
+    public Task<IActionResult> Create(HttpContext context, NoteBlank noteBlank);
 
-    public Task<IActionResult> Update(ClaimsPrincipal claims, Guid id, NoteBlank noteBlank);
+    public Task<IActionResult> Update(HttpContext context, Guid id, NoteBlank noteBlank);
 
-    public Task<IActionResult> Share(ClaimsPrincipal claims, ShareBlank shareBlank);
+    public Task<IActionResult> Share(HttpContext context, ShareBlank shareBlank);
 
-    public Task<IActionResult> UpdateShare(ClaimsPrincipal claims, ShareBlank shareBlank);
+    public Task<IActionResult> UpdateShare(HttpContext context, ShareBlank shareBlank);
 
-    public Task<IActionResult> DeleteShare(ClaimsPrincipal claims, Guid id, string email);
+    public Task<IActionResult> DeleteShare(HttpContext context, Guid id, string email);
 
-    public Task<IActionResult> Delete(ClaimsPrincipal claims, Guid id);
+    public Task<IActionResult> Delete(HttpContext context, Guid id);
 }

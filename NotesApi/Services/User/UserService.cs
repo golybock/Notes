@@ -5,6 +5,7 @@ using DatabaseBuilder.User;
 using Domain.User;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
+using NotesApi.Auth;
 using NotesApi.Services.Interfaces.User;
 using Repositories.Repositories.User;
 using ViewBuilder.User;
@@ -14,34 +15,36 @@ namespace NotesApi.Services.User;
 public class UserService : IUserService
 {
     private readonly UserRepository _userRepository;
-
+    private readonly AuthManager _authManager;
+    
     public UserService(IConfiguration configuration)
     {
+        _authManager = new AuthManager(configuration);
         _userRepository = new UserRepository(configuration);
     }
 
-    public async Task<IActionResult> Get(ClaimsPrincipal claimsPrincipal)
+    public async Task<IActionResult> Get(HttpContext context)
     {
-        var user = await GetUser(claimsPrincipal);
+        var signed = await _authManager.IsSigned(context);
 
-        if (user == null)
+        if (signed == null)
             return new UnauthorizedResult();
 
-        var userView = UserViewBuilder.Create(user);
+        var userView = UserViewBuilder.Create(signed);
         
         return new OkObjectResult(userView);
     }
 
-    public async Task<IActionResult> Update(ClaimsPrincipal claimsPrincipal, UserBlank userBlank)
+    public async Task<IActionResult> Update(HttpContext context, UserBlank userBlank)
     {
-        var user = await GetUser(claimsPrincipal);
+        var signed = await _authManager.IsSigned(context);
 
-        if (user == null)
+        if (signed == null)
             return new UnauthorizedResult();
         
         var userDatabase = UserDatabaseBuilder.Create(userBlank);
 
-        var updated = await _userRepository.Update(user.Email, userDatabase);
+        var updated = await _userRepository.Update(signed.Email, userDatabase);
 
         if (!updated)
             return new BadRequestResult();
@@ -49,15 +52,4 @@ public class UserService : IUserService
         return new OkResult();
     }
 
-    private async Task<UserDomain?> GetUser(ClaimsPrincipal claims)
-    {
-        var email = claims.Identity?.Name;
-
-        if (string.IsNullOrEmpty(email))
-            return null;
-
-        var user = await _userRepository.Get(email);
-
-        return UserDomainBuilder.Create(user);
-    }
 }

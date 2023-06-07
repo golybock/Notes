@@ -12,25 +12,25 @@ public class AuthController : ControllerBase, IAuthController
 
     public AuthController(IConfiguration configuration)
     {
-        _authService = new AuthService(configuration, HttpContext);
+        _authService = new AuthService(configuration);
     }
     
     [HttpPost("Login")]
     public async Task<IActionResult> SignIn(LoginBlank loginBlank)
     {
-        return await _authService.SignIn(loginBlank);
+        return await _authService.SignIn(HttpContext ,loginBlank);
     }
     
     [HttpPost("Registration")]
     public async Task<IActionResult> SignUp(UserBlank userBlank)
     {
-        return await _authService.SignUp(userBlank);
+        return await _authService.SignUp(HttpContext ,userBlank);
     }
 
     [HttpPost("UnLogin")]
     public new async Task<IActionResult> SignOut()
     {
-        return await _authService.SignOut();
+        return await _authService.SignOut(HttpContext);
     }
 
     // [HttpPost("UpdatePassword")]

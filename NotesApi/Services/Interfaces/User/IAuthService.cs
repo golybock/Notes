@@ -6,11 +6,11 @@ namespace NotesApi.Services.Interfaces.User;
 
 public interface IAuthService
 {
-    public Task<IActionResult> SignIn(LoginBlank loginBlank);
+    public Task<IActionResult> SignIn(HttpContext context, LoginBlank loginBlank);
     
-    public Task<IActionResult> SignUp(UserBlank userBlank);
+    public Task<IActionResult> SignUp(HttpContext context, UserBlank userBlank);
 
     // public Task<IActionResult> UpdatePassword(string newPassword, HttpContext context);
     
-    public Task<IActionResult> SignOut();
+    public Task<IActionResult> SignOut(HttpContext context);
 }
