@@ -7,7 +7,7 @@ namespace NotesApi.Controllers.Auth;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController : ControllerBase 
+public class AuthController : ControllerBase, IAuthController
 {
     private readonly AuthService _authService;
 
@@ -28,10 +28,15 @@ public class AuthController : ControllerBase
         return await _authService.Registration(userBlank, HttpContext);
     }
 
-    [Authorize]
-    [HttpPost("UpdatePassword")]
-    public async Task<IActionResult> UpdatePassword(string newPassword)
+    [HttpPost("UnLogin")]
+    public async Task<IActionResult> UnLogin()
     {
-        return await _authService.UpdatePassword(newPassword, HttpContext);
+        throw new NotImplementedException();
     }
+
+    // [HttpPost("UpdatePassword")]
+    // public async Task<IActionResult> UpdatePassword(string newPassword)
+    // {
+    //     return await _authService.UpdatePassword(newPassword, HttpContext);
+    // }
 }

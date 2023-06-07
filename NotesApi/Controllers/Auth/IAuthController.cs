@@ -1,16 +1,15 @@
-using System.Security.Claims;
 using Blank.User;
 using Microsoft.AspNetCore.Mvc;
 
-namespace NotesApi.Services.Interfaces.User;
+namespace NotesApi.Controllers.Auth;
 
-public interface IAuthService
+public interface IAuthController
 {
     public Task<IActionResult> Login(LoginBlank loginBlank);
-    
+
     public Task<IActionResult> Registration(UserBlank userBlank);
 
-    // public Task<IActionResult> UpdatePassword(string newPassword, HttpContext context);
-    
+    // public Task<IActionResult> UpdatePassword(string newPassword);
+
     public Task<IActionResult> UnLogin();
 }

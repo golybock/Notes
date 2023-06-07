@@ -15,18 +15,18 @@ namespace NotesApi.Services.Auth;
 public class AuthService : IAuthService
 {
     private readonly IConfiguration _configuration;
+    private readonly HttpContext _context;
     
-    private readonly NoteUserRepository _noteUserRepository;
-    private readonly TokensRepository _tokensRepository;
+    private readonly UserRepository _userRepository;
     private readonly AuthManager _authManager;
 
-    public AuthService(IConfiguration configuration)
+    public AuthService(IConfiguration configuration, HttpContext context)
     {
         _configuration = configuration;
+        _context = context;
 
         _authManager = new AuthManager(configuration);
-        _noteUserRepository = new NoteUserRepository(configuration);
-        _tokensRepository = new TokensRepository(configuration);
+        _userRepository = new UserRepository(configuration);
     }
 
     public async Task<IActionResult> Login(LoginBlank loginBlank, HttpContext context)
@@ -79,7 +79,7 @@ public class AuthService : IAuthService
         if (user == null)
             return new UnauthorizedResult();
 
-        var res = await _noteUserRepository.UpdatePassword(user.Id, HashPassword(newPassword));
+        var res = await _userRepository.UpdatePassword(user.Id, HashPassword(newPassword));
 
         if (res)
             return new BadRequestObjectResult("Не удалось обновить пароль");
@@ -99,7 +99,7 @@ public class AuthService : IAuthService
 
         var newUser = UserDatabaseBuilder.Create(userBlank, hashedPassword);
 
-        return await _noteUserRepository.Create(newUser);
+        return await _userRepository.Create(newUser);
     }
     
     #endregion
@@ -138,15 +138,30 @@ public class AuthService : IAuthService
 
     private async Task<UserDomain?> GetUser(string email)
     {
-        var user = await _noteUserRepository.Get(email);
+        var user = await _userRepository.Get(email);
 
         return UserDomainBuilder.Create(user);
     }
     
     private async Task<UserDomain?> GetUser(int id)
     {
-        var user = await _noteUserRepository.Get(id);
+        var user = await _userRepository.Get(id);
 
         return UserDomainBuilder.Create(user);
+    }
+
+    public async Task<IActionResult> Login(LoginBlank loginBlank)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IActionResult> Registration(UserBlank userBlank)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IActionResult> UnLogin()
+    {
+        throw new NotImplementedException();
     }
 }

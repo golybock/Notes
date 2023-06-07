@@ -6,9 +6,9 @@ using Repositories.Repositories.Readers.User;
 
 namespace Repositories.Repositories.User;
 
-public class NoteUserRepository : RepositoryBase, INoteUserRepository
+public class UserRepository : RepositoryBase, IUserRepository
 {
-    public NoteUserRepository(IConfiguration configuration) : base(configuration) { }
+    public UserRepository(IConfiguration configuration) : base(configuration) { }
 
     public async Task<UserDatabase?> Get(int id)
     {

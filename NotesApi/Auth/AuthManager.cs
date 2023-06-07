@@ -6,6 +6,7 @@ using Domain.User;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Auth.Cookie;
+using NotesApi.Auth.Tokens;
 using Repositories.Repositories.User;
 
 namespace NotesApi.Auth;
@@ -17,13 +18,13 @@ public class AuthManager
     private readonly TokenManager _tokenManager;
 
     private readonly TokensRepository _tokensRepository;
-    private readonly NoteUserRepository _noteUserRepository;
+    private readonly UserRepository _userRepository;
 
     public AuthManager(IConfiguration configuration)
     {
         _configuration = configuration;
 
-        _noteUserRepository = new NoteUserRepository(configuration);
+        _userRepository = new UserRepository(configuration);
         _cookieManager = new CookieManager(configuration);
         _tokenManager = new TokenManager(configuration);
         _tokensRepository = new TokensRepository(configuration);
@@ -61,7 +62,7 @@ public class AuthManager
     
     private async Task<UserDomain?> GetUser(string email)
     {
-        var user = await _noteUserRepository.Get(email);
+        var user = await _userRepository.Get(email);
 
         return UserDomainBuilder.Create(user);
     }
@@ -174,7 +175,7 @@ public class AuthManager
         if (string.IsNullOrEmpty(email))
             return null;
 
-        var user = await _noteUserRepository.Get(email);
+        var user = await _userRepository.Get(email);
 
         return UserDomainBuilder.Create(user);
     }

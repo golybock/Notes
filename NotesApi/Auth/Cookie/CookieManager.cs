@@ -1,28 +1,26 @@
 using Domain.User;
-using ICookieManager = Microsoft.AspNetCore.Authentication.Cookies.ICookieManager;
 
 namespace NotesApi.Auth.Cookie;
 
-public class CookieManager
+public class CookieManager : CookieManagerBase
 {
-    private readonly CookieManagerBackend _cookieManagerBackend;
     private readonly IConfiguration _configuration;
+    private readonly HttpContext _context;
 
-    public CookieManager(IConfiguration configuration)
+    public CookieManager(IConfiguration configuration, HttpContext context)
     {
         _configuration = configuration;
-        
-        _cookieManagerBackend = new CookieManagerBackend();
+        _context = context;
     }
 
-    public TokensDomain GetTokens(HttpContext context)
+    public TokensDomain GetTokens()
     {
-        string token = _cookieManagerBackend.GetRequestCookie(context, "token") ??
+        string token = GetRequestCookie(_context, CookiesList.Token) ??
                        throw new InvalidOperationException("Token not found");
 
-        string refreshToken = _cookieManagerBackend.GetRequestCookie(context, "refreshToken") ??
+        string refreshToken = GetRequestCookie(_context, CookiesList.RefreshToken) ??
                               throw new InvalidOperationException("RefreshToken not found");
-        
+
         var tokens = new TokensDomain()
         {
             Token = token,
@@ -32,46 +30,25 @@ public class CookieManager
         return tokens;
     }
 
-    public void SetTokens(HttpContext context, TokensDomain tokensDomain)
+    public void SetTokens(TokensDomain tokensDomain)
     {
+        // validation lifetime from appsettings
         int tokenValidityInMinutes = int.Parse(_configuration["JWT:TokenValidityInMinutes"]!);
         var expires = DateTime.UtcNow.AddMinutes(tokenValidityInMinutes);
 
+        // cookie expires
         var options = new CookieOptions()
         {
             Expires = expires
         };
-        
-        _cookieManagerBackend.AppendResponseCookie(context, CookiesList.Token, tokensDomain.Token, options);
-        _cookieManagerBackend.AppendResponseCookie(context, CookiesList.RefreshToken, tokensDomain.RefreshToken, options);
+
+        AppendResponseCookie(_context, CookiesList.Token, tokensDomain.Token, options);
+        AppendResponseCookie(_context, CookiesList.RefreshToken, tokensDomain.RefreshToken, options);
     }
 
-    public void DeleteTokens(HttpContext context)
+    public void DeleteTokens()
     {
-        _cookieManagerBackend.DeleteCookie(context, "token");
-        _cookieManagerBackend.DeleteCookie(context, "refreshToken");
-    }
-}
-
-internal class CookieManagerBackend : ICookieManager
-{
-    public string? GetRequestCookie(HttpContext context, string key)
-    {
-        return context.Request.Cookies.FirstOrDefault(c => c.Key == key).Value;
-    }
-
-    public void AppendResponseCookie(HttpContext context, string key, string? value, CookieOptions options)
-    {
-        context.Response.Cookies.Append(key, value!, options);
-    }
-
-    public void DeleteCookie(HttpContext context, string key)
-    {
-        context.Response.Cookies.Delete(key);
-    }
-    
-    public void DeleteCookie(HttpContext context, string key, CookieOptions options)
-    {
-        context.Response.Cookies.Delete(key, options);
+        DeleteCookie(_context, CookiesList.Token);
+        DeleteCookie(_context, CookiesList.RefreshToken);
     }
 }

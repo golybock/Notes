@@ -13,11 +13,11 @@ namespace NotesApi.Services.User;
 
 public class UserService : IUserService
 {
-    private readonly NoteUserRepository _noteUserRepository;
+    private readonly UserRepository _userRepository;
 
     public UserService(IConfiguration configuration)
     {
-        _noteUserRepository = new NoteUserRepository(configuration);
+        _userRepository = new UserRepository(configuration);
     }
 
     public async Task<IActionResult> Get(ClaimsPrincipal claimsPrincipal)
@@ -41,7 +41,7 @@ public class UserService : IUserService
         
         var userDatabase = UserDatabaseBuilder.Create(userBlank);
 
-        var updated = await _noteUserRepository.Update(user.Email, userDatabase);
+        var updated = await _userRepository.Update(user.Email, userDatabase);
 
         if (!updated)
             return new BadRequestResult();
@@ -56,7 +56,7 @@ public class UserService : IUserService
         if (string.IsNullOrEmpty(email))
             return null;
 
-        var user = await _noteUserRepository.Get(email);
+        var user = await _userRepository.Get(email);
 
         return UserDomainBuilder.Create(user);
     }

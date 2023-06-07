@@ -2,7 +2,7 @@ using Database.User;
 
 namespace Repositories.Repositories.Interfaces.User;
 
-public interface INoteUserRepository
+public interface IUserRepository
 {
     public Task<UserDatabase?> Get(int id);
     

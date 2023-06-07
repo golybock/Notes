@@ -25,7 +25,7 @@ public class NoteService : INoteService
     private readonly ShareNoteRepository _shareNoteRepository;
     private readonly PermissionsLevelRepository _permissionsLevelRepository;
     private readonly NoteTypeRepository _noteTypeRepository;
-    private readonly NoteUserRepository _noteUserRepository;
+    private readonly UserRepository _userRepository;
 
     public NoteService(IConfiguration configuration)
     {
@@ -35,7 +35,7 @@ public class NoteService : INoteService
         _shareNoteRepository = new ShareNoteRepository(configuration);
         _permissionsLevelRepository = new PermissionsLevelRepository(configuration);
         _noteTypeRepository = new NoteTypeRepository(configuration);
-        _noteUserRepository = new NoteUserRepository(configuration);
+        _userRepository = new UserRepository(configuration);
     }
 
     #region controller funcs (use in controllers)
@@ -155,7 +155,7 @@ public class NoteService : INoteService
         if (note == null)
             return new NotFoundResult();
 
-        var sharedUser = await _noteUserRepository.Get(shareBlank.Email);
+        var sharedUser = await _userRepository.Get(shareBlank.Email);
 
         if (sharedUser == null)
             return new NotFoundResult();
@@ -186,7 +186,7 @@ public class NoteService : INoteService
         if (note == null)
             return new NotFoundResult();
 
-        var sharedUser = await _noteUserRepository.Get(shareBlank.Email);
+        var sharedUser = await _userRepository.Get(shareBlank.Email);
 
         if (sharedUser == null)
             return new NotFoundResult();
@@ -208,7 +208,7 @@ public class NoteService : INoteService
         if (note == null)
             return new NotFoundResult();
 
-        var sharedUser = await _noteUserRepository.Get(email);
+        var sharedUser = await _userRepository.Get(email);
 
         if (sharedUser == null)
             return new NotFoundResult();
@@ -315,7 +315,7 @@ public class NoteService : INoteService
 
         var type = await _noteTypeRepository.Get(noteDomain.TypeId);
 
-        var user = await _noteUserRepository.Get(noteDomain.OwnerId);
+        var user = await _userRepository.Get(noteDomain.OwnerId);
 
         noteDomain.User = UserDomainBuilder.Create(user);
 
@@ -333,14 +333,14 @@ public class NoteService : INoteService
         if (string.IsNullOrEmpty(email))
             return null;
 
-        var user = await _noteUserRepository.Get(email);
+        var user = await _userRepository.Get(email);
 
         return UserDomainBuilder.Create(user);
     }
     
     private async Task<UserDomain?> GetUser(string email)
     {
-        var user = await _noteUserRepository.Get(email);
+        var user = await _userRepository.Get(email);
 
         return UserDomainBuilder.Create(user);
     }
