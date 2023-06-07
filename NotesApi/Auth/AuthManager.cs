@@ -4,7 +4,6 @@ using System.Security.Claims;
 using Database.User;
 using Domain.User;
 using DomainBuilder.User;
-using Microsoft.AspNetCore.Mvc;
 using NotesApi.Auth.Cookie;
 using NotesApi.Auth.Tokens;
 using Repositories.Repositories.User;
@@ -13,31 +12,33 @@ namespace NotesApi.Auth;
 
 public class AuthManager
 {
-    private readonly IConfiguration _configuration;
     private readonly CookieManager _cookieManager;
     private readonly TokenManager _tokenManager;
 
     private readonly TokensRepository _tokensRepository;
     private readonly UserRepository _userRepository;
 
-    public AuthManager(IConfiguration configuration)
+    private readonly HttpContext _context;
+
+    public AuthManager(IConfiguration configuration, HttpContext context)
     {
-        _configuration = configuration;
+        _context = context;
 
         _userRepository = new UserRepository(configuration);
-        _cookieManager = new CookieManager(configuration);
         _tokenManager = new TokenManager(configuration);
         _tokensRepository = new TokensRepository(configuration);
+        _cookieManager = new CookieManager(configuration, context);
     }
 
-    public async Task SignInAsync(HttpContext context, string email)
+    // set new tokens in cookie and save it in db
+    public async Task SignInAsync(UserDomain userDomain)
     {
+        var email = userDomain.Email;
+
         var claims = _tokenManager.CreateIdentityClaims(email);
 
-        var decodedToken = _tokenManager.GenerateJwtSecurityToken(claims);
+        var token = _tokenManager.GenerateToken(claims);
         var refreshToken = _tokenManager.GenerateRefreshToken();
-
-        string token = new JwtSecurityTokenHandler().WriteToken(decodedToken);
 
         var tokens = new TokensDomain()
         {
@@ -45,21 +46,13 @@ public class AuthManager
             RefreshToken = refreshToken
         };
 
-        var tokensDatabase = new TokensDatabase()
-        {
-            Token = token,
-            RefreshToken = refreshToken,
-            Ip = GetIpAddress(context.Request.Host.Host),
-            Active = true,
-            UserId = (await GetUser(email)).Id,
-            CreationDate = DateTime.UtcNow
-        };
-        
-        await _tokensRepository.Create(tokensDatabase);
+        await SaveTokensAsync(token, refreshToken, userDomain.Id);
 
-        _cookieManager.SetTokens(context, tokens);
+        _cookieManager.SetTokens(tokens);
     }
     
+    public void SignOut() => _cookieManager.DeleteTokens();
+
     private async Task<UserDomain?> GetUser(string email)
     {
         var user = await _userRepository.Get(email);
@@ -67,107 +60,81 @@ public class AuthManager
         return UserDomainBuilder.Create(user);
     }
 
-    /// <summary>
-    /// Check tokens and refresh it if needed
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    public async Task<bool> IsSigned(HttpContext context)
+    public async Task<UserDomain?> IsSigned()
     {
-        TokensDomain tokens;
-        
-        try
+        var tokens = GetTokens();
+
+        if (tokens == null)
+            return null;
+
+        var user = await GetCurrentUser();
+
+        if (user == null)
+            return null;
+
+        // token died
+        if (!_tokenManager.TokenActive(tokens.Token))
         {
-            tokens = _cookieManager.GetTokens(context);
+            await SignInAsync(user);
+            await SetTokensNotActive(tokens);
+
+            return user;
         }
-        catch (Exception e)
-        {
-            return false;
-        }
-
-        // try refresh tokens
-        if (_tokenManager.TokenExpired(tokens.Token))
-        {
-            var claims = _tokenManager.GetPrincipalFromExpiredToken(tokens.Token);
-
-            var user = await GetUser(claims);
-
-            if (user == null)
-                return false;
-
-            var newClaims = _tokenManager.CreateIdentityClaims(user.Email);
-
-            var decodedToken = _tokenManager.GenerateJwtSecurityToken(newClaims);
-            var refreshToken = _tokenManager.GenerateRefreshToken();
-
-            string token = new JwtSecurityTokenHandler().WriteToken(decodedToken);
-
-            var newTokens = new TokensDomain()
-            {
-                Token = token,
-                RefreshToken = refreshToken
-            };
-            
-            #region tokens db and their validation
-
-            var tokensDb = await _tokensRepository.Get(token, refreshToken);
-
-            if (tokensDb == null)
-                return false;
-
-            // check expire date
-            if (tokensDb.CreationDate.AddDays(7) < DateTime.Now)
-                return false;
-
-            if (!tokensDb.Active)
-                return false;
-            
-            var tokensDatabase = new TokensDatabase()
-            {
-                Token = token,
-                RefreshToken = refreshToken,
-                Ip = GetIpAddress(context.Request.Host.Host),
-                Active = true,
-                UserId = user.Id,
-                CreationDate = DateTime.UtcNow
-            };
-        
-            await _tokensRepository.Create(tokensDatabase);
-            
-            #endregion
-
-            _cookieManager.SetTokens(context, newTokens);
-
-            return true;
-        }
-
-        try
-        {
-            var es = _tokenManager.GetPrincipalFromToken(tokens.Token);
-            return true;
-        }
-        catch(Exception e)
-        {
-            return false;    
-        }
-    }
-
-    public void Logout(HttpContext context)
-    {
-        _cookieManager.DeleteTokens(context);
-    }
-
-    public async Task<UserDomain?> GetCurrentUser(HttpContext context)
-    {
-        var tokens = _cookieManager.GetTokens(context);
-
-        var claims = _tokenManager.GetPrincipalFromToken(tokens.Token);
-
-        var user = await GetUser(claims);
 
         return user;
     }
 
+    // override for simply
+    private TokensDomain? GetTokens()
+    {
+        try
+        {
+            var tokens = _cookieManager.GetTokens();
+
+            return tokens;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private async Task<bool> SetTokensNotActive(TokensDomain tokensDomain)
+    {
+        return await _tokensRepository.SetNotActive(tokensDomain.Token, tokensDomain.RefreshToken);
+    }
+    
+    private async Task<bool> TokensValid(string token, string refreshToken)
+    {
+        var tokensDb = await _tokensRepository.Get(token, refreshToken);
+
+        if (tokensDb == null)
+            return false;
+
+        // check expire date of redresh token
+        if (tokensDb.CreationDate.AddDays(7) < DateTime.Now)
+            return false;
+
+        if (!tokensDb.Active)
+            return false;
+
+        return true;
+    }
+
+    // get authed user
+    public async Task<UserDomain?> GetCurrentUser()
+    {
+        var tokens = GetTokens();
+
+        if (tokens == null)
+            return null;
+
+        var claims = _tokenManager.GetPrincipalFromToken(tokens.Token);
+        
+        return await GetUser(claims);;
+    }
+
+    // get user from claims
     private async Task<UserDomain?> GetUser(ClaimsPrincipal claims)
     {
         var email = claims.Identity?.Name;
@@ -180,8 +147,34 @@ public class AuthManager
         return UserDomainBuilder.Create(user);
     }
     
-    private async Task<bool> SaveTokens(TokensDatabase tokensDatabase)
+    // save tokens in db and return bool value saved or not
+    private async Task<bool> SaveTokensAsync(string token, string refreshToken, int userId)
     {
+        var tokensDatabase = new TokensDatabase()
+        {
+            Token = token,
+            RefreshToken = refreshToken,
+            Ip = GetIpAddress(_context.Request.Host.Host),
+            Active = true,
+            UserId = userId,
+            CreationDate = DateTime.UtcNow
+        };
+        
+        return await _tokensRepository.Create(tokensDatabase) > 0;
+    }
+    
+    private async Task<bool> SaveTokensAsync(TokensDomain tokensDomain, int userId)
+    {
+        var tokensDatabase = new TokensDatabase()
+        {
+            Token = tokensDomain.Token,
+            RefreshToken = tokensDomain.RefreshToken,
+            Ip = GetIpAddress(_context.Request.Host.Host),
+            Active = true,
+            UserId = userId,
+            CreationDate = DateTime.UtcNow
+        };
+        
         return await _tokensRepository.Create(tokensDatabase) > 0;
     }
     

@@ -4,7 +4,7 @@ import NoteApi from "../../api/note/NoteApi";
 import {NoteBlank} from "../../models/blank/note/NoteBlank";
 import RichTextEditor from "react-rte";
 
-export default class Home extends React.Component {
+export default class Note extends React.Component {
 
     constructor(props) {
         super(props);

@@ -134,6 +134,38 @@ public class TokensRepository : RepositoryBase, ITokenRepository
             await connection.CloseAsync();
         }
     }
+    
+    public async Task<bool> SetNotActive(string token, string refreshToken)
+    {
+        string query = "update tokens set active = false where token= $1 and refresh_token = $2";
+
+        var connection = GetConnection();
+
+        try
+        {
+            await connection.OpenAsync();
+
+            NpgsqlCommand command = new NpgsqlCommand(query, connection)
+            {
+                Parameters =
+                {
+                    new NpgsqlParameter() {Value = token},
+                    new NpgsqlParameter() {Value = refreshToken}
+                }
+            };
+
+            return await command.ExecuteNonQueryAsync() > 0;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+    }
 
     public async Task<int> Create(TokensDatabase tokensDatabase)
     {

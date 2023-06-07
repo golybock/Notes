@@ -14,85 +14,15 @@ namespace NotesApi.Services.Auth;
 
 public class AuthService : IAuthService
 {
-    private readonly IConfiguration _configuration;
-    private readonly HttpContext _context;
-    
     private readonly UserRepository _userRepository;
     private readonly AuthManager _authManager;
 
     public AuthService(IConfiguration configuration, HttpContext context)
     {
-        _configuration = configuration;
-        _context = context;
-
-        _authManager = new AuthManager(configuration);
+        _authManager = new AuthManager(configuration, context);
         _userRepository = new UserRepository(configuration);
     }
 
-    public async Task<IActionResult> Login(LoginBlank loginBlank, HttpContext context)
-    {
-        var user = await GetUser(loginBlank.Email);
-
-        if (user == null)
-            return new UnauthorizedResult();
-
-        if (user.PasswordHash != HashPassword(loginBlank.Password))
-            return new UnauthorizedResult();
-
-        await _authManager.SignInAsync(context, user.Email);
-
-        return new OkResult();
-    }
-
-    public async Task<IActionResult> Registration(UserBlank userBlank, HttpContext context)
-    {
-        #region check client data
-
-        var user = await GetUser(userBlank.Email);
-
-        if (user != null)
-            return new BadRequestObjectResult("Такой email уже зарегистрирован");
-
-        if (!ValidatePassword(userBlank.Password))
-            return new BadRequestObjectResult("Неверный формат пароля");
-        
-        if(!ValidateEmail(userBlank.Email))
-            return new BadRequestObjectResult("Неверный формат почты");
-
-        #endregion
-
-        #region generate user and tokens
-
-        var id = await CreateUser(userBlank);
-        
-        await _authManager.SignInAsync(context, userBlank.Email);
-        
-        #endregion
-
-        return new OkResult();
-    }
-
-    public async Task<IActionResult> UpdatePassword(string newPassword, HttpContext context)
-    {
-        var user = await _authManager.GetCurrentUser(context);
-        
-        if (user == null)
-            return new UnauthorizedResult();
-
-        var res = await _userRepository.UpdatePassword(user.Id, HashPassword(newPassword));
-
-        if (res)
-            return new BadRequestObjectResult("Не удалось обновить пароль");
-        
-        _authManager.SignInAsync(context, user.Email);
- 
-        return new OkResult();
-    }
-
-    #region save in db
-    
-
-    
     private async Task<int> CreateUser(UserBlank userBlank)
     {
         string hashedPassword = HashPassword(userBlank.Password);
@@ -101,8 +31,6 @@ public class AuthService : IAuthService
 
         return await _userRepository.Create(newUser);
     }
-    
-    #endregion
 
     #region generating data
 
@@ -150,18 +78,55 @@ public class AuthService : IAuthService
         return UserDomainBuilder.Create(user);
     }
 
-    public async Task<IActionResult> Login(LoginBlank loginBlank)
+    public async Task<IActionResult> SignIn(LoginBlank loginBlank)
     {
-        throw new NotImplementedException();
+        var user = await GetUser(loginBlank.Email);
+
+        if (user == null)
+            return new UnauthorizedResult();
+
+        if (user.PasswordHash != HashPassword(loginBlank.Password))
+            return new UnauthorizedResult();
+
+        await _authManager.SignInAsync(user);
+
+        return new OkResult();
     }
 
-    public async Task<IActionResult> Registration(UserBlank userBlank)
+    public async Task<IActionResult> SignUp(UserBlank userBlank)
     {
-        throw new NotImplementedException();
+        #region check client data
+
+        var user = await GetUser(userBlank.Email);
+
+        if (user != null)
+            return new BadRequestObjectResult("Такой email уже зарегистрирован");
+
+        if (!ValidatePassword(userBlank.Password))
+            return new BadRequestObjectResult("Неверный формат пароля");
+        
+        if(!ValidateEmail(userBlank.Email))
+            return new BadRequestObjectResult("Неверный формат почты");
+
+        #endregion
+
+        #region generate user and tokens
+
+        var id = await CreateUser(userBlank);
+
+        var newUser = await GetUser(id);
+        
+        await _authManager.SignInAsync(newUser);
+        
+        #endregion
+
+        return new OkResult();
     }
 
-    public async Task<IActionResult> UnLogin()
+    public Task<IActionResult> SignOut()
     {
-        throw new NotImplementedException();
+        _authManager.SignOut();
+
+        return Task.FromResult<IActionResult>(new OkResult());
     }
 }

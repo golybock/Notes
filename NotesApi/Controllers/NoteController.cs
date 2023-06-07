@@ -8,8 +8,8 @@ using NotesApi.Services.Note;
 
 namespace NotesApi.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class NoteController : ControllerBase
 {
     private readonly NoteService _noteService;
@@ -18,18 +18,18 @@ public class NoteController : ControllerBase
     public NoteController(IConfiguration configuration)
     {
         _noteService = new NoteService(configuration);
-        _authManager = new AuthManager(configuration);
+        _authManager = new AuthManager(configuration, HttpContext);
     }
 
     [HttpGet("Notes")]
     public async Task<IActionResult> Get()
     {
-        var signed = await _authManager.IsSigned(HttpContext);
+        var signed = await _authManager.IsSigned();
 
-        if (!signed)
+        if (signed == null)
             return new UnauthorizedResult();
 
-        var user = await _authManager.GetCurrentUser(HttpContext);
+        var user = await _authManager.GetCurrentUser();
         
         return await _noteService.Get(user.Email);
     }

@@ -1,37 +1,36 @@
 using Blank.User;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Services.Auth;
 
 namespace NotesApi.Controllers.Auth;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class AuthController : ControllerBase, IAuthController
 {
     private readonly AuthService _authService;
 
     public AuthController(IConfiguration configuration)
     {
-        _authService = new AuthService(configuration);
+        _authService = new AuthService(configuration, HttpContext);
     }
     
     [HttpPost("Login")]
-    public async Task<IActionResult> Login(LoginBlank loginBlank)
+    public async Task<IActionResult> SignIn(LoginBlank loginBlank)
     {
-        return await _authService.Login(loginBlank, HttpContext);
+        return await _authService.SignIn(loginBlank);
     }
     
     [HttpPost("Registration")]
-    public async Task<IActionResult> Registration(UserBlank userBlank)
+    public async Task<IActionResult> SignUp(UserBlank userBlank)
     {
-        return await _authService.Registration(userBlank, HttpContext);
+        return await _authService.SignUp(userBlank);
     }
 
     [HttpPost("UnLogin")]
-    public async Task<IActionResult> UnLogin()
+    public new async Task<IActionResult> SignOut()
     {
-        throw new NotImplementedException();
+        return await _authService.SignOut();
     }
 
     // [HttpPost("UpdatePassword")]
