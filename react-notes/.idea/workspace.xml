@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="error with refresh tokens" />
+    <list default="true" id="0e76bc1e-250f-4303-b3e0-577b2ad391bc" name="Changes" comment="fix">
+      <change afterPath="$PROJECT_DIR$/../NotesApi/Auth/CookieManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../NotesApi/Auth/TokenManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../NotesApi/Controllers/Auth/fddf.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Auth/NotesAuthHandler.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Services/Auth/AuthHandler.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Services/Auth/AuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../NotesApi/Services/Auth/AuthService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../NotesApi/Services/Auth/CookieManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -99,7 +109,8 @@
       <workItem from="1685985199586" duration="1690000" />
       <workItem from="1686040456177" duration="102000" />
       <workItem from="1686041937341" duration="2935000" />
-      <workItem from="1686084834670" duration="614000" />
+      <workItem from="1686084834670" duration="707000" />
+      <workItem from="1686129430333" duration="1061000" />
     </task>
     <task id="LOCAL-00001" summary="refactored">
       <created>1685297029817</created>
@@ -192,14 +203,20 @@
       <option name="project" value="LOCAL" />
       <updated>1685917967387</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="fix">
+      <created>1686089377585</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1686089377585</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix" />
     <MESSAGE value="refactored" />
     <MESSAGE value="created text editor page to note" />
     <MESSAGE value="error when render rte" />
@@ -208,6 +225,7 @@
     <MESSAGE value="rebased routes to App" />
     <MESSAGE value="real-time update" />
     <MESSAGE value="error with refresh tokens" />
-    <option name="LAST_COMMIT_MESSAGE" value="error with refresh tokens" />
+    <MESSAGE value="fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix" />
   </component>
 </project>

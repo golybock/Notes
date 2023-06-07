@@ -40,9 +40,9 @@ public class NoteService : INoteService
 
     #region controller funcs (use in controllers)
     
-    public async Task<IActionResult> Get(ClaimsPrincipal claims)
+    public async Task<IActionResult> Get(string email)
     {
-        var user = await GetUser(claims);
+        var user = await GetUser(email);
 
         if (user == null)
             return new UnauthorizedResult();
@@ -333,6 +333,13 @@ public class NoteService : INoteService
         if (string.IsNullOrEmpty(email))
             return null;
 
+        var user = await _noteUserRepository.Get(email);
+
+        return UserDomainBuilder.Create(user);
+    }
+    
+    private async Task<UserDomain?> GetUser(string email)
+    {
         var user = await _noteUserRepository.Get(email);
 
         return UserDomainBuilder.Create(user);

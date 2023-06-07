@@ -7,7 +7,7 @@ namespace NotesApi.Services.Interfaces.Note;
 
 public interface INoteService
 {
-    public Task<IActionResult> Get(ClaimsPrincipal claims);
+    public Task<IActionResult> Get(string email);
 
     public Task<IActionResult> Get(ClaimsPrincipal claims, Guid id);
 

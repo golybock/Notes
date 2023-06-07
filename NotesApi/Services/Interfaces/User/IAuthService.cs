@@ -10,7 +10,5 @@ public interface IAuthService
     
     public Task<IActionResult> Registration(UserBlank userBlank, HttpContext context);
 
-    public Task<IActionResult> UpdatePassword(ClaimsPrincipal claimsPrincipal, string newPassword, HttpContext context);
-
-    public Task<IActionResult> RefreshTokens(TokensBlank tokens, HttpContext context);
+    public Task<IActionResult> UpdatePassword(string newPassword, HttpContext context);
 }

@@ -32,12 +32,6 @@ public class AuthController : ControllerBase
     [HttpPost("UpdatePassword")]
     public async Task<IActionResult> UpdatePassword(string newPassword)
     {
-        return await _authService.UpdatePassword(User, newPassword, HttpContext);
+        return await _authService.UpdatePassword(newPassword, HttpContext);
     }
-
-    // [HttpPost("RefreshTokens")]
-    // public async Task<IActionResult> RefreshTokens(TokensBlank tokens)
-    // {
-    //     return await _authService.RefreshTokens(tokens, HttpContext);
-    // }
 }
