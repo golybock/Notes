@@ -29,7 +29,7 @@ public class NoteController : ControllerBase
         if (signed == null)
             return new UnauthorizedResult();
 
-        return await _noteService.Get(HttpContext, signed.Email);
+        return await _noteService.Get(signed);
     }
 
     [HttpGet("Note")]
@@ -40,48 +40,83 @@ public class NoteController : ControllerBase
         if (signed == null)
             return new UnauthorizedResult();
         
-        return await _noteService.Get(HttpContext, guid);
+        return await _noteService.Get(signed, guid);
     }
 
     [HttpPost("Note")]
     public async Task<IActionResult> Create(NoteBlank blank)
     {
-        return await _noteService.Create(HttpContext, blank);
+        var signed = await _authManager.IsSigned(HttpContext);
+
+        if (signed == null)
+            return new UnauthorizedResult();
+    
+        return await _noteService.Create(signed, blank);
     }
 
     [HttpPut("Note")]
     public async Task<IActionResult> Update(Guid guid, NoteBlank blank)
     {
-        return await _noteService.Update(HttpContext, guid, blank);
+        var signed = await _authManager.IsSigned(HttpContext);
+
+        if (signed == null)
+            return new UnauthorizedResult();
+        
+        return await _noteService.Update(signed, guid, blank);
     }
     
     [HttpDelete("Note")]
     public async Task<IActionResult> Delete(Guid guid)
     {
-        return await _noteService.Delete(HttpContext, guid);
+        var signed = await _authManager.IsSigned(HttpContext);
+
+        if (signed == null)
+            return new UnauthorizedResult();
+        
+        return await _noteService.Delete(signed, guid);
     }
     
     [HttpGet("SharedNotes")]
     public async Task<IActionResult> GetSharedNotes()
     {
-        return await _noteService.GetShared(HttpContext);
+        var signed = await _authManager.IsSigned(HttpContext);
+
+        if (signed == null)
+            return new UnauthorizedResult();
+        
+        return await _noteService.GetShared(signed);
     }
     
     [HttpPost("Share")]
     public async Task<IActionResult> Share(ShareBlank shareBlank)
     {
-        return await _noteService.Share(HttpContext, shareBlank);
+        var signed = await _authManager.IsSigned(HttpContext);
+
+        if (signed == null)
+            return new UnauthorizedResult();
+        
+        return await _noteService.Share(signed, shareBlank);
     }
     
     [HttpPut("UpdateShare")]
     public async Task<IActionResult> UpdateShare(ShareBlank shareBlank)
     {
-        return await _noteService.UpdateShare(HttpContext, shareBlank);
+        var signed = await _authManager.IsSigned(HttpContext);
+
+        if (signed == null)
+            return new UnauthorizedResult();
+        
+        return await _noteService.UpdateShare(signed, shareBlank);
     }
     
     [HttpDelete("DeleteShare")]
     public async Task<IActionResult> DeleteShare(Guid id, string email)
     {
-        return await _noteService.DeleteShare(HttpContext, id, email);
+        var signed = await _authManager.IsSigned(HttpContext);
+
+        if (signed == null)
+            return new UnauthorizedResult();
+        
+        return await _noteService.DeleteShare(signed, id, email);
     }
 }

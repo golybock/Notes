@@ -10,8 +10,8 @@ using NotesApi.Services.Note.Tag;
 
 namespace NotesApi.Controllers;
 
+[ApiController]
 [Route("api/[controller]")]
-[ApiController, Authorize]
 public class TagController : ControllerBase
 {
     private readonly TagService _tagService;

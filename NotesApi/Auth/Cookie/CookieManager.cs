@@ -33,8 +33,8 @@ public class CookieManager : CookieManagerBase
     public void SetTokens(HttpContext context, TokensDomain tokensDomain)
     {
         // validation lifetime from appsettings
-        int tokenValidityInMinutes = int.Parse(_configuration["JWT:TokenValidityInMinutes"]!);
-        var expires = DateTime.UtcNow.AddMinutes(tokenValidityInMinutes);
+        int tokenValidityInDays = int.Parse(_configuration["JWT:RefreshTokenValidityInDays"]!);
+        var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
 
         // cookie expires
         var options = new CookieOptions()
@@ -43,7 +43,7 @@ public class CookieManager : CookieManagerBase
         };
 
         AppendResponseCookie(context, CookiesList.Token, tokensDomain.Token, options);
-        AppendResponseCookie(context, CookiesList.RefreshToken, tokensDomain.RefreshToken, options);
+        AppendResponseCookie(context, CookiesList.RKefreshToken, tokensDomain.RefreshToken, options);
     }
 
     public void DeleteTokens(HttpContext context)

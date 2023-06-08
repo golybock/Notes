@@ -43,13 +43,8 @@ public class NoteService : INoteService
 
     #region controller funcs (use in controllers)
     
-    public async Task<IActionResult> Get(HttpContext context, string email)
+    public async Task<IActionResult> Get(UserDomain user)
     {
-        var user = await GetUser(email);
-
-        if (user == null)
-            return new UnauthorizedResult();
-
         var notesDomain = await GetNotes(user.Id);
 
         var notesView = notesDomain
@@ -59,14 +54,9 @@ public class NoteService : INoteService
         return new OkObjectResult(notesView);
     }
 
-    public async Task<IActionResult> GetShared(HttpContext context)
+    public async Task<IActionResult> GetShared(UserDomain user)
     {
-        var signed = await _authManager.IsSigned(context);
-
-        if (signed == null)
-            return new UnauthorizedResult();
-
-        var notesDomain = await GetSharedNotes(signed.Id);
+        var notesDomain = await GetSharedNotes(user.Id);
 
         var notesView = notesDomain
             .Select(NoteViewBuilder.Create)
@@ -75,18 +65,14 @@ public class NoteService : INoteService
         return new OkObjectResult(notesView);
     }
 
-    public async Task<IActionResult> Get(HttpContext context, Guid id)
+    public async Task<IActionResult> Get(UserDomain user, Guid id)
     {
-        var signed = await _authManager.IsSigned(context);
-
-        if (signed == null)
-            return new UnauthorizedResult();
         var noteDomain = await GetNote(id);
 
         if (noteDomain == null)
             return new NotFoundResult();
 
-        if (noteDomain.User?.Email != signed.Email)
+        if (noteDomain.User?.Email != user.Email)
             return new BadRequestObjectResult("Access denied");
 
         var noteView = NoteViewBuilder.Create(noteDomain);
@@ -94,14 +80,9 @@ public class NoteService : INoteService
         return new OkObjectResult(noteView);
     }
 
-    public async Task<IActionResult> Create(HttpContext context, NoteBlank noteBlank)
+    public async Task<IActionResult> Create(UserDomain user, NoteBlank noteBlank)
     {
-        var signed = await _authManager.IsSigned(context);
-
-        if (signed == null)
-            return new UnauthorizedResult();
-
-        var noteDatabase = NoteDatabaseBuilder.Create(noteBlank, signed.Id);
+        var noteDatabase = NoteDatabaseBuilder.Create(noteBlank, user.Id);
 
         if (noteBlank.Text != null)
         {
@@ -121,7 +102,7 @@ public class NoteService : INoteService
         return result != Guid.Empty ? new OkObjectResult(noteDatabase.Id) : new BadRequestResult();
     }
 
-    public async Task<IActionResult> Update(HttpContext context, Guid guid, NoteBlank noteBlank)
+    public async Task<IActionResult> Update(UserDomain user, Guid guid, NoteBlank noteBlank)
     {
         var noteDatabase = await _noteRepository.Get(guid);
 
@@ -145,13 +126,8 @@ public class NoteService : INoteService
         return result ? new OkResult() : new BadRequestResult();
     }
 
-    public async Task<IActionResult> Share(HttpContext context, ShareBlank shareBlank)
+    public async Task<IActionResult> Share(UserDomain user, ShareBlank shareBlank)
     {
-        var signed = await _authManager.IsSigned(context);
-
-        if (signed == null)
-            return new UnauthorizedResult();
-
         var note = await GetNote(shareBlank.Id);
 
         if (note == null)
@@ -176,13 +152,8 @@ public class NoteService : INoteService
         return res > 0 ? new OkResult() : new BadRequestObjectResult("Invalid data");
     }
 
-    public async Task<IActionResult> UpdateShare(HttpContext context, ShareBlank shareBlank)
+    public async Task<IActionResult> UpdateShare(UserDomain user, ShareBlank shareBlank)
     {
-        var signed = await _authManager.IsSigned(context);
-
-        if (signed == null)
-            return new UnauthorizedResult();
-
         var note = await GetNote(shareBlank.Id);
 
         if (note == null)
@@ -198,13 +169,8 @@ public class NoteService : INoteService
         return res ? new OkResult() : new BadRequestObjectResult("Invalid data");
     }
 
-    public async Task<IActionResult> DeleteShare(HttpContext context, Guid id, string email)
+    public async Task<IActionResult> DeleteShare(UserDomain user, Guid id, string email)
     {
-        var signed = await _authManager.IsSigned(context);
-
-        if (signed == null)
-            return new UnauthorizedResult();
-
         var note = await GetNote(id);
 
         if (note == null)
@@ -220,18 +186,14 @@ public class NoteService : INoteService
         return res ? new OkResult() : new BadRequestObjectResult("Error delete");
     }
 
-    public async Task<IActionResult> Delete(HttpContext context, Guid id)
+    public async Task<IActionResult> Delete(UserDomain user, Guid id)
     {
-        var signed = await _authManager.IsSigned(context);
-
-        if (signed == null)
-            return new UnauthorizedResult();
         var note = await _noteRepository.Get(id);
 
         if (note == null)
             return new NotFoundResult();
 
-        if (note.OwnerId != signed.Id)
+        if (note.OwnerId != user.Id)
             return new BadRequestObjectResult("Access denied");
 
         await _noteTagRepository.DeleteByNote(note.Id);
