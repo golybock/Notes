@@ -125,7 +125,7 @@ public class TokenManager : ITokenManager
 
         var now = DateTime.UtcNow;
 
-        return tokenDate <= now;
+        return tokenDate >= now;
     }
 
     public bool TokenValid(string token)
