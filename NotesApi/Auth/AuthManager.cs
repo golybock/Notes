@@ -127,8 +127,8 @@ public class AuthManager
 
         if (tokens == null)
             return null;
-
-        var claims = _tokenManager.GetPrincipalFromToken(tokens.Token);
+        
+        var claims = _tokenManager.GetPrincipalFromExpiredToken(tokens.Token);
         
         return await GetUser(claims);;
     }

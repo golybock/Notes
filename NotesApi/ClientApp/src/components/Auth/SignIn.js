@@ -22,7 +22,7 @@ class SignIn extends React.Component {
 
     auth = async () => {
 
-        let r = await AuthApi.login(this.state.email, this.state.password)
+        let r = await AuthApi.signIn(this.state.email, this.state.password)
 
         if (r === true) {
             this.props.onClose()
@@ -86,24 +86,14 @@ class SignIn extends React.Component {
                                             />
                                         </div>
                                         <div className="d-grid">
-                                            <button onClick={async () => this.auth()}
+                                            <button onClick={this.auth}
                                                     className="btn btn-primary-submit">
                                                 Sign in
                                             </button>
-                                            <div id="signInButton">
-                                                <GoogleLogin clientId={this.client_id}
-                                                             buttonText="Login"
-                                                             onSuccess={this.onSuccess}
-                                                             onFailure={this.onFailure}
-                                                             cookiePolicy={'single_host_origin'}
-                                                             isSignedIn={true}/>
-
-                                            </div>
                                         </div>
                                         <div className="mt-3">
                                             <p className="mb-0 text-muted">Dont have an account?</p>
-                                            <button className="btn btn-primary" onClick={() => {
-                                            }}>Registration
+                                            <button className="btn btn-primary" onClick={this.props.onLogin}>Registration
                                             </button>
                                         </div>
                                     </div>

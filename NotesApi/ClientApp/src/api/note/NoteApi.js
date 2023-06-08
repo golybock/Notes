@@ -1,6 +1,6 @@
 import axios from 'axios';
 import ApiBase from "../ApiBase";
-import type {NoteBlank} from "../../models/blank/note/NoteBlank";
+import {NoteBlank} from "../../models/blank/note/NoteBlank";
 
 export default class NoteApi extends ApiBase {
 
@@ -66,11 +66,11 @@ export default class NoteApi extends ApiBase {
 
         return await axios.post(url, shareBlank)
             .then(async res => {
-                return await res.data;
+                return res.status === 200;
             })
             .catch((e) => {
                 console.log(e)
-                return null;
+                return false;
             });
     }
 

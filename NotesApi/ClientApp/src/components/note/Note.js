@@ -11,17 +11,20 @@ export default class Note extends React.Component {
         this.state = {
             id: this.props.id,
             note: new NoteBlank(-1, ""),
-            value: RichTextEditor.createValueFromString("", "html")
+            value: RichTextEditor.createValueFromString("", "html"),
+            created : false
         };
     }
 
     async componentDidMount() {
         // check created note
-        if (this.state.id === "null") {
+        if (this.state.id === "null" || this.state.id == null) {
             // create new note and get id
             await this.createNote();
             // load note data
             await this.loadNote();
+            
+            
         } else {
             // load exists note
             await this.loadNote();
@@ -42,6 +45,8 @@ export default class Note extends React.Component {
 
             // save text in html mode in state
             this.setState({value: text})
+
+            this.setState({created: true})
         }
     }
 
@@ -53,7 +58,9 @@ export default class Note extends React.Component {
     // create empty text and get id
     async createNote() {
 
-        let id = await NoteApi.createNote(new NoteBlank("", ""))
+        this.setState({created: true})
+        
+        let id = await NoteApi.createNote(new NoteBlank("Note", ""))
 
         this.setState({id: id})
     }

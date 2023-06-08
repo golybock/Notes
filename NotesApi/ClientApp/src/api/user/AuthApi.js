@@ -4,7 +4,7 @@ import {LoginBlank} from "../../models/blank/user/LoginBlank";
 
 export default class AuthApi extends ApiBase {
 
-    static async login(email, password) {
+    static async signIn(email, password) {
 
         let url = this.baseAddress + "/Auth/SignIn";
 
@@ -19,14 +19,26 @@ export default class AuthApi extends ApiBase {
             });
     }
 
-    static async Registration(noteUserBlank) {
+    static async signUp(noteUserBlank) {
 
         let url = this.baseAddress + "/Auth/SignUp";
 
-        await axios.post(url, noteUserBlank)
+        return await axios.post(url, noteUserBlank)
             .then(async res => {
                 return res.status === 200;
+            })
+            .catch(() => {
+                return false;
+            });
+    }
 
+    static async signOut() {
+
+        let url = this.baseAddress + "/Auth/SignOut";
+
+        return await axios.post(url)
+            .then(async res => {
+                return res.status === 200;
             })
             .catch(() => {
                 return false;

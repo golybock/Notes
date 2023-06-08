@@ -50,7 +50,19 @@ public class CookieManager : CookieManagerBase
 
     public void DeleteTokens(HttpContext context)
     {
-        DeleteCookie(context, CookiesList.Token);
-        DeleteCookie(context, CookiesList.RefreshToken);
+        // validation lifetime from appsettings
+        int tokenValidityInDays = int.Parse(_configuration["JWT:RefreshTokenValidityInDays"]!);
+        var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
+        
+        // cookie expires
+        var options = new CookieOptions()
+        {
+            Expires = expires,
+            Secure = true,
+            SameSite = SameSiteMode.None
+        };
+        
+        DeleteCookie(context, CookiesList.Token, options);
+        DeleteCookie(context, CookiesList.RefreshToken, options);
     }
 }
