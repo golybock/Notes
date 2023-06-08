@@ -39,7 +39,9 @@ public class CookieManager : CookieManagerBase
         // cookie expires
         var options = new CookieOptions()
         {
-            Expires = expires
+            Expires = expires,
+            Secure = true,
+            SameSite = SameSiteMode.None
         };
 
         AppendResponseCookie(context, CookiesList.Token, tokensDomain.Token, options);

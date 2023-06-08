@@ -6,23 +6,13 @@ export default class AuthApi extends ApiBase {
 
     static async login(email, password) {
 
-        let url = this.baseAddress + "/Auth/Login";
+        let url = this.baseAddress + "/Auth/SignIn";
 
         let blank = new LoginBlank(email, password);
 
-        this.deleteTokens()
-
         return await axios.post(url, blank)
             .then(async res => {
-                if (res.status === 200) {
-
-                    this.setTokens(res.data.token, res.data.refreshToken);
-
-                    this.setAuthorization()
-
-                    return true;
-                }
-                return false;
+                return res.status === 200;
             })
             .catch(() => {
                 return false;
@@ -31,19 +21,12 @@ export default class AuthApi extends ApiBase {
 
     static async Registration(noteUserBlank) {
 
-        let url = this.baseAddress + "/Auth/Registration";
+        let url = this.baseAddress + "/Auth/SignUp";
 
         await axios.post(url, noteUserBlank)
             .then(async res => {
-                if (res.status === 200) {
+                return res.status === 200;
 
-                    this.setTokens(res.data.token, res.data.refreshToken);
-
-                    this.setAuthorization()
-
-                    return true;
-                }
-                return false;
             })
             .catch(() => {
                 return false;

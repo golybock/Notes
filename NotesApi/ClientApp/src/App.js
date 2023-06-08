@@ -1,36 +1,30 @@
 import './App.css';
 import React from "react";
-import AuthApi from "./api/user/AuthApi";
 import SignIn from "./components/Auth/SignIn";
 import {Link, Route, Routes} from "react-router-dom";
 import ProtectedRoutes from "./components/navigation/ProtectedRoutes";
 import Home from "./components/home/Home";
 import Account from "./components/Account";
 import Cat from "./cat.webp";
+import UserApi from "./api/user/UserApi";
 // import {gapi} from "gapi-script";
 
 export default class App extends React.Component {
-
-    // client_id = "989073554490-lhcf948sulr8o8n5u85ivnbbluh3ve51.apps.googleusercontent.com"
 
     constructor(props) {
         super(props);
         this.state = {
             isAuth: false,
-            // token : gapi.auth().getToken().access_token,
-            // start : function () {
-            //     gapi.client.init({
-            //         clientId : "989073554490-lhcf948sulr8o8n5u85ivnbbluh3ve51.apps.googleusercontent.com",
-            //         scope: ""
-            //     })
-            //
-            //     gapi.load('client:auth2', this.start)
-            // }
         }
     }
 
-    componentDidMount() {
-        this.setState({isAuth: AuthApi.token() != null})
+    async componentDidMount() {
+
+        let user = await UserApi.getUser();
+
+        let isAuth = user != null;
+
+        this.setState({isAuth: isAuth})
     }
 
     auth() {
@@ -56,10 +50,10 @@ export default class App extends React.Component {
 
                 {/*routes*/}
                 <Routes>
-                    <Route element={<ProtectedRoutes/>}>
-                        <Route path="/" element={<Home/>}/>
-                        <Route path="/account" element={<Account/>}/>
-                    </Route>
+                    <Route path="/" element={<Home/>}/>
+                    <Route path="/account" element={<Account/>}/>
+                    {/*<Route element={<ProtectedRoutes/>}>*/}
+                    {/*</Route>*/}
                 </Routes>
 
                 {/*login*/}

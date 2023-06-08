@@ -6,8 +6,6 @@ export default class NoteApi extends ApiBase {
 
     static async getNotes() {
 
-        await this.refreshTokens();
-
         let url = this.baseAddress + "/Note/Notes";
 
         return await axios.get(url)
@@ -21,8 +19,6 @@ export default class NoteApi extends ApiBase {
     }
 
     static async getSharedNotes() {
-
-        await this.refreshTokens();
 
         let url = this.baseAddress + "/Note/SharedNotes";
 
@@ -38,8 +34,6 @@ export default class NoteApi extends ApiBase {
 
     static async getNote(guid) {
 
-        await this.refreshTokens();
-
         let url = this.baseAddress + "/Note/Note?guid=" + guid;
 
         return await axios.get(url)
@@ -53,8 +47,6 @@ export default class NoteApi extends ApiBase {
     }
 
     static async createNote(noteBlank : NoteBlank) {
-
-        await this.refreshTokens();
 
         let url = this.baseAddress + "/Note/Note";
 
@@ -70,8 +62,6 @@ export default class NoteApi extends ApiBase {
 
     static async shareNote(shareBlank : ShareNoteBlank) {
 
-        await this.refreshTokens();
-
         let url = this.baseAddress + "/Note/Share";
 
         return await axios.post(url, shareBlank)
@@ -85,8 +75,6 @@ export default class NoteApi extends ApiBase {
     }
 
     static async updateNote(guid, noteBlank) {
-
-        await this.refreshTokens();
 
         let url = this.baseAddress + "/Note/Note?guid=" + guid;
 

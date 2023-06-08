@@ -8,16 +8,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
-//
-// builder.Services.AddAuthorization();
-//
-// builder.Services.AddAuthentication(options =>
-//     {
-//         options.DefaultScheme = IdentityConstants.ApplicationScheme;
-//         options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-//     })
-//     .AddCookie(IdentityConstants.ApplicationScheme)
-//     .AddCookie(IdentityConstants.ExternalScheme);
 
 // Default Policy
 builder.Services.AddCors(options =>
@@ -25,9 +15,11 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
         corsPolicyBuilder =>
         {
-            corsPolicyBuilder.AllowAnyOrigin()
+            corsPolicyBuilder
+                .WithOrigins("http://localhost:3000")
+                .AllowAnyMethod()
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowCredentials();
         });
 });
 
@@ -42,6 +34,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
