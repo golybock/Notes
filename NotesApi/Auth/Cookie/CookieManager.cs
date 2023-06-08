@@ -43,7 +43,7 @@ public class CookieManager : CookieManagerBase
         };
 
         AppendResponseCookie(context, CookiesList.Token, tokensDomain.Token, options);
-        AppendResponseCookie(context, CookiesList.RKefreshToken, tokensDomain.RefreshToken, options);
+        AppendResponseCookie(context, CookiesList.RefreshToken, tokensDomain.RefreshToken, options);
     }
 
     public void DeleteTokens(HttpContext context)
