@@ -87,4 +87,18 @@ export default class NoteApi extends ApiBase {
                 return null;
             });
     }
+
+    static async deleteNote(guid) {
+
+        let url = this.baseAddress + "/Note/Note?guid=" + guid;
+
+        return await axios.delete(url)
+            .then(async res => {
+                return await res.data;
+            })
+            .catch((e) => {
+                console.log(e)
+                return null;
+            });
+    }
 }

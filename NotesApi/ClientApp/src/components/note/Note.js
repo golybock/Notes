@@ -54,6 +54,12 @@ export default class Note extends React.Component {
     async update() {
         await NoteApi.updateNote(this.props.id, this.state.note)
     }
+    
+    async delete(){
+        await NoteApi.deleteNote(this.props.id)
+
+        this.props.onClose()
+    }
 
     // create empty text and get id
     async createNote() {
@@ -92,7 +98,7 @@ export default class Note extends React.Component {
                     <button className="btn btn-primary-note">
                         Share
                     </button>
-                    <button className="btn btn-primary-delete">
+                    <button className="btn btn-primary-delete" onClick={this.delete}>
                         Delete
                     </button>
                     <button className="btn btn-primary-note" onClick={this.props.onClose}>

@@ -1,10 +1,8 @@
 import React from "react";
 import "./Auth.css"
-import sakura from '/src/sakura.jpg'
+import sakura from '../../sakura.jpg'
 import AuthApi from "../../api/user/AuthApi";
 import {Modal} from "react-bootstrap";
-import {GoogleLogin} from 'react-google-login'
-
 
 class SignIn extends React.Component {
 
@@ -17,9 +15,7 @@ class SignIn extends React.Component {
             error: ""
         }
     }
-
-    client_id = "989073554490-lhcf948sulr8o8n5u85ivnbbluh3ve51.apps.googleusercontent.com"
-
+    
     auth = async () => {
 
         let r = await AuthApi.signIn(this.state.email, this.state.password)
