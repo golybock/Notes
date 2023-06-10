@@ -1,9 +1,9 @@
 import React from "react";
 import "./Auth.css"
-import sakura from '/src/sakura.jpg'
+import sakura from "./../../resources/sakura.jpg"
 import AuthApi from "../../api/user/AuthApi";
 
-export default class Registration extends React.Component {
+export default class SignUp extends React.Component {
 
     constructor(props) {
         super(props);
@@ -16,7 +16,7 @@ export default class Registration extends React.Component {
         }
     }
 
-    auth = async () => {
+    signUp = async () => {
 
         let r = await AuthApi.signUp(this.state.email, this.state.password)
 
@@ -85,7 +85,7 @@ export default class Registration extends React.Component {
                                         />
                                     </div>
                                     <div className="d-grid">
-                                        <button className="btn btn-primary-submit" onClick={this.auth}>
+                                        <button className="btn btn-primary-submit" onClick={this.signUp}>
                                             Sign Up
                                         </button>
                                     </div>

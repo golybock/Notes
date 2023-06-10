@@ -15,15 +15,6 @@
     font-size: 14px;
 }
 
-.btn.btn-primary-delete {
-    background-color: red;
-    border: 0;
-    margin: 5px;
-    width: 10rem;
-    padding: 10px;
-    font-size: 14px;
-}
-
 .btn.btn-primary {
     background-color: transparent;
     color: #ee82ee;

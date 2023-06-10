@@ -27,11 +27,9 @@ public class NoteService : INoteService
     private readonly PermissionsLevelRepository _permissionsLevelRepository;
     private readonly NoteTypeRepository _noteTypeRepository;
     private readonly UserRepository _userRepository;
-    private readonly AuthManager _authManager;
 
     public NoteService(IConfiguration configuration)
     {
-        _authManager = new AuthManager(configuration);
         _noteRepository = new NoteRepository(configuration);
         _tagRepository = new TagRepository(configuration);
         _noteTagRepository = new NoteTagRepository(configuration);
