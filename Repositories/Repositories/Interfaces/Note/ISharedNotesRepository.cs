@@ -1,4 +1,5 @@
 using Database.Note;
+using Database.User;
 
 namespace Repositories.Repositories.Interfaces.Note;
 
@@ -7,6 +8,8 @@ public interface ISharedNotesRepository
     public Task<List<SharedNoteDatabase>> Get(Guid noteId);
     
     public Task<List<SharedNoteDatabase>> Get(int userId);
+
+    public Task<List<UserDatabase>> GetSharedUsers(Guid noteId);
 
     public Task<int> Create(SharedNoteDatabase sharedNoteDatabase);
 

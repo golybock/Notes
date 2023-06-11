@@ -1,4 +1,5 @@
 ﻿using Database.Note;
+using Database.User;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using Repositories.Repositories.Interfaces.Note;
@@ -8,7 +9,9 @@ namespace Repositories.Repositories.Note;
 
 public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
 {
-    public ShareNoteRepository(IConfiguration configuration) : base(configuration) { }
+    public ShareNoteRepository(IConfiguration configuration) : base(configuration)
+    {
+    }
 
     public async Task<List<SharedNoteDatabase>> Get(Guid noteId)
     {
@@ -22,7 +25,7 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
 
             NpgsqlCommand command = new NpgsqlCommand(query, connection)
             {
-                Parameters = { new NpgsqlParameter() { Value = noteId } }
+                Parameters = {new NpgsqlParameter() {Value = noteId}}
             };
 
             await using var reader = await command.ExecuteReaderAsync();
@@ -53,13 +56,44 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
 
             NpgsqlCommand command = new NpgsqlCommand(query, connection)
             {
-                Parameters = { new NpgsqlParameter() { Value = userId } }
+                Parameters = {new NpgsqlParameter() {Value = userId}}
             };
 
             await using var reader = await command.ExecuteReaderAsync();
 
             // returns value(empty if not found)
             return await SharedNoteReader.ReadListAsync(reader);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+    }
+
+    public async Task<List<UserDatabase>> GetSharedUsers(Guid noteId)
+    {
+        string query = "select * from shared_notes join users u on u.id = shared_notes.user_id where note_id = $1";
+
+        var connection = GetConnection();
+
+        try
+        {
+            await connection.OpenAsync();
+
+            NpgsqlCommand command = new NpgsqlCommand(query, connection)
+            {
+                Parameters = {new NpgsqlParameter() {Value = noteId}}
+            };
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            // returns value(empty if not found)
+            return await SharedNoteReader.ReadUsersAsync(reader);
         }
         catch (Exception e)
         {
@@ -87,9 +121,9 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
             {
                 Parameters =
                 {
-                    new NpgsqlParameter() { Value = sharedNoteDatabase.NoteId },
-                    new NpgsqlParameter() { Value = sharedNoteDatabase.UserId },
-                    new NpgsqlParameter() { Value = sharedNoteDatabase.PermissionsLevelId },
+                    new NpgsqlParameter() {Value = sharedNoteDatabase.NoteId},
+                    new NpgsqlParameter() {Value = sharedNoteDatabase.UserId},
+                    new NpgsqlParameter() {Value = sharedNoteDatabase.PermissionsLevelId},
                 }
             };
 
@@ -125,9 +159,9 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
             {
                 Parameters =
                 {
-                    new NpgsqlParameter() { Value = noteId},
-                    new NpgsqlParameter() { Value = userId},
-                    new NpgsqlParameter() { Value = permissionsLevel }
+                    new NpgsqlParameter() {Value = noteId},
+                    new NpgsqlParameter() {Value = userId},
+                    new NpgsqlParameter() {Value = permissionsLevel}
                 }
             };
 
@@ -153,7 +187,7 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
             connection.Open();
 
             var query = $"delete from shared_notes where note_id = $1 and user_id = $2";
-            
+
             await using var cmd = new NpgsqlCommand(query, connection)
             {
                 Parameters =

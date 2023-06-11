@@ -24,6 +24,8 @@ public class NoteDomain
     public NoteTypeDomain? Type { get; set; }
     
     public UserDomain? User { get; set; }
-    
+
+    public List<UserDomain> SharedUsers { get; set; } = new List<UserDomain>();
+
     public List<TagDomain> Tags { get; set; } = new List<TagDomain>();
 }

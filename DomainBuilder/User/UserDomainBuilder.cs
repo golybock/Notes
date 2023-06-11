@@ -19,5 +19,4 @@ public static class UserDomainBuilder
             Name = userDatabase.Name
         };
     }
-    
 }

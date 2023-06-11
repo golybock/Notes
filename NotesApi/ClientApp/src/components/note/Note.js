@@ -4,6 +4,7 @@ import NoteApi from "../../api/note/NoteApi";
 import {NoteBlank} from "../../models/blank/note/NoteBlank";
 import RichTextEditor from "react-rte";
 import DeleteNoteDialog from "./DeleteNoteDialog";
+import ShareNoteDialog from "./ShareNoteDialog";
 
 export default class Note extends React.Component {
 
@@ -93,6 +94,8 @@ export default class Note extends React.Component {
                                   name={this.state.note.header}
                                   onCloseDialog={() => this.closeDialog()}
                                   onClose={() => this.props.onClose()}/>
+                
+                <ShareNoteDialog/>
                 
             </div>
         );

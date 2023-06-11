@@ -222,6 +222,10 @@ public class NoteService : INoteService
 
             t.Tags = await GetNoteTags(t.Id);
 
+            var users = await _shareNoteRepository.GetSharedUsers(t.Id);
+
+            t.SharedUsers = (List<UserDomain>) users.Select(UserDomainBuilder.Create);
+            
             if (t.SourcePath != null)
             {
                 var sourcePath = t.SourcePath;
@@ -249,6 +253,10 @@ public class NoteService : INoteService
             t.Tags = await GetNoteTags(t.Id);
 
             t.Type = NoteTypeDomainBuilder.Create(type);
+            
+            var users = await _shareNoteRepository.GetSharedUsers(t.Id);
+
+            t.SharedUsers = (List<UserDomain>) users.Select(UserDomainBuilder.Create);
 
             if (t.SourcePath != null)
             {
@@ -277,6 +285,10 @@ public class NoteService : INoteService
         var type = await _noteTypeRepository.Get(noteDomain.TypeId);
 
         var user = await _userRepository.Get(noteDomain.OwnerId);
+
+        var users = await _shareNoteRepository.GetSharedUsers(noteDomain.Id);
+
+        noteDomain.SharedUsers = (List<UserDomain>) users.Select(UserDomainBuilder.Create);
 
         noteDomain.User = UserDomainBuilder.Create(user);
 

@@ -1,4 +1,5 @@
 ﻿using Database.Note;
+using Database.User;
 using Npgsql;
 
 namespace Repositories.Repositories.Readers.Note;
@@ -39,5 +40,23 @@ public class SharedNoteReader : IReader<SharedNoteDatabase>
         }
 
         return sharedNoteDatabases;
+    }
+    
+    public static async Task<List<UserDatabase>> ReadUsersAsync(NpgsqlDataReader reader)
+    {
+        List<UserDatabase> users = new List<UserDatabase>();
+
+        while (await reader.ReadAsync())
+        {
+            UserDatabase userDatabase = new UserDatabase();
+
+            userDatabase.Id = reader.GetInt32(reader.GetOrdinal("u.id"));
+            userDatabase.Email = reader.GetString(reader.GetOrdinal("u.email"));
+            userDatabase.Name = reader.GetString(reader.GetOrdinal("u.name"));
+            
+            users.Add(userDatabase);
+        }
+
+        return users;
     }
 }
