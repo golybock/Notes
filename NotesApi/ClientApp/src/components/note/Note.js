@@ -14,7 +14,8 @@ export default class Note extends React.Component {
             id: this.props.id,
             note: new NoteBlank("", ""),
             value: RichTextEditor.createValueFromString("", "html"),
-            show_dialog : false
+            show_dialog_delete : false,
+            show_dialog_share : false
         };
     }
 
@@ -22,12 +23,20 @@ export default class Note extends React.Component {
         await this.loadNote();
     }
     
-    showDialog(){
-        this.setState({show_dialog : true})
+    showDialogDelete(){
+        this.setState({show_dialog_delete : true})
     }
     
-    closeDialog(){
-        this.setState({show_dialog : false})
+    closeDialogDelete(){
+        this.setState({show_dialog_delete : false})
+    }
+
+    showDialogShare(){
+        this.setState({show_dialog_share : true})
+    }
+
+    closeDialogShare(){
+        this.setState({show_dialog_share : false})
     }
     
     async loadNote() {
@@ -75,10 +84,10 @@ export default class Note extends React.Component {
 
                 {/*command bar*/}
                 <div className="buttons">
-                    <button className="btn btn-primary-note">
+                    <button className="btn btn-primary-note" onClick={() => this.showDialogShare()}>
                         Share
                     </button>
-                    <button className="btn btn-primary-note" onClick={() => this.showDialog()}>
+                    <button className="btn btn-primary-note" onClick={() => this.showDialogDelete()}>
                         Delete
                     </button>
                     <button className="btn btn-primary-note" onClick={this.props.onClose}>
@@ -87,15 +96,22 @@ export default class Note extends React.Component {
                 </div>
 
                 {/*text editor*/}
-                <RichTextEditor value={this.state.value} onChange={this.onChange}/>
+                <RichTextEditor editorClassName="editor"
+                                toolbarClassName="editor"
+                                placeholder="Начните ввод..."
+                                value={this.state.value}
+                                onChange={this.onChange}/>
 
-                <DeleteNoteDialog show={this.state.show_dialog}
+                <DeleteNoteDialog show={this.state.show_dialog_delete}
                                   id={this.state.note.id}
                                   name={this.state.note.header}
-                                  onCloseDialog={() => this.closeDialog()}
+                                  onCloseDialog={() => this.closeDialogDelete()}
                                   onClose={() => this.props.onClose()}/>
                 
-                <ShareNoteDialog/>
+                <ShareNoteDialog show={this.state.show_dialog_share}
+                                 id={this.state.note.id}
+                                 name={this.state.note.header}
+                                 onCloseDialog={() => this.closeDialogShare()}/>
                 
             </div>
         );

@@ -10,7 +10,6 @@ export default class ShareNoteDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id : "",
             permission_level: 0,
             email : ""
         }
@@ -18,23 +17,23 @@ export default class ShareNoteDialog extends React.Component {
 
     async share() {
         
-        let shareBlank = new ShareNoteBlank(this.state.id, this.state.email, this.state.permission_level)
+        let shareBlank = new ShareNoteBlank(this.props.id, this.state.email, this.state.permission_level)
         
         let share = await NoteApi.shareNote(shareBlank)
 
-        this.props.handleClose()
+        this.props.onCloseDialog()
     }
 
     render() {
         return (
             <Modal
                 show={this.props.show}
-                onHide={this.props.handleClose}
+                onHide={() => this.props.onCloseDialog()}
                 backdrop="static"
                 centered>
 
                 <Modal.Header closeButton>
-                    <Modal.Title>Create note</Modal.Title>
+                    <Modal.Title>Share note</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
@@ -45,14 +44,14 @@ export default class ShareNoteDialog extends React.Component {
                             <Form.Label>Note name</Form.Label>
 
                             <Form.Control
-                                type="text"
-                                placeholder="name"
+                                type="email"
+                                placeholder="email"
                                 autoFocus
                                 required
-                                value={this.state.name}
+                                value={this.state.email}
                                 onChange={(e) => {
                                     this.setState({
-                                        name: e.target.value
+                                        email: e.target.value
                                     })
                                 }}
                             />
@@ -67,14 +66,14 @@ export default class ShareNoteDialog extends React.Component {
 
                     <Button variant="secondary"
                             className="btn"
-                            onClick={this.props.handleClose}>
+                            onClick={() => this.props.onCloseDialog()}>
                         Close
                     </Button>
 
                     <Button variant="primary"
                             className="btn btn-primary-note"
-                            onClick={async () => await this.create()}>
-                        Save Changes
+                            onClick={this.share}>
+                        Share
                     </Button>
 
                 </Modal.Footer>
