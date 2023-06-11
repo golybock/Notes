@@ -3,6 +3,7 @@ import "./Note.css"
 import NoteApi from "../../api/note/NoteApi";
 import {NoteBlank} from "../../models/blank/note/NoteBlank";
 import RichTextEditor from "react-rte";
+import DeleteNoteDialog from "./DeleteNoteDialog";
 
 export default class Note extends React.Component {
 
@@ -10,28 +11,24 @@ export default class Note extends React.Component {
         super(props);
         this.state = {
             id: this.props.id,
-            note: new NoteBlank(-1, ""),
+            note: new NoteBlank("", ""),
             value: RichTextEditor.createValueFromString("", "html"),
-            created : false
+            show_dialog : false
         };
     }
 
     async componentDidMount() {
-        // check created note
-        if (this.state.id === "null" || this.state.id == null) {
-            // create new note and get id
-            await this.createNote();
-            // load note data
-            await this.loadNote();
-            
-            
-        } else {
-            // load exists note
-            await this.loadNote();
-        }
+        await this.loadNote();
     }
-
-    // get note
+    
+    showDialog(){
+        this.setState({show_dialog : true})
+    }
+    
+    closeDialog(){
+        this.setState({show_dialog : false})
+    }
+    
     async loadNote() {
         // get note from api
         let note = await NoteApi.getNote(this.state.id);
@@ -45,24 +42,12 @@ export default class Note extends React.Component {
 
             // save text in html mode in state
             this.setState({value: text})
-
-            this.setState({created: true})
         }
     }
 
     // update note
     async update() {
         await NoteApi.updateNote(this.props.id, this.state.note)
-    }
-
-    // create empty text and get id
-    async createNote() {
-
-        this.setState({created: true})
-        
-        let id = await NoteApi.createNote(new NoteBlank("Note", ""))
-
-        this.setState({id: id})
     }
 
     // onchange text
@@ -92,7 +77,7 @@ export default class Note extends React.Component {
                     <button className="btn btn-primary-note">
                         Share
                     </button>
-                    <button className="btn btn-primary-delete">
+                    <button className="btn btn-primary-note" onClick={() => this.showDialog()}>
                         Delete
                     </button>
                     <button className="btn btn-primary-note" onClick={this.props.onClose}>
@@ -103,6 +88,12 @@ export default class Note extends React.Component {
                 {/*text editor*/}
                 <RichTextEditor value={this.state.value} onChange={this.onChange}/>
 
+                <DeleteNoteDialog show={this.state.show_dialog}
+                                  id={this.state.note.id}
+                                  name={this.state.note.header}
+                                  onCloseDialog={() => this.closeDialog()}
+                                  onClose={() => this.props.onClose()}/>
+                
             </div>
         );
     }

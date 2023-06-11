@@ -6,16 +6,27 @@
     align-self: flex-start;
 }
 
-.btn.btn-primary-note {
-    background-color: #ee82ee;
-    border: 0;
-    margin: 5px;
+.btn{
     width: 10rem;
     padding: 10px;
+    border: 0;
+    color: black;
     font-size: 14px;
+    margin: 5px;
 }
 
-.btn.btn-primary {
+.btn.btn-command {
+    background-color: #ee82ee;
+    border: 0;
+}
+
+.btn.btn-primary-note {
+    background-color: #ee82ee;
+    margin: 5px;
+    border: 0;
+}
+
+.btn.transparent-btn {
     background-color: transparent;
     color: #ee82ee;
     border: 0;

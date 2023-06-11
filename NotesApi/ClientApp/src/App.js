@@ -2,10 +2,11 @@ import './App.css';
 import React from "react";
 import {Link, Route, Routes} from "react-router-dom";
 import Home from "./components/home/Home";
-import Account from "./components/Account";
+import Account from "./components/Auth/Account";
 import Cat from "./resources/cat.webp"
 import UserApi from "./api/user/UserApi";
-import Auth from "./components/auth/Auth";
+import Auth from "./components/Auth/Auth";
+import PageNotFound from "./components/codes/PageNotFound";
 
 export default class App extends React.Component {
 
@@ -52,6 +53,7 @@ export default class App extends React.Component {
                         <Routes>
                             <Route path="/" element={<Home/>}/>
                             <Route path="/account" element={<Account/>}/>
+                            <Route path="*" element={<PageNotFound/>} />
                         </Routes>
                     </div>
                 )}

@@ -1,6 +1,5 @@
-import AuthApi from "../api/user/AuthApi";
+import AuthApi from "../../api/user/AuthApi";
 import React from "react";
-import {GoogleLogout} from "react-google-login";
 
 export default class Account extends React.Component {
 

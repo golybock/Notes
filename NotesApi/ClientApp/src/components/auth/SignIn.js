@@ -76,7 +76,7 @@ export default class SignIn extends React.Component {
                                 </div>
                                 <div className="mt-3">
                                     <p className="mb-0 text-muted">Dont have an account?</p>
-                                    <button className="btn btn-primary" onClick={this.props.onRegistration}>Registration
+                                    <button className="hint-button" onClick={this.props.onRegistration}>Registration
                                     </button>
                                 </div>
                             </div>

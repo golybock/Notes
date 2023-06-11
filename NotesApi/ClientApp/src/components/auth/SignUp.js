@@ -92,7 +92,7 @@ export default class SignUp extends React.Component {
                                 </form>
                                 <div className="mt-3">
                                     <p className="mb-0 text-muted">Already have an account?</p>
-                                    <div className="btn btn-primary" onClick={this.props.onLogin}>Log in
+                                    <div className="hint-button" onClick={this.props.onLogin}>Log in
                                         <span className="fas fa-chevron-right ms-1"></span>
                                     </div>
                                 </div>
