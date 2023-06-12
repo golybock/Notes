@@ -25,7 +25,7 @@ export default class SignUp extends React.Component {
         if (r === true) {
             this.props.onClose()
         } else {
-            this.setState({error: "Неверный логин или пароль"});
+            this.setState({error: "Не удалось зарегистрировать пользователя"});
         }
     }
     render() {
@@ -41,43 +41,41 @@ export default class SignUp extends React.Component {
                         <div className="mt-5">
                             <p className="mb-1 h-1">Create Account.</p>
                             <div className="d-flex flex-column ">
-                                <form onSubmit={() =>{
-
-                                }}>
-                                    <div className="mb-3">
-                                        <label>Email address</label>
-                                        <input
-                                            type="email"
-                                            className="form-control"
-                                            placeholder="Enter email"
-                                            value={this.state.email}
-                                            onChange={(e) => {
-                                                this.setState({
-                                                    email: e.target.value
-                                                })
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label>Password</label>
-                                        <input
-                                            type="password"
-                                            className="form-control"
-                                            placeholder="Enter password"
-                                            value={this.state.password}
-                                            onChange={(e) => {
-                                                this.setState({
-                                                    password: e.target.value
-                                                })
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="d-grid">
-                                        <button className="btn btn-primary-submit" onClick={this.signUp}>
-                                            Sign Up
-                                        </button>
-                                    </div>
-                                </form>
+                                <div className="mb-3">
+                                    <label>Email address</label>
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        placeholder="Enter email"
+                                        value={this.state.email}
+                                        onChange={(e) => {
+                                            this.setState({
+                                                email: e.target.value
+                                            })
+                                        }}
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label>Password</label>
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        placeholder="Enter password"
+                                        value={this.state.password}
+                                        onChange={(e) => {
+                                            this.setState({
+                                                password: e.target.value
+                                            })
+                                        }}
+                                    />
+                                </div>
+                                {this.state.error.length > 0 && <label style={{color:"red", margin: "5px"}}>{this.state.error}</label>}
+                                <div className="mb-3">
+                                    <button className="btn btn-primary-submit form-control"
+                                            onClick={this.signUp}>
+                                        Sign Up
+                                    </button>
+                                </div>
                                 <div className="mt-3">
                                     <p className="mb-0 text-muted">Already have an account?</p>
                                     <div className="hint-button" onClick={this.props.onLogin}>Log in

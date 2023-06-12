@@ -13,7 +13,7 @@ export default class Account extends React.Component {
             <div>
 
                 <label>Account page</label>
-                <button onClick={this.out}>Выйти
+                <button className="btn btn-primary-submit form-control" onClick={this.out}>Выйти
                 </button>
 
             </div>

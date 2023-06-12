@@ -44,6 +44,8 @@ public class UserReader : IReader<UserDatabase>
 
             if (passwordHash != DBNull.Value)
                 userDatabase.PasswordHash = passwordHash.ToString();
+            
+            userDatabases.Add(userDatabase);
         }
 
         return userDatabases;

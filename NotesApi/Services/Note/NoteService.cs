@@ -36,7 +36,7 @@ public class NoteService : INoteService
     }
 
     #region controller funcs (use in controllers)
-    
+
     public async Task<IActionResult> Get(UserDomain user)
     {
         var notesDomain = await GetNotes(user.Id);
@@ -107,7 +107,7 @@ public class NoteService : INoteService
             else
             {
                 var path = await NoteFileManager.CreateNoteText(noteBlank.Text);
-                
+
                 newNoteDatabase.SourcePath = path;
             }
         }
@@ -222,6 +222,8 @@ public class NoteService : INoteService
             if (note.SourcePath != null)
                 note.Text = await NoteFileManager.GetNoteText(note.SourcePath);
 
+            note.SharedUsers = await GetSharedUsers(note.Id);
+
             note.OwnerUser = await GetUser(note.OwnerId);
         }
 
@@ -243,11 +245,13 @@ public class NoteService : INoteService
             note.Tags = await GetNoteTags(note.Id);
 
             note.Type = NoteTypeDomainBuilder.Create(type);
-
-            if (note.SourcePath != null)
-                note.Text = await NoteFileManager.GetNoteText(note.SourcePath);
             
             note.OwnerUser = await GetUser(note.OwnerId);
+
+            note.SharedUsers = await GetSharedUsers(note.Id);
+            
+            if (note.SourcePath != null)
+                note.Text = await NoteFileManager.GetNoteText(note.SourcePath);
         }
 
         return notesDomain;
@@ -269,14 +273,27 @@ public class NoteService : INoteService
 
         var user = await _userRepository.Get(noteDomain.OwnerId);
 
-        if (user != null) 
+        if (user != null)
             noteDomain.OwnerUser = UserDomainBuilder.Create(user);
 
         noteDomain.Type = NoteTypeDomainBuilder.Create(type);
 
         noteDomain.Tags = await GetNoteTags(noteDatabase.Id);
 
+        noteDomain.SharedUsers = await GetSharedUsers(noteDomain.Id);
+        
         return noteDomain;
+    }
+
+    private async Task<List<UserDomain>> GetSharedUsers(Guid noteId)
+    {
+        var users = await _shareNoteRepository.GetSharedUsers(noteId);
+
+        var usersDomain = users
+            .Select(UserDomainBuilder.Create)
+            .ToList();
+
+        return usersDomain;
     }
 
     private async Task<UserDomain?> GetUser(string email)
@@ -288,7 +305,7 @@ public class NoteService : INoteService
 
         return UserDomainBuilder.Create(user);
     }
-    
+
     private async Task<UserDomain?> GetUser(Guid id)
     {
         var user = await _userRepository.Get(id);

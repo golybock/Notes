@@ -68,9 +68,10 @@ export default class SignIn extends React.Component {
                                         }}
                                     />
                                 </div>
-                                <div className="d-grid">
+                                {this.state.error.length > 0 && <label style={{color:"red", margin: "5px"}}>{this.state.error}</label>}
+                                <div className="mb-3">
                                     <button onClick={this.signIn}
-                                            className="btn btn-primary-submit">
+                                            className="btn btn-primary-submit form-control">
                                         Sign in
                                     </button>
                                 </div>

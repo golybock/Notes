@@ -78,7 +78,10 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
 
     public async Task<List<UserDatabase>> GetSharedUsers(Guid noteId)
     {
-        string query = "select u.email as email, u.id as id from shared_notes join users u on u.id = shared_notes.user_id where note_id = $1";
+        string query = "select u.email as email, " +
+                       "u.id as id, " +
+                       "u.password_hash as password_hash " +
+                       "from shared_notes s join users u on u.id = s.user_id where s.note_id = $1";
 
         var connection = GetConnection();
 
