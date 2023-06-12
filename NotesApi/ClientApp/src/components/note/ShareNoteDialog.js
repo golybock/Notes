@@ -3,8 +3,6 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import NoteApi from "../../api/note/NoteApi";
-import {NoteBlank} from "../../models/blank/note/NoteBlank";
-import {Await} from "react-router";
 import ShareNoteBlank from "../../models/blank/note/ShareNoteBlank";
 
 export default class ShareNoteDialog extends React.Component {
@@ -12,15 +10,28 @@ export default class ShareNoteDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            users : [],
             permission_level: 1,
-            email : ""
+            email: ""
         }
     }
+    
+    async componentDidMount() {
+        // await this.GetShared()
+    }
 
+    // async GetShared(){
+    //     let note = await NoteApi.getNote(this.props.id);
+    //    
+    //     this.setState({users: note.sharedUsers})
+    // }
+    
     async share() {
-        
-        let shareBlank = new ShareNoteBlank(this.props.id, this.state.email, this.state.permission_level)
-        
+
+        let shareBlank = new ShareNoteBlank(this.props.id,
+            this.state.email,
+            this.state.permission_level)
+
         let share = await NoteApi.shareNote(shareBlank)
 
         this.props.onCloseDialog()
@@ -58,21 +69,15 @@ export default class ShareNoteDialog extends React.Component {
                                 }}
                             />
 
-                            {/*<ul>*/}
-                            {/*    {this.props.products.map(pr => (*/}
-                            {/*        <li className="Card-item">*/}
-                            {/*            <div className="Card-header">*/}
-                            {/*                <h4>{pr.name}</h4>*/}
-                            {/*                <h4>{pr.currentPrice}</h4>*/}
-                            {/*                <Image*/}
-                            {/*                    src={pr.productPhotos.length > 0 ? (pr.productPhotos[0].photoPath !== "" ?*/}
-                            {/*                        pr.productPhotos[0].photoPath : this.state.notFoundPhoto) : (this.state.notFoundPhoto)}*/}
-                            {/*                    width={100}*/}
-                            {/*                    height={100}/>*/}
-                            {/*            </div>*/}
-                            {/*        </li>*/}
-                            {/*    ))}*/}
-                            {/*</ul>*/}
+                            <ul>
+                                {this.state.users.map(u => (
+                                    <li className="Card-item">
+                                        <div className="Card-header">
+                                            <h4>{u.email}</h4>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
 
                         </Form.Group>
 

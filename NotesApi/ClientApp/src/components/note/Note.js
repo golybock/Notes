@@ -5,6 +5,7 @@ import {NoteBlank} from "../../models/blank/note/NoteBlank";
 import RichTextEditor from "react-rte";
 import DeleteNoteDialog from "./DeleteNoteDialog";
 import ShareNoteDialog from "./ShareNoteDialog";
+import TagDialog from "./TagsDialog";
 
 export default class Note extends React.Component {
 
@@ -15,7 +16,8 @@ export default class Note extends React.Component {
             note: new NoteBlank("", ""),
             value: RichTextEditor.createValueFromString("", "html"),
             show_dialog_delete: false,
-            show_dialog_share: false
+            show_dialog_share: false,
+            show_tags : false
         };
     }
 
@@ -37,6 +39,14 @@ export default class Note extends React.Component {
 
     closeDialogShare() {
         this.setState({show_dialog_share: false})
+    }
+
+    showTags() {
+        this.setState({show_tags: true})
+    }
+
+    closeTags() {
+        this.setState({show_tags: false})
     }
 
     async loadNote() {
@@ -86,10 +96,10 @@ export default class Note extends React.Component {
                 header: value
             }
         })
-        
+
         await this.update()
     }
-    
+
     render() {
         return (<div>
 
@@ -97,21 +107,39 @@ export default class Note extends React.Component {
                 <div className="buttons">
 
                     <label style={{margin: "5px", fontSize: "20px"}}> Заголовок:</label>
-                    
-                    <input className="form-control" style={{width: "10rem", margin: "5px"}} value={this.state.note.header}
-                           onChange={async (e) => await this.onChangeName(e.target.value)}/>
 
-                    <button className="form-control btn btn-primary-note" style={{width: "10rem"}} onClick={() => this.showDialogShare()}>
+                    <input className="form-control"
+                           style={{width: "10rem", margin: "5px"}}
+                           value={this.state.note.header}
+                           onChange={
+                               async (e) =>
+                                   await this.onChangeName(e.target.value)
+                           }/>
+
+                    <button className="form-control btn btn-primary-note"
+                            style={{width: "10rem"}}
+                            onClick={() => this.showDialogShare()}>
                         Share
                     </button>
-                    
-                    <button className="form-control btn btn-primary-note" style={{width: "10rem"}} onClick={() => this.showDialogDelete()}>
+
+                    <button className="form-control btn btn-primary-note"
+                            style={{width: "10rem"}}
+                            onClick={() => this.showDialogDelete()}>
                         Delete
                     </button>
-                    
-                    <button className="form-control btn btn-primary-note" style={{width: "10rem"}} onClick={this.props.onClose}>
+
+                    <button className="form-control btn btn-primary-note"
+                            style={{width: "10rem"}}
+                            onClick={this.props.onClose}>
                         Back
                     </button>
+
+                    <button className="form-control btn btn-primary-note"
+                            style={{width: "10rem"}}
+                            onClick={() => this.showTags()}>
+                        Back
+                    </button>
+                    
                 </div>
 
                 {/*text editor*/}
@@ -129,9 +157,11 @@ export default class Note extends React.Component {
 
                 <ShareNoteDialog show={this.state.show_dialog_share}
                                  id={this.state.note.id}
-                                 users={this.state.note.sha}
                                  name={this.state.note.header}
                                  onCloseDialog={() => this.closeDialogShare()}/>
+                
+                <TagDialog show={this.state.show_tags}
+                            onClose{() => this.closeTags()}/>
 
             </div>
         );
