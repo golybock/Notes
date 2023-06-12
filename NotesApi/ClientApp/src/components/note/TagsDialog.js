@@ -28,12 +28,12 @@ export default class TagDialog extends React.Component {
         return (
             <Modal
                 show={this.props.show}
-                onHide={this.props.handleClose}
+                onHide={this.props.onCloseDialog}
                 backdrop="static"
                 centered>
 
                 <Modal.Header closeButton>
-                    <Modal.Title>Create note</Modal.Title>
+                    <Modal.Title>Note tags</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
@@ -66,7 +66,7 @@ export default class TagDialog extends React.Component {
 
                     <Button variant="secondary"
                             className="btn"
-                            onClick={this.props.handleClose}>
+                            onClick={this.props.onCloseDialog}>
                         Close
                     </Button>
 

@@ -106,7 +106,7 @@ export default class Note extends React.Component {
                 {/*command bar*/}
                 <div className="buttons">
 
-                    <label style={{margin: "5px", fontSize: "20px"}}> Заголовок:</label>
+                    <label style={{margin: "5px", fontSize: "24px"}}> Заголовок:</label>
 
                     <input className="form-control"
                            style={{width: "10rem", margin: "5px"}}
@@ -137,7 +137,7 @@ export default class Note extends React.Component {
                     <button className="form-control btn btn-primary-note"
                             style={{width: "10rem"}}
                             onClick={() => this.showTags()}>
-                        Back
+                        Tags
                     </button>
 
                 </div>
@@ -161,7 +161,8 @@ export default class Note extends React.Component {
                                  onCloseDialog={() => this.closeDialogShare()}/>
 
                 <TagDialog show={this.state.show_tags}
-                           onClose={() => this.closeTags()}/>
+                           onClose={() => this.closeTags()}
+                           onCloseDialog={() => this.closeTags()}/>
 
             </div>
         );

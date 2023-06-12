@@ -23,7 +23,7 @@ export default class DeleteNoteDialog extends React.Component {
         return (
             <Modal
                 show={this.props.show}
-                onHide={() => this.props.onCloseDialog()}
+                onHide={this.props.onCloseDialog}
                 backdrop="static"
                 centered>
 
@@ -39,7 +39,7 @@ export default class DeleteNoteDialog extends React.Component {
 
                 <Modal.Footer>
 
-                    <Button variant="secondary" onClick={() => this.props.onCloseDialog()}>
+                    <Button variant="secondary" onClick={this.props.onCloseDialog}>
                         Нет
                     </Button>
 
