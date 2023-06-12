@@ -17,7 +17,7 @@ export default class Note extends React.Component {
             value: RichTextEditor.createValueFromString("", "html"),
             show_dialog_delete: false,
             show_dialog_share: false,
-            show_tags : false
+            show_tags: false
         };
     }
 
@@ -139,7 +139,7 @@ export default class Note extends React.Component {
                             onClick={() => this.showTags()}>
                         Back
                     </button>
-                    
+
                 </div>
 
                 {/*text editor*/}
@@ -159,9 +159,9 @@ export default class Note extends React.Component {
                                  id={this.state.note.id}
                                  name={this.state.note.header}
                                  onCloseDialog={() => this.closeDialogShare()}/>
-                
+
                 <TagDialog show={this.state.show_tags}
-                            onClose{() => this.closeTags()}/>
+                           onClose={() => this.closeTags()}/>
 
             </div>
         );
