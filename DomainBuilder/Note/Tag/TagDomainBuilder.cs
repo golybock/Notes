@@ -14,7 +14,7 @@ public static class TagDomainBuilder
         };
     }
     
-    public static TagDomain Create(int id, TagDatabase tagDatabase)
+    public static TagDomain Create(Guid id, TagDatabase tagDatabase)
     {
         return new TagDomain()
         {
@@ -23,7 +23,7 @@ public static class TagDomainBuilder
         };
     }
     
-    public static TagDomain Create(int id, string name)
+    public static TagDomain Create(Guid id, string name)
     {
         return new TagDomain()
         {

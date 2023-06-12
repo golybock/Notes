@@ -12,12 +12,10 @@ namespace NotesApi.Services.Note.Tag;
 public class TagService : ITagService
 {
     private readonly TagRepository _tagRepository;
-    private readonly NoteTagRepository _noteTagRepository;
-    
+
     public TagService(IConfiguration configuration)
     {
         _tagRepository = new TagRepository(configuration);
-        _noteTagRepository = new NoteTagRepository(configuration);
     }
 
     public async Task<IActionResult> Get()
@@ -35,9 +33,9 @@ public class TagService : ITagService
         return new OkObjectResult(viewTags);
     }
 
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(Guid id)
     {
-        if (id <= 0)
+        if (id == Guid.Empty)
             return new BadRequestObjectResult("Not valid id");
         
         var databaseTag = await _tagRepository.Get(id);
@@ -85,28 +83,6 @@ public class TagService : ITagService
         catch (Exception e)
         {
             return new BadRequestObjectResult("tag already created");
-        }
-    }
-
-    public async Task<IActionResult> Update(int id, TagBlank tagBlank)
-    {
-        if (id <= 0)
-            return new BadRequestObjectResult("id not valid");
-        
-        if (string.IsNullOrEmpty(tagBlank.Name))
-            return new BadRequestObjectResult("Name not can be empty");
-
-        var tagDatabase = TagDatabaseBuilder.Create(tagBlank);
-
-        try
-        {
-            var result = await _tagRepository.Update(id, tagDatabase);
-
-            return result ? new OkResult() : new BadRequestResult();
-        }
-        catch (Exception e)
-        {
-            return new BadRequestObjectResult("Tag already created");
         }
     }
 

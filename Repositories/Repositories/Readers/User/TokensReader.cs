@@ -6,19 +6,27 @@ namespace Repositories.Repositories.Readers.User;
 
 public class TokensReader : IReader<TokensDatabase>
 {
+    private const string Id = "id";
+    private const string UserId = "user_id";
+    private const string Token = "token";
+    private const string RefreshToken = "refresh_token";
+    private const string CreatedDate = "created_date";
+    private const string Ip = "ip";
+    private const string Active = "active";
+    
     public static async Task<TokensDatabase?> ReadAsync(NpgsqlDataReader reader)
     {
         while (await reader.ReadAsync())
         {
             TokensDatabase tokensDatabase = new TokensDatabase();
             
-            tokensDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-            tokensDatabase.UserId = reader.GetInt32(reader.GetOrdinal("user_id"));
-            tokensDatabase.Token = reader.GetString(reader.GetOrdinal("token"));
-            tokensDatabase.RefreshToken = reader.GetString(reader.GetOrdinal("refresh_token"));
-            tokensDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal("creation_date"));
-            tokensDatabase.Ip = (IPAddress) reader.GetValue(reader.GetOrdinal("ip"));
-            tokensDatabase.Active = reader.GetBoolean(reader.GetOrdinal("active"));
+            tokensDatabase.Id = reader.GetInt32(reader.GetOrdinal(Id));
+            tokensDatabase.UserId = reader.GetGuid(reader.GetOrdinal(UserId));
+            tokensDatabase.Token = reader.GetString(reader.GetOrdinal(Token));
+            tokensDatabase.RefreshToken = reader.GetString(reader.GetOrdinal(RefreshToken));
+            tokensDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal(CreatedDate));
+            tokensDatabase.Ip = (IPAddress) reader.GetValue(reader.GetOrdinal(Ip));
+            tokensDatabase.Active = reader.GetBoolean(reader.GetOrdinal(Active));
             
             return tokensDatabase;
         }
@@ -34,13 +42,13 @@ public class TokensReader : IReader<TokensDatabase>
         {
             TokensDatabase tokensDatabase = new TokensDatabase();
             
-            tokensDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-            tokensDatabase.UserId = reader.GetInt32(reader.GetOrdinal("user_id"));
-            tokensDatabase.Token = reader.GetString(reader.GetOrdinal("token"));
-            tokensDatabase.RefreshToken = reader.GetString(reader.GetOrdinal("refresh_token"));
-            tokensDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal("creation_date"));
-            tokensDatabase.Ip = (IPAddress) reader.GetValue(reader.GetOrdinal("ip"));
-            tokensDatabase.Active = reader.GetBoolean(reader.GetOrdinal("active"));
+            tokensDatabase.Id = reader.GetInt32(reader.GetOrdinal(Id));
+            tokensDatabase.UserId = reader.GetGuid(reader.GetOrdinal(UserId));
+            tokensDatabase.Token = reader.GetString(reader.GetOrdinal(Token));
+            tokensDatabase.RefreshToken = reader.GetString(reader.GetOrdinal(RefreshToken));
+            tokensDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal(CreatedDate));
+            tokensDatabase.Ip = (IPAddress) reader.GetValue(reader.GetOrdinal(Ip));
+            tokensDatabase.Active = reader.GetBoolean(reader.GetOrdinal(Active));
             
             tokensDatabases.Add(tokensDatabase);
         }

@@ -1,3 +1,4 @@
+using Blank.User;
 using Domain.User;
 
 namespace NotesApi.Auth.Cookie;
@@ -13,7 +14,7 @@ public class CookieManager : CookieManagerBase
         // _context = context;
     }
 
-    public TokensDomain GetTokens(HttpContext context)
+    public TokensBlank GetTokens(HttpContext context)
     {
         string token = GetRequestCookie(context, CookiesList.Token) ??
                        throw new InvalidOperationException("Token not found");
@@ -21,7 +22,7 @@ public class CookieManager : CookieManagerBase
         string refreshToken = GetRequestCookie(context, CookiesList.RefreshToken) ??
                               throw new InvalidOperationException("RefreshToken not found");
 
-        var tokens = new TokensDomain()
+        var tokens = new TokensBlank()
         {
             Token = token,
             RefreshToken = refreshToken
@@ -30,7 +31,7 @@ public class CookieManager : CookieManagerBase
         return tokens;
     }
 
-    public void SetTokens(HttpContext context, TokensDomain tokensDomain)
+    public void SetTokens(HttpContext context, TokensBlank tokensDomain)
     {
         // validation lifetime from appsettings
         int tokenValidityInDays = int.Parse(_configuration["JWT:RefreshTokenValidityInDays"]!);

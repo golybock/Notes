@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Npgsql;
 using Repositories.Repositories.Interfaces.Note;
 using Repositories.Repositories.Readers.Note;
+using Repositories.Repositories.Readers.User;
 
 namespace Repositories.Repositories.Note;
 
@@ -77,7 +78,7 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
 
     public async Task<List<UserDatabase>> GetSharedUsers(Guid noteId)
     {
-        string query = "select * from shared_notes join users u on u.id = shared_notes.user_id where note_id = $1";
+        string query = "select u.email as email, u.id as id from shared_notes join users u on u.id = shared_notes.user_id where note_id = $1";
 
         var connection = GetConnection();
 
@@ -93,7 +94,7 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
             await using var reader = await command.ExecuteReaderAsync();
 
             // returns value(empty if not found)
-            return await SharedNoteReader.ReadUsersAsync(reader);
+            return await UserReader.ReadListAsync(reader);
         }
         catch (Exception e)
         {
@@ -145,7 +146,7 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
         }
     }
 
-    public async Task<bool> Update(Guid noteId, int userId, int permissionsLevel)
+    public async Task<bool> Update(Guid noteId, Guid userId, int permissionsLevel)
     {
         string query = "update shared_notes set permissions_level_id = $3 where note_id = $1 and user_id = $2";
 
@@ -178,7 +179,7 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
         }
     }
 
-    public async Task<bool> Delete(Guid noteId, int userId)
+    public async Task<bool> Delete(Guid noteId, Guid userId)
     {
         var connection = GetConnection();
 
@@ -210,7 +211,7 @@ public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
         }
     }
 
-    public async Task<bool> DeleteNote(Guid noteId)
+    public async Task<bool> DeleteNoteShare(Guid noteId)
     {
         return await DeleteAsync("shared_notes", "note_id", noteId) > 0;
     }

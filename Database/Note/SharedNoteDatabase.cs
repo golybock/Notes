@@ -6,7 +6,7 @@ public class SharedNoteDatabase
 
     public Guid NoteId { get; set; }
     
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
     
     public int PermissionsLevelId { get; set; }
 }

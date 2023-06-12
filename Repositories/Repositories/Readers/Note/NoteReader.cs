@@ -5,20 +5,28 @@ namespace Repositories.Repositories.Readers.Note;
 
 public class NoteReader : IReader<NoteDatabase>
 {
+    private const string Id = "id";
+    private const string OwnerId = "owner_id";
+    private const string Header = "header";
+    private const string CreatedDate = "created_date";
+    private const string SourcePath = "source_path";
+    private const string TypeId = "type_id";
+    private const string EditedDate = "edited_date";
+    
     public static async Task<NoteDatabase?> ReadAsync(NpgsqlDataReader reader)
     {
         while (await reader.ReadAsync())
         {
             NoteDatabase noteDatabase = new NoteDatabase();
             
-            noteDatabase.Id = reader.GetGuid(reader.GetOrdinal("id"));
-            noteDatabase.OwnerId = reader.GetInt32(reader.GetOrdinal("owner_id"));
-            noteDatabase.Header = reader.GetString(reader.GetOrdinal("header"));
-            noteDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal("creation_date"));
-            noteDatabase.EditedDate = reader.GetDateTime(reader.GetOrdinal("edited_date"));
-            noteDatabase.TypeId = reader.GetInt32(reader.GetOrdinal("type_id"));
+            noteDatabase.Id = reader.GetGuid(reader.GetOrdinal(Id));
+            noteDatabase.OwnerId = reader.GetGuid(reader.GetOrdinal(OwnerId));
+            noteDatabase.Header = reader.GetString(reader.GetOrdinal(Header));
+            noteDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal(CreatedDate));
+            noteDatabase.EditedDate = reader.GetDateTime(reader.GetOrdinal(EditedDate));
+            noteDatabase.TypeId = reader.GetInt32(reader.GetOrdinal(TypeId));
             
-            var sourcePath = reader.GetValue(reader.GetOrdinal("source_path"));
+            var sourcePath = reader.GetValue(reader.GetOrdinal(SourcePath));
 
             if (sourcePath != DBNull.Value)
                 noteDatabase.SourcePath = sourcePath.ToString();
@@ -37,14 +45,14 @@ public class NoteReader : IReader<NoteDatabase>
         {
             NoteDatabase noteDatabase = new NoteDatabase();
 
-            noteDatabase.Id = reader.GetGuid(reader.GetOrdinal("id"));
-            noteDatabase.OwnerId = reader.GetInt32(reader.GetOrdinal("owner_id"));
-            noteDatabase.Header = reader.GetString(reader.GetOrdinal("header"));
-            noteDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal("creation_date"));
-            noteDatabase.EditedDate = reader.GetDateTime(reader.GetOrdinal("edited_date"));
-            noteDatabase.TypeId = reader.GetInt32(reader.GetOrdinal("type_id"));
-
-            var sourcePath = reader.GetValue(reader.GetOrdinal("source_path"));
+            noteDatabase.Id = reader.GetGuid(reader.GetOrdinal(Id));
+            noteDatabase.OwnerId = reader.GetGuid(reader.GetOrdinal(OwnerId));
+            noteDatabase.Header = reader.GetString(reader.GetOrdinal(Header));
+            noteDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal(CreatedDate));
+            noteDatabase.EditedDate = reader.GetDateTime(reader.GetOrdinal(EditedDate));
+            noteDatabase.TypeId = reader.GetInt32(reader.GetOrdinal(TypeId));
+            
+            var sourcePath = reader.GetValue(reader.GetOrdinal(SourcePath));
 
             if (sourcePath != DBNull.Value)
                 noteDatabase.SourcePath = sourcePath.ToString();

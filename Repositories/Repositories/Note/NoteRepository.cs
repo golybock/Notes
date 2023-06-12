@@ -10,7 +10,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
 {
     public NoteRepository(IConfiguration configuration) : base(configuration) { }
 
-    public async Task<NoteDatabase?> Get(Guid guid)
+    public async Task<NoteDatabase?> GetNote(Guid guid)
     {
         string query = "select * from note where id = $1";
 
@@ -41,34 +41,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
         }
     }
 
-    public async Task<List<NoteDatabase>> Get()
-    {
-        string query = "select * from note";
-
-        var connection = GetConnection();
-
-        try
-        {
-            await connection.OpenAsync();
-
-            NpgsqlCommand command = new NpgsqlCommand(query, connection);
-
-            await using var reader = await command.ExecuteReaderAsync();
-            
-            return await NoteReader.ReadListAsync(reader);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        finally
-        {
-            await connection.CloseAsync();
-        }
-    }
-
-    public async Task<List<NoteDatabase>> Get(int userId)
+    public async Task<List<NoteDatabase>> GetNotes(Guid userId)
     {
         string query = "select * from note where owner_id = $1";
 
@@ -98,7 +71,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
         }
     }
 
-    public async Task<List<NoteDatabase>> GetShared(int userId)
+    public async Task<List<NoteDatabase>> GetShared(Guid userId)
     {
         string query = "select * from note join shared_notes sn on note.id = sn.note_id where sn.user_id = $1";
 
@@ -130,7 +103,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
 
     public async Task<Guid> Create(NoteDatabase noteDatabase)
     {
-        string query = "insert into note(header, creation_date, edited_date, source_path, owner_id, id, type_id)" +
+        string query = "insert into note(header, created_date, edited_date, source_path, owner_id, id, type_id)" +
                        "values ($1, $2, $3, $4, $5, $6, $7) returning id";
 
         var connection = GetConnection();
@@ -146,7 +119,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
                     new NpgsqlParameter() { Value = noteDatabase.Header },
                     new NpgsqlParameter() { Value = noteDatabase.CreationDate },
                     new NpgsqlParameter() { Value = noteDatabase.EditedDate },
-                    new NpgsqlParameter() { Value = noteDatabase.SourcePath },
+                    new NpgsqlParameter() { Value = noteDatabase.SourcePath == null ? DBNull.Value : noteDatabase.SourcePath },
                     new NpgsqlParameter() { Value = noteDatabase.OwnerId },
                     new NpgsqlParameter() { Value = noteDatabase.Id },
                     new NpgsqlParameter() { Value = 1 },

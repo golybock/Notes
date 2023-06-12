@@ -28,16 +28,9 @@ public class TagController : ControllerBase
     }
     
     [HttpGet("Tag")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(Guid id)
     {
         return await _tagService.Get(id);
-    }
-    
-    // не нужно(подгружается вместе с заметкой)
-    [HttpGet("NoteTags"), Authorize]
-    public async Task<IActionResult> GetByNote(Guid noteId)
-    {
-        return await _tagService.GetByNote(noteId);
     }
 
     [HttpPost("Tag")]
@@ -45,13 +38,7 @@ public class TagController : ControllerBase
     {
         return await _tagService.Create(tagBlank);
     }
-    
-    [HttpPut("Tag")]
-    public async Task<IActionResult> Update(int id, TagBlank tagBlank)
-    {
-        return await _tagService.Update(id, tagBlank);
-    }
-    
+
     [HttpDelete("Tag")]
     public async Task<IActionResult> Delete(int id)
     {

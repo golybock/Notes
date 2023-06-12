@@ -23,11 +23,13 @@ public class AuthService : IAuthService
         _userRepository = new UserRepository(configuration);
     }
 
-    private async Task<int> CreateUser(UserBlank userBlank)
+    private async Task<Guid> CreateUser(UserBlank userBlank)
     {
         string hashedPassword = HashPassword(userBlank.Password);
 
-        var newUser = UserDatabaseBuilder.Create(userBlank, hashedPassword);
+        var id = Guid.NewGuid();
+
+        var newUser = UserDatabaseBuilder.Create(userBlank, hashedPassword, id);
 
         return await _userRepository.Create(newUser);
     }
@@ -46,8 +48,7 @@ public class AuthService : IAuthService
     }
 
     #endregion
-
-    
+     
     #region validation
 
     // validate password 
@@ -68,13 +69,19 @@ public class AuthService : IAuthService
     {
         var user = await _userRepository.Get(email);
 
+        if (user == null)
+            return null;
+        
         return UserDomainBuilder.Create(user);
     }
     
-    private async Task<UserDomain?> GetUser(int id)
+    private async Task<UserDomain?> GetUser(Guid id)
     {
         var user = await _userRepository.Get(id);
 
+        if (user == null)
+            return null;
+        
         return UserDomainBuilder.Create(user);
     }
 
@@ -115,6 +122,9 @@ public class AuthService : IAuthService
         var id = await CreateUser(userBlank);
 
         var newUser = await GetUser(id);
+
+        if (newUser == null)
+            return new BadRequestResult();
         
         await _authManager.SignInAsync(context, newUser);
         

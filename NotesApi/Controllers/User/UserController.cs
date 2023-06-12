@@ -7,7 +7,7 @@ namespace NotesApi.Controllers.User;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase, IUserController
+public class UserController : ControllerBase
 {
     private readonly UserService _userService;
 
@@ -22,9 +22,9 @@ public class UserController : ControllerBase, IUserController
         return await _userService.Get(HttpContext);
     }
     
-    [HttpPut("User")]
-    public async Task<IActionResult> UpdateUser(UserBlank userBlank)
-    {
-        return await _userService.Update(HttpContext, userBlank);
-    }
+    // [HttpPut("User")]
+    // public async Task<IActionResult> UpdateUser(UserBlank userBlank)
+    // {
+    //     return await _userService.Update(HttpContext, userBlank);
+    // }
 }

@@ -33,7 +33,7 @@ public static class NoteDatabaseBuilder
         };
     }
     
-    public static NoteDatabase Create(Guid id, string sourcePath, NoteBlank noteBlank, int ownerId)
+    public static NoteDatabase Create(Guid id, string sourcePath, NoteBlank noteBlank, Guid ownerId)
     {
         return new NoteDatabase()
         {
@@ -44,7 +44,7 @@ public static class NoteDatabaseBuilder
         };
     }
     
-    public static NoteDatabase Create(NoteBlank noteBlank, int ownerId)
+    public static NoteDatabase Create(NoteBlank noteBlank, Guid ownerId)
     {
         return new NoteDatabase()
         {

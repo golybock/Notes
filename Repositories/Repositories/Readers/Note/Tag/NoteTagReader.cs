@@ -17,7 +17,7 @@ public class NoteTagReader : IReader<NoteTagDatabase>
             
             noteTagDatabase.Id = reader.GetInt32(reader.GetOrdinal(Id));
             noteTagDatabase.NoteId = reader.GetGuid(reader.GetOrdinal(NoteId));
-            noteTagDatabase.TagId = reader.GetInt32(reader.GetOrdinal(TagId));
+            noteTagDatabase.TagId = reader.GetGuid(reader.GetOrdinal(TagId));
                 
             return noteTagDatabase;
         }
@@ -35,7 +35,7 @@ public class NoteTagReader : IReader<NoteTagDatabase>
             
             noteTagDatabase.Id = reader.GetInt32(reader.GetOrdinal(Id));
             noteTagDatabase.NoteId = reader.GetGuid(reader.GetOrdinal(NoteId));
-            noteTagDatabase.TagId = reader.GetInt32(reader.GetOrdinal(TagId));
+            noteTagDatabase.TagId = reader.GetGuid(reader.GetOrdinal(TagId));
                 
             noteTagDatabases.Add(noteTagDatabase);
         }

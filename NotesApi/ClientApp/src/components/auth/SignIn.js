@@ -9,8 +9,8 @@ export default class SignIn extends React.Component {
         super(props);
 
         this.state = {
-            email: "admin1@admin.com",
-            password: "Admin1@Admin.com",
+            email: "Aboba123!@gmail.com",
+            password: "Aboba123!@gmail.com",
             error: ""
         }
     }

@@ -5,16 +5,20 @@ namespace Repositories.Repositories.Readers.User;
 
 public class UserReader : IReader<UserDatabase>
 {
+    private const string Id = "id";
+    private const string Email = "email";
+    private const string PasswordHash = "password_hash";
+    
     public static async Task<UserDatabase?> ReadAsync(NpgsqlDataReader reader)
     {
         while (await reader.ReadAsync())
         {
             UserDatabase userDatabase = new UserDatabase();
             
-            userDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-            userDatabase.Email = reader.GetString(reader.GetOrdinal("email"));
+            userDatabase.Id = reader.GetGuid(reader.GetOrdinal(Id));
+            userDatabase.Email = reader.GetString(reader.GetOrdinal(Email));
                 
-            var passwordHash = reader.GetValue(reader.GetOrdinal("password_hash"));
+            var passwordHash = reader.GetValue(reader.GetOrdinal(PasswordHash));
 
             if (passwordHash != DBNull.Value)
                 userDatabase.PasswordHash = passwordHash.ToString();
@@ -33,10 +37,10 @@ public class UserReader : IReader<UserDatabase>
         {
             UserDatabase userDatabase = new UserDatabase();
             
-            userDatabase.Id = reader.GetInt32(reader.GetOrdinal("id"));
-            userDatabase.Email = reader.GetString(reader.GetOrdinal("email"));
+            userDatabase.Id = reader.GetGuid(reader.GetOrdinal(Id));
+            userDatabase.Email = reader.GetString(reader.GetOrdinal(Email));
                 
-            var passwordHash = reader.GetValue(reader.GetOrdinal("password_hash"));
+            var passwordHash = reader.GetValue(reader.GetOrdinal(PasswordHash));
 
             if (passwordHash != DBNull.Value)
                 userDatabase.PasswordHash = passwordHash.ToString();

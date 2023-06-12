@@ -17,13 +17,13 @@ public class NoteDomain
     
     public string? SourcePath { get; set; }
     
-    public int OwnerId { get; set; }
+    public Guid OwnerId { get; set; }
     
     public int TypeId { get; set; }
 
     public NoteTypeDomain? Type { get; set; }
     
-    public UserDomain? User { get; set; }
+    public UserDomain? OwnerUser { get; set; }
 
     public List<UserDomain> SharedUsers { get; set; } = new List<UserDomain>();
 

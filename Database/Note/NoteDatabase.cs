@@ -14,5 +14,5 @@ public class NoteDatabase
     
     public int TypeId { get; set; }
     
-    public int OwnerId { get; set; }
+    public Guid OwnerId { get; set; }
 }

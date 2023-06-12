@@ -1,5 +1,6 @@
 using System.Net;
 using System.Security.Claims;
+using Blank.User;
 using Database.User;
 using Domain.User;
 using DomainBuilder.User;
@@ -39,7 +40,7 @@ public class AuthManager
         var token = _tokenManager.GenerateToken(claims);
         var refreshToken = _tokenManager.GenerateRefreshToken();
 
-        var tokens = new TokensDomain()
+        var tokens = new TokensBlank()
         {
             Token = token,
             RefreshToken = refreshToken
@@ -84,7 +85,7 @@ public class AuthManager
     }
 
     // override for simply
-    private TokensDomain? GetTokens(HttpContext context)
+    private TokensBlank? GetTokens(HttpContext context)
     {
         try
         {
@@ -98,7 +99,7 @@ public class AuthManager
         }
     }
 
-    private async Task<bool> SetTokensNotActive(TokensDomain tokensDomain)
+    private async Task<bool> SetTokensNotActive(TokensBlank tokensDomain)
     {
         return await _tokensRepository.SetNotActive(tokensDomain.Token, tokensDomain.RefreshToken);
     }
@@ -147,7 +148,7 @@ public class AuthManager
     }
     
     // save tokens in db and return bool value saved or not
-    private async Task<bool> SaveTokensAsync(HttpContext context, string token, string refreshToken, int userId)
+    private async Task<bool> SaveTokensAsync(HttpContext context, string token, string refreshToken, Guid userId)
     {
         var tokensDatabase = new TokensDatabase()
         {
@@ -162,7 +163,7 @@ public class AuthManager
         return await _tokensRepository.Create(tokensDatabase) > 0;
     }
     
-    private async Task<bool> SaveTokensAsync(HttpContext context, TokensDomain tokensDomain, int userId)
+    private async Task<bool> SaveTokensAsync(HttpContext context, TokensBlank tokensDomain, Guid userId)
     {
         var tokensDatabase = new TokensDatabase()
         {

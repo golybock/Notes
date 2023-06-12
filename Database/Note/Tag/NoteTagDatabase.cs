@@ -6,5 +6,5 @@ public class NoteTagDatabase
     
     public Guid NoteId { get; set; }
     
-    public int TagId { get; set; }
+    public Guid TagId { get; set; }
 }

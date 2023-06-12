@@ -7,15 +7,12 @@ namespace ViewBuilder.User;
 
 public static class UserViewBuilder
 {
-    public static UserView? Create(UserDomain? userDomain)
+    public static UserView Create(UserDomain userDomain)
     {
-        if (userDomain == null)
-            return null;
-
         return new UserView()
         {
-            Email = userDomain.Email,
-            Name = userDomain.Name
+            Id = userDomain.Id,
+            Email = userDomain.Email
         };
     }
 }

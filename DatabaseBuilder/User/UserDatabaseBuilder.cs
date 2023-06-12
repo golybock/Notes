@@ -9,39 +9,26 @@ public static class UserDatabaseBuilder
     {
         return new UserDatabase()
         {
-            Name = userBlank.Name,
             Email = userBlank.Email
         };
     } 
-    
-    public static UserDatabase Create(UserBlank userBlank, string hashedPassword)
+
+    public static UserDatabase Create(UserBlank userBlank, string password)
     {
         return new UserDatabase()
         {
-            Name = userBlank.Name,
             Email = userBlank.Email,
-            PasswordHash = hashedPassword
+            PasswordHash = password
         };
     } 
     
-    public static UserDatabase Create(int id, UserBlank userBlank)
+    public static UserDatabase Create(UserBlank userBlank, string password, Guid id)
     {
         return new UserDatabase()
         {
             Id = id,
-            Name = userBlank.Name,
-            Email = userBlank.Email
-        };
-    } 
-    
-    public static UserDatabase Create(int id, UserBlank userBlank, string hashedPassword)
-    {
-        return new UserDatabase()
-        {
-            Id = id,
-            Name = userBlank.Name,
             Email = userBlank.Email,
-            PasswordHash = hashedPassword
+            PasswordHash = password
         };
     } 
 }

@@ -10,7 +10,7 @@ public class UserRepository : RepositoryBase, IUserRepository
 {
     public UserRepository(IConfiguration configuration) : base(configuration) { }
 
-    public async Task<UserDatabase?> Get(int id)
+    public async Task<UserDatabase?> Get(Guid id)
     {
         string query = "select * from users where id = $1";
 
@@ -70,9 +70,9 @@ public class UserRepository : RepositoryBase, IUserRepository
         }
     }
 
-    public async Task<int> Create(UserDatabase userDatabase)
+    public async Task<Guid> Create(UserDatabase userDatabase)
     {
-        string query = "insert into users(email, password_hash, name)" +
+        string query = "insert into users(id, email, password_hash)" +
                        "values ($1, $2, $3) returning id";
 
         var connection = GetConnection();
@@ -85,18 +85,18 @@ public class UserRepository : RepositoryBase, IUserRepository
             {
                 Parameters =
                 {
+                    new NpgsqlParameter() { Value = userDatabase.Id },
                     new NpgsqlParameter() { Value = userDatabase.Email },
                     new NpgsqlParameter() { Value = userDatabase.PasswordHash },
-                    new NpgsqlParameter() { Value = userDatabase.Name }
                 }
             };
 
             await using var reader = await command.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
-                return reader.GetInt32(reader.GetOrdinal("id"));
+                return reader.GetGuid(reader.GetOrdinal("id"));
 
-            return 1;
+            return Guid.Empty;
         }
         catch (Exception e)
         {
@@ -109,9 +109,9 @@ public class UserRepository : RepositoryBase, IUserRepository
         }
     }
 
-    public async Task<bool> Update(int id, UserDatabase userDatabase)
+    public async Task<bool> Update(Guid id, UserDatabase userDatabase)
     {
-        string query = "update users set password_hash = $2, name = $3 " +
+        string query = "update users set password_hash = $2 " +
                        "where id = $1";
 
         var connection = GetConnection();
@@ -126,7 +126,6 @@ public class UserRepository : RepositoryBase, IUserRepository
                 {
                     new NpgsqlParameter() { Value = id },
                     new NpgsqlParameter() { Value = userDatabase.PasswordHash },
-                    new NpgsqlParameter() { Value = userDatabase.Name }
                 }
             };
 
@@ -145,7 +144,7 @@ public class UserRepository : RepositoryBase, IUserRepository
 
     public async Task<bool> Update(string email, UserDatabase userDatabase)
     {
-        string query = "update users set password_hash = $2, name = $3 " +
+        string query = "update users set password_hash = $2 " +
                        "where email = $1";
 
         var connection = GetConnection();
@@ -160,7 +159,6 @@ public class UserRepository : RepositoryBase, IUserRepository
                 {
                     new NpgsqlParameter() { Value = email },
                     new NpgsqlParameter() { Value = userDatabase.PasswordHash },
-                    new NpgsqlParameter() { Value = userDatabase.Name }
                 }
             };
 
@@ -177,7 +175,7 @@ public class UserRepository : RepositoryBase, IUserRepository
         }
     }
     
-    public async Task<bool> UpdatePassword(int id, string newPassword)
+    public async Task<bool> UpdatePassword(Guid id, string newPassword)
     {
         string query = "update users set password_hash = $2 " +
                        "where id = $1";
@@ -210,7 +208,7 @@ public class UserRepository : RepositoryBase, IUserRepository
         }
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<bool> Delete(Guid id)
     {
         return await DeleteAsync("user", "id", id) > 0;
     }

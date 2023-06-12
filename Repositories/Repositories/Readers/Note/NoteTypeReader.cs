@@ -5,17 +5,17 @@ namespace Repositories.Repositories.Readers.Note;
 
 public class NoteTypeReader : IReader<NoteTypeDatabase>
 {
-    private static readonly string _id = "id";
-    private static readonly string _name = "name";
-    
+    private const string Id = "id";
+    private const string Name = "name";
+
     public static async Task<NoteTypeDatabase?> ReadAsync(NpgsqlDataReader reader)
     {
         while (await reader.ReadAsync())
         {
             NoteTypeDatabase noteTypeDatabase = new NoteTypeDatabase();
 
-            noteTypeDatabase.Id = reader.GetInt32(reader.GetOrdinal(_id));
-            noteTypeDatabase.Name = reader.GetString(reader.GetOrdinal(_name));
+            noteTypeDatabase.Id = reader.GetInt32(reader.GetOrdinal(Id));
+            noteTypeDatabase.Name = reader.GetString(reader.GetOrdinal(Name));
 
             return noteTypeDatabase;
         }
@@ -31,8 +31,8 @@ public class NoteTypeReader : IReader<NoteTypeDatabase>
         {
             NoteTypeDatabase noteTypeDatabase = new NoteTypeDatabase();
 
-            noteTypeDatabase.Id = reader.GetInt32(reader.GetOrdinal(_id));
-            noteTypeDatabase.Name = reader.GetString(reader.GetOrdinal(_name));
+            noteTypeDatabase.Id = reader.GetInt32(reader.GetOrdinal(Id));
+            noteTypeDatabase.Name = reader.GetString(reader.GetOrdinal(Name));
             
             noteDatabases.Add(noteTypeDatabase);
         }

@@ -13,29 +13,12 @@ public static class TagViewBuilder
             Name = tagDomain.Name
         };
     }
-    
-    public static TagView Create(int id, TagDomain tagDomain)
+
+    public static TagView Create(Guid id, string name)
     {
         return new TagView()
         {
             Id = id,
-            Name = tagDomain.Name
-        };
-    }
-    
-    public static TagView Create(int id, string name)
-    {
-        return new TagView()
-        {
-            Id = id,
-            Name = name
-        };
-    }
-    
-    public static TagView Create(string name)
-    {
-        return new TagView()
-        {
             Name = name
         };
     }

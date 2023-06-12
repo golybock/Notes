@@ -4,15 +4,22 @@ namespace Repositories.Repositories.Interfaces.Note.Tag;
 
 public interface ITagRepository
 {
-    public Task<TagDatabase?> Get(int id);
+    // tag
+    public Task<TagDatabase?> Get(Guid id);
     
+    // all tags
     public Task<List<TagDatabase>> Get();
 
+    // note tags
     public Task<List<TagDatabase>> GetNoteTags(Guid noteId);
 
+    // create tag
     public Task<int> Create(TagDatabase tagDatabase);
     
-    public Task<bool> Update(int id, TagDatabase tagDatabase);
+    // create note-tag
+    public Task<int> Create(NoteTagDatabase noteTagDatabase);
+    
+    public Task<bool> DeleteNoteTags(Guid noteId);
 
     public Task<bool> Delete(int id);
 }

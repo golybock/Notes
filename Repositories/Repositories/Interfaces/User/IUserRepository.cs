@@ -4,15 +4,15 @@ namespace Repositories.Repositories.Interfaces.User;
 
 public interface IUserRepository
 {
-    public Task<UserDatabase?> Get(int id);
+    public Task<UserDatabase?> Get(Guid id);
     
     public Task<UserDatabase?> Get(string email);
 
-    public Task<int> Create(UserDatabase userDatabase);
+    public Task<Guid> Create(UserDatabase userDatabase);
 
     public Task<bool> Update(string email, UserDatabase userDatabase);
     
-    public Task<bool> UpdatePassword(int id, string newPassword);
+    public Task<bool> UpdatePassword(Guid id, string newPassword);
 
-    public Task<bool> Delete(int id);
+    public Task<bool> Delete(Guid id);
 }

@@ -2,6 +2,7 @@ import React from "react";
 import "./Auth.css"
 import sakura from "./../../resources/sakura.jpg"
 import AuthApi from "../../api/user/AuthApi";
+import {NoteUserBlank} from "../../models/blank/user/NoteUserBlank";
 
 export default class SignUp extends React.Component {
 
@@ -11,14 +12,15 @@ export default class SignUp extends React.Component {
         this.state = {
             email: "",
             password: "",
-            name: "",
             error: ""
         }
     }
 
     signUp = async () => {
 
-        let r = await AuthApi.signUp(this.state.email, this.state.password)
+        let user = new NoteUserBlank(this.state.email, this.state.password);
+        
+        let r = await AuthApi.signUp(user)
 
         if (r === true) {
             this.props.onClose()
@@ -52,20 +54,6 @@ export default class SignUp extends React.Component {
                                             onChange={(e) => {
                                                 this.setState({
                                                     email: e.target.value
-                                                })
-                                            }}
-                                        />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label>Name</label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Enter name"
-                                            value={this.state.name}
-                                            onChange={(e) => {
-                                                this.setState({
-                                                    name: e.target.value
                                                 })
                                             }}
                                         />

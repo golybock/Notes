@@ -14,7 +14,7 @@ public class TagReader : IReader<TagDatabase>
         {
             TagDatabase tagDatabase = new TagDatabase();
             
-            tagDatabase.Id = reader.GetInt32(reader.GetOrdinal(Id));
+            tagDatabase.Id = reader.GetGuid(reader.GetOrdinal(Id));
             tagDatabase.Name = reader.GetString(reader.GetOrdinal(Name));
             
             return tagDatabase;
@@ -31,7 +31,7 @@ public class TagReader : IReader<TagDatabase>
         {
             TagDatabase tagDatabase = new TagDatabase();
             
-            tagDatabase.Id = reader.GetInt32(reader.GetOrdinal(Id));
+            tagDatabase.Id = reader.GetGuid(reader.GetOrdinal(Id));
             tagDatabase.Name = reader.GetString(reader.GetOrdinal(Name));
             
             tagDatabases.Add(tagDatabase);
