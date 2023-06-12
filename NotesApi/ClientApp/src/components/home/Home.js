@@ -31,7 +31,7 @@ export default class Home extends React.Component {
 
         this.setState({notes: notes})
 
-        this.setState({sharedNotes: sharedNotes})
+        this.setState({shared_notes: sharedNotes})
     }
     
     async onClose() {
@@ -62,11 +62,10 @@ export default class Home extends React.Component {
 
                 {!this.state.card_opened && (
                     <div className="buttons">
-                        <Button variant="primary"
-                                className="btn btn-command"
+                        <button className="btn btn-primary-submit"
                                 onClick={() => this.handleOpen()}>
                             Create
-                        </Button>
+                        </button>
                     </div>
                 )}
 

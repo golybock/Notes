@@ -1,8 +1,8 @@
-class ShareNoteBlank {
-    constructor(id, email, permissionsLevel) {
-        this.id = id
+export default class ShareNoteBlank {
+    constructor(noteId, email, permissionLevel) {
+        this.noteId = noteId
         this.email = email
-        this.permissionsLevel = permissionsLevel
+        this.permissionLevel = permissionLevel
     }
 
 }

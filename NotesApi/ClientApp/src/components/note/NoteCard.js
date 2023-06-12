@@ -27,11 +27,10 @@ export default class NoteCard extends React.Component{
                 
                 <Card.Footer>
                     
-                    <Button variant="primary"
-                            className="btn transparent-btn"
+                    <button className="btn transparent-btn"
                             onClick={() => this.props.open(this.props.note.id)}>
                         Open
-                    </Button>
+                    </button>
                     
                 </Card.Footer>
                 

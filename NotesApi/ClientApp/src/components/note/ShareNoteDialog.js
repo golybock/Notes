@@ -4,13 +4,15 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import NoteApi from "../../api/note/NoteApi";
 import {NoteBlank} from "../../models/blank/note/NoteBlank";
+import {Await} from "react-router";
+import ShareNoteBlank from "../../models/blank/note/ShareNoteBlank";
 
 export default class ShareNoteDialog extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            permission_level: 0,
+            permission_level: 1,
             email : ""
         }
     }
@@ -56,6 +58,22 @@ export default class ShareNoteDialog extends React.Component {
                                 }}
                             />
 
+                            {/*<ul>*/}
+                            {/*    {this.props.products.map(pr => (*/}
+                            {/*        <li className="Card-item">*/}
+                            {/*            <div className="Card-header">*/}
+                            {/*                <h4>{pr.name}</h4>*/}
+                            {/*                <h4>{pr.currentPrice}</h4>*/}
+                            {/*                <Image*/}
+                            {/*                    src={pr.productPhotos.length > 0 ? (pr.productPhotos[0].photoPath !== "" ?*/}
+                            {/*                        pr.productPhotos[0].photoPath : this.state.notFoundPhoto) : (this.state.notFoundPhoto)}*/}
+                            {/*                    width={100}*/}
+                            {/*                    height={100}/>*/}
+                            {/*            </div>*/}
+                            {/*        </li>*/}
+                            {/*    ))}*/}
+                            {/*</ul>*/}
+
                         </Form.Group>
 
                     </Form>
@@ -72,7 +90,7 @@ export default class ShareNoteDialog extends React.Component {
 
                     <Button variant="primary"
                             className="btn btn-primary-note"
-                            onClick={this.share}>
+                            onClick={async () => await this.share()}>
                         Share
                     </Button>
 

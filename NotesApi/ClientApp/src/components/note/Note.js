@@ -14,31 +14,31 @@ export default class Note extends React.Component {
             id: this.props.id,
             note: new NoteBlank("", ""),
             value: RichTextEditor.createValueFromString("", "html"),
-            show_dialog_delete : false,
-            show_dialog_share : false
+            show_dialog_delete: false,
+            show_dialog_share: false
         };
     }
 
     async componentDidMount() {
         await this.loadNote();
     }
-    
-    showDialogDelete(){
-        this.setState({show_dialog_delete : true})
-    }
-    
-    closeDialogDelete(){
-        this.setState({show_dialog_delete : false})
+
+    showDialogDelete() {
+        this.setState({show_dialog_delete: true})
     }
 
-    showDialogShare(){
-        this.setState({show_dialog_share : true})
+    closeDialogDelete() {
+        this.setState({show_dialog_delete: false})
     }
 
-    closeDialogShare(){
-        this.setState({show_dialog_share : false})
+    showDialogShare() {
+        this.setState({show_dialog_share: true})
     }
-    
+
+    closeDialogShare() {
+        this.setState({show_dialog_share: false})
+    }
+
     async loadNote() {
         // get note from api
         let note = await NoteApi.getNote(this.state.id);
@@ -79,18 +79,37 @@ export default class Note extends React.Component {
         }
     }
 
+    onChangeName = async (value) => {
+        this.setState({
+            note: {
+                ...this.state.note,
+                header: value
+            }
+        })
+        
+        await this.update()
+    }
+    
     render() {
         return (<div>
 
                 {/*command bar*/}
                 <div className="buttons">
-                    <button className="btn btn-primary-note" onClick={() => this.showDialogShare()}>
+
+                    <label style={{margin: "5px", fontSize: "20px"}}> Заголовок:</label>
+                    
+                    <input className="form-control" style={{width: "10rem", margin: "5px"}} value={this.state.note.header}
+                           onChange={async (e) => await this.onChangeName(e.target.value)}/>
+
+                    <button className="form-control btn btn-primary-note" style={{width: "10rem"}} onClick={() => this.showDialogShare()}>
                         Share
                     </button>
-                    <button className="btn btn-primary-note" onClick={() => this.showDialogDelete()}>
+                    
+                    <button className="form-control btn btn-primary-note" style={{width: "10rem"}} onClick={() => this.showDialogDelete()}>
                         Delete
                     </button>
-                    <button className="btn btn-primary-note" onClick={this.props.onClose}>
+                    
+                    <button className="form-control btn btn-primary-note" style={{width: "10rem"}} onClick={this.props.onClose}>
                         Back
                     </button>
                 </div>
@@ -107,12 +126,13 @@ export default class Note extends React.Component {
                                   name={this.state.note.header}
                                   onCloseDialog={() => this.closeDialogDelete()}
                                   onClose={() => this.props.onClose()}/>
-                
+
                 <ShareNoteDialog show={this.state.show_dialog_share}
                                  id={this.state.note.id}
+                                 users={this.state.note.sha}
                                  name={this.state.note.header}
                                  onCloseDialog={() => this.closeDialogShare()}/>
-                
+
             </div>
         );
     }
