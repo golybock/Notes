@@ -90,6 +90,7 @@ export default class Note extends React.Component {
     }
 
     onChangeName = async (value) => {
+
         this.setState({
             note: {
                 ...this.state.note,
@@ -149,23 +150,32 @@ export default class Note extends React.Component {
                                 value={this.state.value}
                                 onChange={this.onChange}/>
 
-                <DeleteNoteDialog show={this.state.show_dialog_delete}
-                                  id={this.state.note.id}
-                                  name={this.state.note.header}
-                                  onCloseDialog={() => this.closeDialogDelete()}
-                                  onClose={() => this.props.onClose()}/>
+                {/*dialogs*/}
 
-                <ShareNoteDialog show={this.state.show_dialog_share}
-                                 id={this.state.note.id}
-                                 name={this.state.note.header}
-                                 onCloseDialog={() => this.closeDialogShare()}/>
+                {this.state.show_dialog_delete &&
 
-                <TagDialog show={this.state.show_tags}
-                           onClose={() => this.closeTags()}
-                           note={this.state.note}
-                           onCloseDialog={() => this.closeTags()}/>
+                    <DeleteNoteDialog show={this.state.show_dialog_delete}
+                                      note={this.state.note}
+                                      onCloseDialog={() => this.closeDialogDelete()}
+                                      onClose={() => this.props.onClose()}/>
 
-            </div>
+                }
+
+                {this.state.show_dialog_share &&
+
+                    <ShareNoteDialog show={this.state.show_dialog_share}
+                                     note={this.state.note}
+                                     onCloseDialog={() => this.closeDialogShare()}/>
+                }
+
+                {this.state.show_tags &&
+
+                    <TagDialog show={this.state.show_tags}
+                               note={this.state.note}
+                               update={async () => await this.update()}
+                               onCloseDialog={() => this.closeTags()}/>
+
+                }</div>
         );
     }
 }

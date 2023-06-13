@@ -29,7 +29,7 @@ export default class ShareNoteDialog extends React.Component {
     
     async share() {
 
-        let shareBlank = new ShareNoteBlank(this.props.id,
+        let shareBlank = new ShareNoteBlank(this.props.note.id,
             this.state.email,
             this.state.permission_level)
 
@@ -58,9 +58,9 @@ export default class ShareNoteDialog extends React.Component {
                 <Modal.Body>
 
                     <Form>
-
+                        
                         <Form.Group className="mb-3">
-                            {/*<Form.Label>Note name</Form.Label>*/}
+                            <Form.Label>Поделиться {this.props.note.name}</Form.Label>
 
                             {this.state.error.length > 0 && <label style={{color:"red", margin: "5px"}}>{this.state.error}</label>}
                             

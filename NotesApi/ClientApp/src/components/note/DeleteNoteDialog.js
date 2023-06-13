@@ -14,7 +14,7 @@ export default class DeleteNoteDialog extends React.Component {
     }
 
     async delete() {
-        await NoteApi.deleteNote(this.props.id)
+        await NoteApi.deleteNote(this.props.note.id)
         
         this.props.onClose()
     }
@@ -33,7 +33,7 @@ export default class DeleteNoteDialog extends React.Component {
 
                 <Modal.Body>
 
-                    <FormLabel>Удалить {this.props.name}?</FormLabel>
+                    <FormLabel>Удалить {this.props.note.name}?</FormLabel>
 
                 </Modal.Body>
 

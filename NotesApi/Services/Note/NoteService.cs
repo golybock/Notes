@@ -114,7 +114,7 @@ public class NoteService : INoteService
 
         newNoteDatabase.EditedDate = DateTime.Now;
 
-        await CreateNoteTags(newNoteDatabase.Id, noteBlank.Tags);
+        await CreateNoteTags(guid, noteBlank.Tags);
 
         var result = await _noteRepository.Update(guid, newNoteDatabase);
 

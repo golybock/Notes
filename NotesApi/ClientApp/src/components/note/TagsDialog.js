@@ -4,36 +4,35 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import TagApi from "../../api/note/tag/TagApi";
 import AsyncSelect from "react-select/async";
-import {Await} from "react-router";
 
 export default class TagDialog extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            note_tags: [],
             selected: []
         }
     }
 
-    async componentDidMount() {
-        // this.setSelectedTags()
+    componentDidMount() {
+        this.setSelectedTags()
     }
 
-    // setSelectedTags() {
-    //     let tags = this.props.note.tags;
-    //
-    //     let arr = []
-    //
-    //     tags.forEach(element => {
-    //         let dropDownEle = {label: element.name, value: element.id};
-    //         arr.push(dropDownEle);
-    //     });
-    //
-    //     this.setState({note_tags: arr})
-    // }
+    setSelectedTags() {
+        let tags = this.props.note.tags;
+
+        let arr = []
+
+        tags.forEach(element => {
+            let dropDownEle = {label: element.name, value: element.id};
+            arr.push(dropDownEle);
+        });
+        
+        this.setState({selected: arr})
+    }
 
     async getTags() {
+        
         let tags = await TagApi.getTags()
 
         let arr = []
@@ -46,10 +45,20 @@ export default class TagDialog extends React.Component {
         return arr;
     }
 
-    tagChosen(e) {
+    async tagChosen(e) {
+        
+        let arr = []
+        
+        e.forEach(c =>{
+            arr.push(c.value)
+        })
+        
+        this.setState({selected : e})
+        
+        this.props.note.tags = arr;
+        
         // save in note
-
-        this.setState({selected: e.value})
+        await this.props.update()
     }
 
     render() {
@@ -61,7 +70,9 @@ export default class TagDialog extends React.Component {
                 centered>
 
                 <Modal.Header closeButton>
+
                     <Modal.Title>Note tags</Modal.Title>
+
                 </Modal.Header>
 
                 <Modal.Body>
@@ -75,7 +86,8 @@ export default class TagDialog extends React.Component {
                                 cacheOptions
                                 isMulti
                                 defaultOptions
-                                loadOptions={async () => await this.getTags()}
+                                value={this.state.selected}
+                                loadOptions={this.getTags}
                                 onChange={(e) => this.tagChosen(e)}
                             />
 
@@ -87,15 +99,13 @@ export default class TagDialog extends React.Component {
 
                 <Modal.Footer>
 
-                    <Button variant="secondary"
-                            className="btn"
+                    <Button className="btn"
+                            variant="secondary"
                             onClick={this.props.onCloseDialog}>
                         Close
                     </Button>
 
-                    <Button variant="primary"
-                            className="btn btn-primary-note"
-                            onClick={async () => await this.create()}>
+                    <Button className="btn btn-primary-note">
                         Save Changes
                     </Button>
 
