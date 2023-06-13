@@ -1,6 +1,6 @@
 create table if not exists tag
 (
-    id   serial
+    id   uuid not null
         primary key,
     name varchar(100)
         unique
@@ -8,24 +8,24 @@ create table if not exists tag
 
 create table if not exists users
 (
-    id            serial       not null
-        primary key,
+    id            uuid         not null
+        constraint user_pkey
+            primary key,
     email         varchar(500) not null
         constraint user_email_key
             unique,
-    password_hash text,
-    name          varchar(500)
+    password_hash text
 );
 
 create table if not exists tokens
 (
     id            serial
         primary key,
-    user_id       integer
+    user_id       uuid
         references users,
     token         text                                   not null,
     refresh_token text                                   not null,
-    creation_date timestamp with time zone default now() not null,
+    created_date  timestamp with time zone default now() not null,
     ip            inet,
     active        boolean                  default true
 );
@@ -46,15 +46,15 @@ create table if not exists note_type
 
 create table if not exists note
 (
-    id            uuid                     not null
+    header       varchar(250)             not null,
+    created_date timestamp with time zone not null,
+    edited_date  timestamp with time zone not null,
+    source_path  text,
+    id           uuid                     not null
         primary key,
-    header        varchar(250)             not null,
-    creation_date timestamp with time zone not null,
-    edited_date   timestamp with time zone not null,
-    source_path   text,
-    type_id       integer
+    type_id      integer
         references note_type,
-    owner_id      integer
+    owner_id     uuid
         references users
 );
 
@@ -62,10 +62,10 @@ create table if not exists note_tag
 (
     id      serial
         primary key,
-    tag_id  integer
+    tag_id  uuid
         references tag,
     note_id uuid
-        references note (id)
+        references note
 );
 
 create table if not exists shared_notes
@@ -73,8 +73,8 @@ create table if not exists shared_notes
     id                   serial
         primary key,
     note_id              uuid
-        references note (id),
-    user_id              integer
+        references note,
+    user_id              uuid
         references users,
     permissions_level_id integer
         references permissions_level
