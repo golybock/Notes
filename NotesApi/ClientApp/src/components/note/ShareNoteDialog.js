@@ -12,7 +12,8 @@ export default class ShareNoteDialog extends React.Component {
         this.state = {
             users : [],
             permission_level: 1,
-            email: ""
+            email: "",
+            error: ""
         }
     }
     
@@ -32,9 +33,14 @@ export default class ShareNoteDialog extends React.Component {
             this.state.email,
             this.state.permission_level)
 
-        let share = await NoteApi.shareNote(shareBlank)
-
-        this.props.onCloseDialog()
+        let shared = await NoteApi.shareNote(shareBlank)
+        
+        if(shared){
+            this.props.onCloseDialog()
+        }
+        else{
+            this.setState({error: "Пользователь не найден"})
+        }
     }
 
     render() {
@@ -54,8 +60,10 @@ export default class ShareNoteDialog extends React.Component {
                     <Form>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Note name</Form.Label>
+                            {/*<Form.Label>Note name</Form.Label>*/}
 
+                            {this.state.error.length > 0 && <label style={{color:"red", margin: "5px"}}>{this.state.error}</label>}
+                            
                             <Form.Control
                                 type="email"
                                 placeholder="email"
@@ -69,15 +77,15 @@ export default class ShareNoteDialog extends React.Component {
                                 }}
                             />
 
-                            <ul>
-                                {this.state.users.map(u => (
-                                    <li className="Card-item">
-                                        <div className="Card-header">
-                                            <h4>{u.email}</h4>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
+                            {/*<ul>*/}
+                            {/*    {this.state.users.map(u => (*/}
+                            {/*        <li className="Card-item">*/}
+                            {/*            <div className="Card-header">*/}
+                            {/*                <h4>{u.email}</h4>*/}
+                            {/*            </div>*/}
+                            {/*        </li>*/}
+                            {/*    ))}*/}
+                            {/*</ul>*/}
 
                         </Form.Group>
 

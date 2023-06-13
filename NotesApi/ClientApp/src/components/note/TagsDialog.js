@@ -3,25 +3,53 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import TagApi from "../../api/note/tag/TagApi";
+import AsyncSelect from "react-select/async";
+import {Await} from "react-router";
 
 export default class TagDialog extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            tags: [],
-            note_tags: []
+            note_tags: [],
+            selected: []
         }
     }
 
     async componentDidMount() {
-        await this.getTags()
+        // this.setSelectedTags()
     }
+
+    // setSelectedTags() {
+    //     let tags = this.props.note.tags;
+    //
+    //     let arr = []
+    //
+    //     tags.forEach(element => {
+    //         let dropDownEle = {label: element.name, value: element.id};
+    //         arr.push(dropDownEle);
+    //     });
+    //
+    //     this.setState({note_tags: arr})
+    // }
 
     async getTags() {
         let tags = await TagApi.getTags()
 
-        this.setState({tags : tags})
+        let arr = []
+
+        tags.forEach(element => {
+            let dropDownEle = {label: element.name, value: element.id};
+            arr.push(dropDownEle);
+        });
+
+        return arr;
+    }
+
+    tagChosen(e) {
+        // save in note
+
+        this.setState({selected: e.value})
     }
 
     render() {
@@ -41,20 +69,15 @@ export default class TagDialog extends React.Component {
                     <Form>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Note name</Form.Label>
 
-                            {/*<Form.Control*/}
-                            {/*    type="text"*/}
-                            {/*    placeholder="name"*/}
-                            {/*    autoFocus*/}
-                            {/*    required*/}
-                            {/*    value={this.state.name}*/}
-                            {/*    onChange={(e) => {*/}
-                            {/*        this.setState({*/}
-                            {/*            name: e.target.value*/}
-                            {/*        })*/}
-                            {/*    }}*/}
-                            {/*/>*/}
+                            <AsyncSelect
+                                noOptionsMessage={() => "tags not found"}
+                                cacheOptions
+                                isMulti
+                                defaultOptions
+                                loadOptions={async () => await this.getTags()}
+                                onChange={(e) => this.tagChosen(e)}
+                            />
 
                         </Form.Group>
 

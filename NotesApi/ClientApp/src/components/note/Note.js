@@ -13,7 +13,7 @@ export default class Note extends React.Component {
         super(props);
         this.state = {
             id: this.props.id,
-            note: new NoteBlank("", ""),
+            note: new NoteBlank("", "", []),
             value: RichTextEditor.createValueFromString("", "html"),
             show_dialog_delete: false,
             show_dialog_share: false,
@@ -162,6 +162,7 @@ export default class Note extends React.Component {
 
                 <TagDialog show={this.state.show_tags}
                            onClose={() => this.closeTags()}
+                           note={this.state.note}
                            onCloseDialog={() => this.closeTags()}/>
 
             </div>

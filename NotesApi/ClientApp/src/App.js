@@ -2,10 +2,10 @@ import './App.css';
 import React from "react";
 import {Link, Route, Routes} from "react-router-dom";
 import Home from "./components/home/Home";
-import Account from "./components/Auth/Account";
+import Account from "./components/auth/Account";
 import Cat from "./resources/cat.webp"
 import UserApi from "./api/user/UserApi";
-import Auth from "./components/Auth/Auth";
+import Auth from "./components/auth/Auth";
 import PageNotFound from "./components/codes/PageNotFound";
 
 export default class App extends React.Component {

@@ -4,7 +4,6 @@ import NoteApi from "../../api/note/NoteApi";
 import Note from "../note/Note";
 import NoteCardsList from "../note/NoteCardsList";
 import CreateNoteDialog from "../note/CreateNoteDialog";
-import Button from "react-bootstrap/Button";
 
 export default class Home extends React.Component {
     
