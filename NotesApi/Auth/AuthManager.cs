@@ -37,12 +37,12 @@ public class AuthManager : IAuthManager
 
     private async Task<UserDomain?> GetUser(ClaimsPrincipal claims)
     {
-        var email = claims.Identity?.Name;
+        var id = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if (string.IsNullOrEmpty(email))
+        if (id == null)
             return null;
 
-        var user = await _userRepository.Get(email);
+        var user = await _userRepository.Get(id);
 
         if (user == null)
             return null;
@@ -67,9 +67,7 @@ public class AuthManager : IAuthManager
 
     public async Task SignInAsync(HttpContext context, UserDomain user)
     {
-        var email = user.Email;
-
-        var tokens = CreateTokens(email);
+        var tokens = CreateTokens(user);
 
         await SaveTokensAsync(context, tokens, user.Id);
 
@@ -78,9 +76,7 @@ public class AuthManager : IAuthManager
 
     public async Task SignInAsync(HttpResponse response, UserDomain user)
     {
-        var email = user.Email;
-
-        var tokens = CreateTokens(email);
+        var tokens = CreateTokens(user);
 
         await SaveTokensAsync(response.HttpContext, tokens, user.Id);
 
@@ -112,24 +108,9 @@ public class AuthManager : IAuthManager
         await _tokensRepository.Create(tokensDatabase);
     }
 
-    private async Task SaveTokensAsync(string ip, Tokens tokens, Guid userId)
+    private Tokens CreateTokens(UserDomain user)
     {
-        var tokensDatabase = new TokensDatabase()
-        {
-            Token = tokens.Token!,
-            RefreshToken = tokens.RefreshToken!,
-            Ip = GetIpAddress(ip),
-            Active = true,
-            UserId = userId,
-            CreationDate = DateTime.UtcNow
-        };
-
-        await _tokensRepository.Create(tokensDatabase);
-    }
-
-    private Tokens CreateTokens(UserDomain userDomain)
-    {
-        var claims = TokenManager.CreateIdentityClaims();
+        var claims = TokenManager.CreateIdentityClaims(user.Id, user.Email);
 
         var token = TokenManager.GenerateToken(claims);
         var refreshToken = TokenManager.GenerateRefreshToken();
