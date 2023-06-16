@@ -1,3 +1,5 @@
+using NotesApi.Auth.Token;
+
 namespace NotesApi.Auth.Cookie;
 
 public class CookieManager : CookieManagerBase
@@ -15,13 +17,16 @@ public class CookieManager : CookieManagerBase
         _configuration = configuration;
     }
 
-    public Blank.User.Tokens GetTokens(HttpContext context)
+    private CookieOptions DefaultOptions(DateTime expires) =>
+        new (){Expires = expires, Secure = true, SameSite = SameSiteMode.None};
+
+    public Tokens GetTokens(HttpContext context)
     {
         string? token = GetRequestCookie(context, CookiesList.Token);
 
         string? refreshToken = GetRequestCookie(context, CookiesList.RefreshToken);
 
-        var tokens = new Blank.User.Tokens()
+        var tokens = new Tokens()
         {
             Token = token,
             RefreshToken = refreshToken
@@ -30,7 +35,7 @@ public class CookieManager : CookieManagerBase
         return tokens;
     }
     
-    public Blank.User.Tokens? GetTokens(HttpRequest request)
+    public Tokens? GetTokens(HttpRequest request)
     {
         string? token = GetRequestCookie(request, CookiesList.Token);
 
@@ -39,7 +44,7 @@ public class CookieManager : CookieManagerBase
         if (token == null || refreshToken == null)
             return null;
         
-        var tokens = new Blank.User.Tokens()
+        var tokens = new Tokens()
         {
             Token = token,
             RefreshToken = refreshToken
@@ -48,37 +53,27 @@ public class CookieManager : CookieManagerBase
         return tokens;
     }
 
-    public void SetTokens(HttpContext context, Blank.User.Tokens tokensDomain)
+    public void SetTokens(HttpContext context, Tokens tokensDomain)
     {
         // validation lifetime from options
         int tokenValidityInDays = GetRefreshTokenLifeTime();
         var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
 
         // cookie expires and mode
-        var options = new CookieOptions()
-        {
-            Expires = expires,
-            Secure = true,
-            SameSite = SameSiteMode.None
-        };
+        var options = DefaultOptions(expires);
 
         AppendResponseCookie(context, CookiesList.Token, tokensDomain.Token, options);
         AppendResponseCookie(context, CookiesList.RefreshToken, tokensDomain.RefreshToken, options);
     }
     
-    public void SetTokens(HttpResponse response, Blank.User.Tokens tokensDomain)
+    public void SetTokens(HttpResponse response, Tokens tokensDomain)
     {
         // validation lifetime from options
         int tokenValidityInDays = GetRefreshTokenLifeTime();
         var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
 
         // cookie expires and mode
-        var options = new CookieOptions()
-        {
-            Expires = expires,
-            Secure = true,
-            SameSite = SameSiteMode.None
-        };
+        var options = DefaultOptions(expires);
 
         AppendResponseCookie(response, CookiesList.Token, tokensDomain.Token, options);
         AppendResponseCookie(response, CookiesList.RefreshToken, tokensDomain.RefreshToken, options);
@@ -91,12 +86,7 @@ public class CookieManager : CookieManagerBase
         var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
 
         // cookie expires
-        var options = new CookieOptions()
-        {
-            Expires = expires,
-            Secure = true,
-            SameSite = SameSiteMode.None
-        };
+        var options = DefaultOptions(expires);
         
         DeleteCookie(context, CookiesList.Token, options);
         DeleteCookie(context, CookiesList.RefreshToken, options);
@@ -109,12 +99,7 @@ public class CookieManager : CookieManagerBase
         var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
 
         // cookie expires
-        var options = new CookieOptions()
-        {
-            Expires = expires,
-            Secure = true,
-            SameSite = SameSiteMode.None
-        };
+        var options = DefaultOptions(expires);
         
         DeleteCookie(response, CookiesList.Token, options);
         DeleteCookie(response, CookiesList.RefreshToken, options);

@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace NotesApi.Auth.Tokens;
+namespace NotesApi.Auth.Token;
 
 public class TokenManager : ITokenManager
 {

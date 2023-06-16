@@ -1,4 +1,4 @@
-namespace Blank.User;
+namespace NotesApi.Auth.Token;
 
 public class Tokens
 {

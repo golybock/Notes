@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using Database.User;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
-using NotesApi.Auth.Tokens;
 using Repositories.Repositories.User;
 using CookieManager = NotesApi.Auth.Cookie.CookieManager;
 using ISystemClock = Microsoft.AspNetCore.Authentication.ISystemClock;
