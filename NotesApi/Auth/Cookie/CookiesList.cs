@@ -4,5 +4,4 @@ public static class CookiesList
 {
     public static string Token => "token";
     public static string RefreshToken => "refreshToken";
-    public static string Session => "session";
 }
