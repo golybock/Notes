@@ -40,7 +40,7 @@ public class AuthManager
         var token = _tokenManager.GenerateToken(claims);
         var refreshToken = _tokenManager.GenerateRefreshToken();
 
-        var tokens = new TokensBlank()
+        var tokens = new Blank.User.Tokens()
         {
             Token = token,
             RefreshToken = refreshToken
@@ -85,7 +85,7 @@ public class AuthManager
     }
 
     // override for simply
-    private TokensBlank? GetTokens(HttpContext context)
+    private Blank.User.Tokens? GetTokens(HttpContext context)
     {
         try
         {
@@ -99,7 +99,7 @@ public class AuthManager
         }
     }
 
-    private async Task<bool> SetTokensNotActive(TokensBlank tokensDomain)
+    private async Task<bool> SetTokensNotActive(Blank.User.Tokens tokensDomain)
     {
         return await _tokensRepository.SetNotActive(tokensDomain.Token, tokensDomain.RefreshToken);
     }
@@ -163,7 +163,7 @@ public class AuthManager
         return await _tokensRepository.Create(tokensDatabase) > 0;
     }
     
-    private async Task<bool> SaveTokensAsync(HttpContext context, TokensBlank tokensDomain, Guid userId)
+    private async Task<bool> SaveTokensAsync(HttpContext context, Blank.User.Tokens tokensDomain, Guid userId)
     {
         var tokensDatabase = new TokensDatabase()
         {

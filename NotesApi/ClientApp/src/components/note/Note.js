@@ -117,25 +117,25 @@ export default class Note extends React.Component {
                                    await this.onChangeName(e.target.value)
                            }/>
 
-                    <button className="form-control btn btn-primary-note"
+                    <button className="form-control btn btn-secondary"
                             style={{width: "10rem"}}
                             onClick={() => this.showDialogShare()}>
                         Share
                     </button>
 
-                    <button className="form-control btn btn-primary-note"
+                    <button className="form-control btn btn-secondary"
                             style={{width: "10rem"}}
                             onClick={() => this.showDialogDelete()}>
                         Delete
                     </button>
 
-                    <button className="form-control btn btn-primary-note"
+                    <button className="form-control btn btn-secondary"
                             style={{width: "10rem"}}
                             onClick={this.props.onClose}>
                         Back
                     </button>
 
-                    <button className="form-control btn btn-primary-note"
+                    <button className="form-control btn btn-secondary"
                             style={{width: "10rem"}}
                             onClick={() => this.showTags()}>
                         Tags

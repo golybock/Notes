@@ -7,25 +7,25 @@ namespace NotesApi.Auth.Tokens;
 
 public class TokenManager : ITokenManager
 {
-    public TokenManager(IConfiguration configuration)
+    public TokenManager(AuthSchemeOptions options)
     {
-        _configuration = configuration;
+        _options = options;
     }
     
-    private readonly IConfiguration _configuration;
+    private readonly AuthSchemeOptions _options;
     
     // jwt constants from appsettings
     private string? Secret => 
-        _configuration["JWT:Secret"];
+        _options.Secret;
     
     private string? ValidAudience => 
-        _configuration["JWT:ValidAudience"];
+        _options.ValidAudience;
     
     private string? ValidIssuer => 
-        _configuration["JWT:ValidIssuer"];
+        _options.ValidIssuer;
     
     private int TokenValidityInMinutes => 
-        int.Parse(_configuration["JWT:TokenValidityInMinutes"]!);
+        _options.TokenLifeTimeInMinutes;
     
     private SymmetricSecurityKey IssuerSigningKey => 
         new(Encoding.UTF8.GetBytes(Secret!));
@@ -35,7 +35,7 @@ public class TokenManager : ITokenManager
 
     #region token parsing
     
-    private TokenValidationParameters GetValidationParameters(bool validateLifeTime = true)
+    private TokenValidationParameters GetValidationParameters(bool validateLifeTime = false)
     {
         return new TokenValidationParameters
         {

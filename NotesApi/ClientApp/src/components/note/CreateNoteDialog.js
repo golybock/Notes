@@ -65,12 +65,12 @@ export default class CreateNoteDialog extends React.Component {
 
             <Modal.Footer>
 
-                <button className="btn btn-primary-note"
+                <button className="btn btn-secondary"
                         onClick={this.props.handleClose}>
                     Close
                 </button>
 
-                <button className="btn btn-primary-note"
+                <button className="btn btn-primary"
                         onClick={async () => await this.create()}>
                     Save Changes
                 </button>

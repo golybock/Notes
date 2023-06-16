@@ -1,28 +1,39 @@
-using Blank.User;
-using Domain.User;
-
 namespace NotesApi.Auth.Cookie;
 
 public class CookieManager : CookieManagerBase
 {
-    private readonly IConfiguration _configuration;
-    // private readonly HttpContext _context;
+    private readonly AuthSchemeOptions _options;
 
-    public CookieManager(IConfiguration configuration)
+    public CookieManager(AuthSchemeOptions options)
     {
-        _configuration = configuration;
-        // _context = context;
+        _options = options;
     }
 
-    public TokensBlank GetTokens(HttpContext context)
+    public Blank.User.Tokens? GetTokens(HttpContext context)
     {
-        string token = GetRequestCookie(context, CookiesList.Token) ??
-                       throw new InvalidOperationException("Token not found");
+        string? token = GetRequestCookie(context, CookiesList.Token);
 
-        string refreshToken = GetRequestCookie(context, CookiesList.RefreshToken) ??
-                              throw new InvalidOperationException("RefreshToken not found");
+        string? refreshToken = GetRequestCookie(context, CookiesList.RefreshToken);
 
-        var tokens = new TokensBlank()
+        var tokens = new Blank.User.Tokens()
+        {
+            Token = token,
+            RefreshToken = refreshToken
+        };
+
+        return tokens;
+    }
+    
+    public Blank.User.Tokens? GetTokens(HttpRequest request)
+    {
+        string? token = GetRequestCookie(request, CookiesList.Token);
+
+        string? refreshToken = GetRequestCookie(request, CookiesList.RefreshToken);
+
+        if (token == null || refreshToken == null)
+            return null;
+        
+        var tokens = new Blank.User.Tokens()
         {
             Token = token,
             RefreshToken = refreshToken
@@ -31,13 +42,13 @@ public class CookieManager : CookieManagerBase
         return tokens;
     }
 
-    public void SetTokens(HttpContext context, TokensBlank tokensDomain)
+    public void SetTokens(HttpContext context, Blank.User.Tokens tokensDomain)
     {
-        // validation lifetime from appsettings
-        int tokenValidityInDays = int.Parse(_configuration["JWT:RefreshTokenValidityInDays"]!);
+        // validation lifetime from options
+        int tokenValidityInDays = _options.RefreshTokenLifeTimeInDays;
         var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
 
-        // cookie expires
+        // cookie expires and mode
         var options = new CookieOptions()
         {
             Expires = expires,
@@ -48,13 +59,31 @@ public class CookieManager : CookieManagerBase
         AppendResponseCookie(context, CookiesList.Token, tokensDomain.Token, options);
         AppendResponseCookie(context, CookiesList.RefreshToken, tokensDomain.RefreshToken, options);
     }
+    
+    public void SetTokens(HttpResponse response, Blank.User.Tokens tokensDomain)
+    {
+        // validation lifetime from options
+        int tokenValidityInDays = _options.RefreshTokenLifeTimeInDays;
+        var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
+
+        // cookie expires and mode
+        var options = new CookieOptions()
+        {
+            Expires = expires,
+            Secure = true,
+            SameSite = SameSiteMode.None
+        };
+
+        AppendResponseCookie(response, CookiesList.Token, tokensDomain.Token, options);
+        AppendResponseCookie(response, CookiesList.RefreshToken, tokensDomain.RefreshToken, options);
+    }
 
     public void DeleteTokens(HttpContext context)
     {
-        // validation lifetime from appsettings
-        int tokenValidityInDays = int.Parse(_configuration["JWT:RefreshTokenValidityInDays"]!);
+        // validation lifetime from options
+        int tokenValidityInDays = _options.RefreshTokenLifeTimeInDays;
         var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
-        
+
         // cookie expires
         var options = new CookieOptions()
         {
@@ -65,5 +94,23 @@ public class CookieManager : CookieManagerBase
         
         DeleteCookie(context, CookiesList.Token, options);
         DeleteCookie(context, CookiesList.RefreshToken, options);
+    }
+    
+    public void DeleteTokens(HttpResponse response)
+    {
+        // validation lifetime from options
+        int tokenValidityInDays = _options.RefreshTokenLifeTimeInDays;
+        var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
+
+        // cookie expires
+        var options = new CookieOptions()
+        {
+            Expires = expires,
+            Secure = true,
+            SameSite = SameSiteMode.None
+        };
+        
+        DeleteCookie(response, CookiesList.Token, options);
+        DeleteCookie(response, CookiesList.RefreshToken, options);
     }
 }

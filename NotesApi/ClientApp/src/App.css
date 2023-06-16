@@ -21,7 +21,21 @@
   border: 0;
 }
 
-.btn.btn-primary-note {
+.btn.btn-primary {
+  background-color: #ee82ee;
+  margin: 5px;
+  color: black;
+  border: 0;
+}
+
+.btn.btn-danger {
+  background-color: red;
+  margin: 5px;
+  color: black;
+  border: 0;
+}
+
+.btn.btn-secondary {
   background-color: #FFE5EB;
   margin: 5px;
   color: black;
