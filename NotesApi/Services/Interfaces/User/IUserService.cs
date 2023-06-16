@@ -6,6 +6,6 @@ namespace NotesApi.Services.Interfaces.User;
 
 public interface IUserService
 {
-    public Task<IActionResult> Get(HttpContext context);
-    public Task<IActionResult> Update(HttpContext context, UserBlank userBlank);
+    public Task<IActionResult> Get(ClaimsPrincipal claims);
+    public Task<IActionResult> Update(ClaimsPrincipal claims, UserBlank userBlank);
 }

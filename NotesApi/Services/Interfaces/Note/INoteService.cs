@@ -8,19 +8,19 @@ namespace NotesApi.Services.Interfaces.Note;
 
 public interface INoteService
 {
-    public Task<IActionResult> Get(UserDomain user);
+    public Task<IActionResult> Get(ClaimsPrincipal claims);
 
-    public Task<IActionResult> Get(UserDomain user, Guid id);
+    public Task<IActionResult> Get(ClaimsPrincipal claims, Guid id);
 
-    public Task<IActionResult> Create(UserDomain user, NoteBlank noteBlank);
+    public Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank);
 
-    public Task<IActionResult> Update(UserDomain user, Guid id, NoteBlank noteBlank);
+    public Task<IActionResult> Update(ClaimsPrincipal claims, Guid id, NoteBlank noteBlank);
 
-    public Task<IActionResult> Share(UserDomain user, ShareBlank shareBlank);
+    public Task<IActionResult> Share(ClaimsPrincipal claims, ShareBlank shareBlank);
 
-    public Task<IActionResult> UpdateShare(UserDomain user, ShareBlank shareBlank);
+    public Task<IActionResult> UpdateShare(ClaimsPrincipal claims, ShareBlank shareBlank);
 
-    public Task<IActionResult> DeleteShare(UserDomain user, Guid id, string email);
+    public Task<IActionResult> DeleteShare(ClaimsPrincipal claims, Guid id, string email);
 
-    public Task<IActionResult> Delete(UserDomain user, Guid id);
+    public Task<IActionResult> Delete(ClaimsPrincipal claims, Guid id);
 }

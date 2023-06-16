@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Blank.Note;
 using Blank.Note.Tag;
 using Database.Note;
@@ -10,6 +11,7 @@ using DomainBuilder.Note;
 using DomainBuilder.Note.Tag;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
+using NotesApi.Auth;
 using NotesApi.Enums;
 using NotesApi.Services.Interfaces.Note;
 using Repositories.Repositories.Note;
@@ -26,6 +28,7 @@ public class NoteService : INoteService
     private readonly ShareNoteRepository _shareNoteRepository;
     private readonly NoteTypeRepository _noteTypeRepository;
     private readonly UserRepository _userRepository;
+    private readonly AuthManager _authManager;
 
     public NoteService(IConfiguration configuration)
     {
@@ -34,11 +37,12 @@ public class NoteService : INoteService
         _shareNoteRepository = new ShareNoteRepository(configuration);
         _noteTypeRepository = new NoteTypeRepository(configuration);
         _userRepository = new UserRepository(configuration);
+        _authManager = new AuthManager(configuration);
     }
 
     #region controller funcs (use in controllers)
 
-    public async Task<IActionResult> Get(UserDomain user)
+    public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
         var notesDomain = await GetNotes(user.Id);
 
@@ -49,7 +53,7 @@ public class NoteService : INoteService
         return new OkObjectResult(notesView);
     }
 
-    public async Task<IActionResult> GetShared(UserDomain user)
+    public async Task<IActionResult> GetShared(ClaimsPrincipal claims)
     {
         var notesDomain = await GetSharedNotes(user.Id);
 
@@ -60,7 +64,7 @@ public class NoteService : INoteService
         return new OkObjectResult(notesView);
     }
 
-    public async Task<IActionResult> Get(UserDomain user, Guid id)
+    public async Task<IActionResult> Get(ClaimsPrincipal claims, Guid id)
     {
         var noteDomain = await GetNote(id);
 
@@ -76,7 +80,7 @@ public class NoteService : INoteService
     }
 
     // not save text and tags, only name and returns id
-    public async Task<IActionResult> Create(UserDomain user, NoteBlank noteBlank)
+    public async Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank)
     {
         var noteDatabase = NoteDatabaseBuilder.Create(noteBlank, user.Id);
 
@@ -90,7 +94,7 @@ public class NoteService : INoteService
         return result != Guid.Empty ? new OkObjectResult(noteDatabase.Id) : new BadRequestResult();
     }
 
-    public async Task<IActionResult> Update(UserDomain user, Guid guid, NoteBlank noteBlank)
+    public async Task<IActionResult> Update(ClaimsPrincipal claims, Guid guid, NoteBlank noteBlank)
     {
         var noteDatabase = await _noteRepository.GetNote(guid);
 
@@ -122,7 +126,7 @@ public class NoteService : INoteService
         return result ? new OkResult() : new BadRequestResult();
     }
 
-    public async Task<IActionResult> Share(UserDomain user, ShareBlank shareBlank)
+    public async Task<IActionResult> Share(ClaimsPrincipal claims, ShareBlank shareBlank)
     {
         var note = await GetNote(shareBlank.NoteId);
 
@@ -148,7 +152,7 @@ public class NoteService : INoteService
         return res > 0 ? new OkResult() : new BadRequestObjectResult("Invalid data");
     }
 
-    public async Task<IActionResult> UpdateShare(UserDomain user, ShareBlank shareBlank)
+    public async Task<IActionResult> UpdateShare(ClaimsPrincipal claims, ShareBlank shareBlank)
     {
         var note = await GetNote(shareBlank.NoteId);
 
@@ -165,7 +169,7 @@ public class NoteService : INoteService
         return res ? new OkResult() : new BadRequestObjectResult("Invalid data");
     }
 
-    public async Task<IActionResult> DeleteShare(UserDomain user, Guid id, string email)
+    public async Task<IActionResult> DeleteShare(ClaimsPrincipal claims, Guid id, string email)
     {
         var note = await GetNote(id);
 
@@ -182,7 +186,7 @@ public class NoteService : INoteService
         return res ? new OkResult() : new BadRequestObjectResult("Error delete");
     }
 
-    public async Task<IActionResult> Delete(UserDomain user, Guid id)
+    public async Task<IActionResult> Delete(ClaimsPrincipal claims, Guid id)
     {
         var note = await _noteRepository.GetNote(id);
 

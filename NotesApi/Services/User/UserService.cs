@@ -4,6 +4,7 @@ using Blank.User;
 using DatabaseBuilder.User;
 using Domain.User;
 using DomainBuilder.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Auth;
 using NotesApi.Services.Interfaces.User;
@@ -16,35 +17,31 @@ public class UserService : IUserService
 {
     private readonly UserRepository _userRepository;
     private readonly AuthManager _authManager;
-    
+
     public UserService(IConfiguration configuration)
     {
         _authManager = new AuthManager(configuration);
         _userRepository = new UserRepository(configuration);
     }
 
-    public async Task<IActionResult> Get(HttpContext context)
+    [Authorize]
+    public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
-        var signed = await _authManager.IsSigned(context);
-
-        if (signed == null)
-            return new UnauthorizedResult();
-
-        var userView = UserViewBuilder.Create(signed);
+        var user = await _authManager.GetUser(claims);
+        
+        var userView = UserViewBuilder.Create(user);
         
         return new OkObjectResult(userView);
     }
 
-    public async Task<IActionResult> Update(HttpContext context, UserBlank userBlank)
+    [Authorize]
+    public async Task<IActionResult> Update(ClaimsPrincipal claims, UserBlank userBlank)
     {
-        var signed = await _authManager.IsSigned(context);
-
-        if (signed == null)
-            return new UnauthorizedResult();
+        var user = await _authManager.GetUser(claims);
         
         var userDatabase = UserDatabaseBuilder.Create(userBlank);
 
-        var updated = await _userRepository.Update(signed.Email, userDatabase);
+        var updated = await _userRepository.Update(user.Id, userDatabase);
 
         if (!updated)
             return new BadRequestResult();

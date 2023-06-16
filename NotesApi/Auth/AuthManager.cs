@@ -35,7 +35,7 @@ public class AuthManager : IAuthManager
         TokenManager = new TokenManager(options);
     }
 
-    private async Task<UserDomain?> GetUser(ClaimsPrincipal claims)
+    public async Task<UserDomain?> GetUser(ClaimsPrincipal claims)
     {
         var id = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -76,6 +76,20 @@ public class AuthManager : IAuthManager
 
     public async Task SignInAsync(HttpResponse response, UserDomain user)
     {
+        var tokens = CreateTokens(user);
+
+        await SaveTokensAsync(response.HttpContext, tokens, user.Id);
+
+        CookieManager.SetTokens(response, tokens);
+    }
+
+    public async Task SignInAsync(HttpResponse response, ClaimsPrincipal principal)
+    {
+        var user = await GetUser(principal);
+
+        if (user == null)
+            throw new Exception("user not found in principal");
+
         var tokens = CreateTokens(user);
 
         await SaveTokensAsync(response.HttpContext, tokens, user.Id);
