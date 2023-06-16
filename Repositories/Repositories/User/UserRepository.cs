@@ -10,6 +10,8 @@ public class UserRepository : RepositoryBase, IUserRepository
 {
     public UserRepository(IConfiguration configuration) : base(configuration) { }
 
+    public UserRepository(string connectionString) : base(connectionString) { }
+
     public async Task<UserDatabase?> Get(Guid id)
     {
         string query = "select * from users where id = $1";

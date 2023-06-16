@@ -9,6 +9,8 @@ namespace Repositories.Repositories.User;
 public class TokensRepository : RepositoryBase, ITokenRepository
 {
     public TokensRepository(IConfiguration configuration) : base(configuration) { }
+    
+    public TokensRepository(string connectionString) : base(connectionString) { }
 
     public async Task<List<TokensDatabase>> GetList(int userId)
     {

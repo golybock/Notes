@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
@@ -5,18 +6,27 @@ namespace Repositories.Repositories;
 
 public abstract class RepositoryBase
 {
-    private readonly IConfiguration _configuration;
+    private readonly IConfiguration? _configuration;
+    private readonly string? _connectionString;
 
     protected RepositoryBase(IConfiguration configuration)
     {
         _configuration = configuration;
     }
 
+    protected RepositoryBase(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
+
     private string? GetConnectionString()
     {
-       return _configuration.GetConnectionString("notes");
+        if (_configuration == null)
+            return _connectionString;
+
+        return _configuration.GetConnectionString("notes");
     }
-    
+
     protected NpgsqlConnection GetConnection()
     {
         return new NpgsqlConnection(GetConnectionString());
@@ -31,12 +41,12 @@ public abstract class RepositoryBase
             connection.Open();
 
             var query = $"delete from {table} where {column} = $1";
-            
+
             await using var cmd = new NpgsqlCommand(query, connection)
             {
                 Parameters =
                 {
-                    new NpgsqlParameter {Value = param}
+                    new NpgsqlParameter { Value = param }
                 }
             };
 

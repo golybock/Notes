@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.Extensions.Options;
 using NotesApi.Auth.Tokens;
+using Repositories.Repositories.User;
 using CookieManager = NotesApi.Auth.Cookie.CookieManager;
 using ISystemClock = Microsoft.AspNetCore.Authentication.ISystemClock;
 
@@ -16,6 +17,9 @@ public class AuthHandler : AuthenticationHandler<AuthSchemeOptions>
     private readonly CookieManager _cookieManager;
     private readonly TokenManager _tokenManager;
     
+    private readonly TokensRepository _tokensRepository;
+    private readonly UserRepository _userRepository;
+    
     public AuthHandler(
         IOptionsMonitor<AuthSchemeOptions> options,
         ILoggerFactory logger,
@@ -25,6 +29,11 @@ public class AuthHandler : AuthenticationHandler<AuthSchemeOptions>
     {
         _cookieManager = new CookieManager(options.CurrentValue);
         _tokenManager = new TokenManager(options.CurrentValue);
+
+        var connectionString = options.CurrentValue.ConnectionString;
+        
+        _tokensRepository = new TokensRepository(connectionString);
+        _userRepository = new UserRepository(connectionString);
     }
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -49,41 +58,8 @@ public class AuthHandler : AuthenticationHandler<AuthSchemeOptions>
                 return AuthenticateResult.Success(ticket);
             }
             
-
+            // refresh token, set cookie and return Success
         }
-
-        // if (tokenMatch.Success)
-        // {
-        //     // the token is captured in this group
-        //     // as declared in the Regex
-        //     var token = tokenMatch.Groups["token"].Value;
-        //
-        //     try
-        //     {
-        //         // convert the input token down from Base64 into normal
-        //         byte[] fromBase64String = Convert.FromBase64String(token);
-        //         var parsedToken = Encoding.UTF8.GetString(fromBase64String);
-        //
-        //         // deserialize the JSON string obtained from the byte array
-        //         model = JsonConvert.DeserializeObject<TokenModel>(parsedToken);
-        //     }
-        //     catch (System.Exception ex)
-        //     {
-        //         Console.WriteLine("Exception Occured while Deserializing: " + ex);
-        //         return Task.FromResult(AuthenticateResult.Fail("TokenParseException"));
-        //     }
-        //
-        //     // success branch
-        //     // generate authTicket
-        //     // authenticate the request
-        //
-        //     /* todo */
-        // }
-        //
-        // // failure branch
-        // // return failure
-        // // with an optional message
-        // return Task.FromResult(AuthenticateResult.Fail("Model is Empty"));
         
         return AuthenticateResult.Fail("Invalid tokens");
     }
