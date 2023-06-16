@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Blank.Note.Tag;
 
 namespace Blank.Note;
 
@@ -10,5 +11,5 @@ public class NoteBlank
     public string? Text { get; set; }
 
     // list of guid tags
-    public List<Guid> Tags { get; set; } = new List<Guid>();
+    public List<TagBlank> Tags { get; set; } = new List<TagBlank>();
 }

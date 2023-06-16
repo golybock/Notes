@@ -46,12 +46,12 @@ export default class TagDialog extends React.Component {
     }
 
     async tagChosen(e) {
-        
         let arr = []
-        
-        e.forEach(c =>{
-            arr.push(c.value)
-        })
+
+        e.forEach(element => {
+            let dropDownEle = {name: element.label, id: element.value};
+            arr.push(dropDownEle);
+        });
         
         this.setState({selected : e})
         

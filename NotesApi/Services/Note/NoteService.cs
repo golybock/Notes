@@ -1,4 +1,5 @@
 using Blank.Note;
+using Blank.Note.Tag;
 using Database.Note;
 using Database.Note.Tag;
 using DatabaseBuilder.Note;
@@ -331,12 +332,16 @@ public class NoteService : INoteService
         return tagsDomain;
     }
 
-    private async Task CreateNoteTags(Guid noteId, List<Guid> noteTags)
+    private async Task CreateNoteTags(Guid noteId, List<TagBlank> noteTags)
     {
         await _tagRepository.DeleteNoteTags(noteId);
 
-        foreach (var noteTagId in noteTags)
-            await _tagRepository.Create(new NoteTagDatabase() {NoteId = noteId, TagId = noteTagId});
+        foreach (var noteTag in noteTags)
+        {
+            if (noteTag.Id != null)
+                await _tagRepository.Create(new NoteTagDatabase() {NoteId = noteId, TagId = noteTag.Id.Value});
+        }
+           
     }
 
     #endregion

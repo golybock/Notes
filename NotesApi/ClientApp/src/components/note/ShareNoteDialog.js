@@ -60,9 +60,11 @@ export default class ShareNoteDialog extends React.Component {
                     <Form>
                         
                         <Form.Group className="mb-3">
-                            <Form.Label>Поделиться {this.props.note.name}</Form.Label>
+                            <Form.Label>Email пользователя: {this.props.note.name}</Form.Label>
 
-                            {this.state.error.length > 0 && <label style={{color:"red", margin: "5px"}}>{this.state.error}</label>}
+                            {this.state.error.length > 0 && 
+                                <label style={{color:"red", margin: "5px"}}>{this.state.error}</label>
+                            }
                             
                             <Form.Control
                                 type="email"

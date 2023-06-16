@@ -8,25 +8,6 @@
     vertical-align: center;
 }
 
-.btn{
-    width: 10rem;
-    padding: 10px;
-    border: 0;
-    color: black;
-    font-size: 14px;
-}
-
-.btn.btn-command {
-    background-color: #FFE5EB;
-    border: 0;
-}
-
-.btn.btn-primary-note {
-    background-color: #FFE5EB;
-    margin: 5px;
-    border: 0;
-}
-
 .editor{
     margin: 20px;
 }
