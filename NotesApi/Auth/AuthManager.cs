@@ -90,16 +90,26 @@ public class AuthManager : IAuthManager
     {
         var email = claimsPrincipal.Identity?.Name;
 
+        var user = await GetUser(claimsPrincipal);
+        
         var tokens = GetTokens(email);
         
         await SaveTokensAsync(context, tokens, user.Id);
         
-        CookieManager.SetTokens(response, tokens);
+        CookieManager.SetTokens(context, tokens);
     }
 
     public async Task SignInAsync(HttpResponse response, ClaimsPrincipal claimsPrincipal)
     {
-        throw new NotImplementedException();
+        var email = claimsPrincipal.Identity?.Name;
+
+        var user = await GetUser(claimsPrincipal);
+        
+        var tokens = GetTokens(email);
+        
+        await SaveTokensAsync(response.HttpContext, tokens, user.Id);
+        
+        CookieManager.SetTokens(response, tokens);
     }
 
     public void SignOut(HttpContext context)

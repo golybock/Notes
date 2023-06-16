@@ -41,13 +41,17 @@ public class AuthHandler : AuthenticationHandler<AuthSchemeOptions>
         {
             var tokenActive = _authManager.TokenManager.TokenActive(tokens.Token!);
 
+            var principal = _authManager.TokenManager.GetPrincipalFromToken(tokens.Token!);
+            
             if (tokenActive)
             {
-                var principal = _authManager.TokenManager.GetPrincipalFromToken(tokens.Token!);
                 var ticket = new AuthenticationTicket(principal, Scheme.Name);
                 return AuthenticateResult.Success(ticket);
             }
-            
+
+
+            await _authManager.SignInAsync(Response, principal);
+
             // refresh token, set cookie and return Success
         }
         
