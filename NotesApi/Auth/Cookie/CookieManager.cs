@@ -2,14 +2,20 @@ namespace NotesApi.Auth.Cookie;
 
 public class CookieManager : CookieManagerBase
 {
-    private readonly AuthSchemeOptions _options;
+    private readonly AuthSchemeOptions? _options;
+    private readonly IConfiguration? _configuration;
 
     public CookieManager(AuthSchemeOptions options)
     {
         _options = options;
     }
 
-    public Blank.User.Tokens? GetTokens(HttpContext context)
+    public CookieManager(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
+    public Blank.User.Tokens GetTokens(HttpContext context)
     {
         string? token = GetRequestCookie(context, CookiesList.Token);
 
@@ -45,7 +51,7 @@ public class CookieManager : CookieManagerBase
     public void SetTokens(HttpContext context, Blank.User.Tokens tokensDomain)
     {
         // validation lifetime from options
-        int tokenValidityInDays = _options.RefreshTokenLifeTimeInDays;
+        int tokenValidityInDays = GetRefreshTokenLifeTime();
         var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
 
         // cookie expires and mode
@@ -63,7 +69,7 @@ public class CookieManager : CookieManagerBase
     public void SetTokens(HttpResponse response, Blank.User.Tokens tokensDomain)
     {
         // validation lifetime from options
-        int tokenValidityInDays = _options.RefreshTokenLifeTimeInDays;
+        int tokenValidityInDays = GetRefreshTokenLifeTime();
         var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
 
         // cookie expires and mode
@@ -81,7 +87,7 @@ public class CookieManager : CookieManagerBase
     public void DeleteTokens(HttpContext context)
     {
         // validation lifetime from options
-        int tokenValidityInDays = _options.RefreshTokenLifeTimeInDays;
+        int tokenValidityInDays = GetRefreshTokenLifeTime();
         var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
 
         // cookie expires
@@ -99,7 +105,7 @@ public class CookieManager : CookieManagerBase
     public void DeleteTokens(HttpResponse response)
     {
         // validation lifetime from options
-        int tokenValidityInDays = _options.RefreshTokenLifeTimeInDays;
+        int tokenValidityInDays = GetRefreshTokenLifeTime();
         var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
 
         // cookie expires
@@ -112,5 +118,18 @@ public class CookieManager : CookieManagerBase
         
         DeleteCookie(response, CookiesList.Token, options);
         DeleteCookie(response, CookiesList.RefreshToken, options);
+    }
+
+    private int GetRefreshTokenLifeTime()
+    {
+        if (_options == null)
+        {
+            if (_configuration == null)
+                throw new Exception("Ivalid configuration and options");
+            
+            return int.Parse(_configuration["JWT:RefreshTokenValidityInDays"]!);
+        }
+
+        return _options.RefreshTokenLifeTimeInDays;
     }
 }
