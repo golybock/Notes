@@ -44,6 +44,8 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
+        var user = await _authManager.GetUser(claims);
+        
         var notesDomain = await GetNotes(user.Id);
 
         var notesView = notesDomain
@@ -55,6 +57,8 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> GetShared(ClaimsPrincipal claims)
     {
+        var user = await _authManager.GetUser(claims);
+        
         var notesDomain = await GetSharedNotes(user.Id);
 
         var notesView = notesDomain
@@ -66,6 +70,8 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> Get(ClaimsPrincipal claims, Guid id)
     {
+        var user = await _authManager.GetUser(claims);
+        
         var noteDomain = await GetNote(id);
 
         if (noteDomain == null)
@@ -82,6 +88,8 @@ public class NoteService : INoteService
     // not save text and tags, only name and returns id
     public async Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank)
     {
+        var user = await _authManager.GetUser(claims);
+        
         var noteDatabase = NoteDatabaseBuilder.Create(noteBlank, user.Id);
 
         noteDatabase.SourcePath = await NoteFileManager.CreateNoteText("");
@@ -96,6 +104,8 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> Update(ClaimsPrincipal claims, Guid guid, NoteBlank noteBlank)
     {
+        var user = await _authManager.GetUser(claims);
+        
         var noteDatabase = await _noteRepository.GetNote(guid);
 
         if (noteDatabase == null)
@@ -188,6 +198,8 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> Delete(ClaimsPrincipal claims, Guid id)
     {
+        var user = await _authManager.GetUser(claims);
+        
         var note = await _noteRepository.GetNote(id);
 
         if (note == null)

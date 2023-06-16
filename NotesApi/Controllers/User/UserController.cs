@@ -5,7 +5,7 @@ using NotesApi.Services.User;
 
 namespace NotesApi.Controllers.User;
 
-[ApiController]
+[ApiController, Authorize]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
@@ -19,7 +19,7 @@ public class UserController : ControllerBase
     [HttpGet("User")]
     public async Task<IActionResult> GetUser()
     {
-        return await _userService.Get(HttpContext);
+        return await _userService.Get(User);
     }
     
     // [HttpPut("User")]

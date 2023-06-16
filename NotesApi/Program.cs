@@ -13,6 +13,11 @@ builder.Services.AddAuthentication(options => options.DefaultScheme = "Aboba")
         "Aboba", options =>
         {
             options.ConnectionString = builder.Configuration.GetConnectionString("notes")!;
+            options.Secret = builder.Configuration["JWT:Secret"];
+            options.TokenLifeTimeInMinutes = int.Parse(builder.Configuration["JWT:TokenValidityInMinutes"]);
+            options.RefreshTokenLifeTimeInDays = Int32.Parse(builder.Configuration["JWT:RefreshTokenValidityInDays"]);
+            options.ValidIssuer = builder.Configuration["JWT:ValidIssuer"];
+            options.ValidAudience = builder.Configuration["JWT:ValidAudience"];
         });
 
 // Default Policy
