@@ -84,12 +84,12 @@ public class TokenManager : ITokenManager
 
     #region generate token
 
-    public IEnumerable<Claim> CreateIdentityClaims(string email)
+    public IEnumerable<Claim> CreateIdentityClaims(Guid userId, string email)
     {
         return new List<Claim>()
         {
-            new Claim(ClaimTypes.Email, email),
-            new Claim(ClaimTypes.Name, email)
+            new Claim(ClaimTypes.Name, email),
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString())
         };
     }
 
@@ -98,7 +98,7 @@ public class TokenManager : ITokenManager
         if (TokenValidityInMinutes == null)
             throw new Exception("Cannot read token lifetime");
         
-        var expires = DateTime.UtcNow.AddMinutes(TokenValidityInMinutes ?? 0);
+        var expires = DateTime.UtcNow.AddMinutes(TokenValidityInMinutes.Value);
 
         // creating token
         var token = new JwtSecurityToken(

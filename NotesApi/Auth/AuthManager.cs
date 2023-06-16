@@ -14,23 +14,25 @@ public class AuthManager : IAuthManager
     public CookieManager CookieManager { get; set; }
     public TokenManager TokenManager { get; set; }
 
+    // database
     private readonly TokensRepository _tokensRepository;
+    
     private readonly UserRepository _userRepository;
 
     public AuthManager(IConfiguration configuration)
     {
         _userRepository = new UserRepository(configuration);
-        TokenManager = new TokenManager(configuration);
         _tokensRepository = new TokensRepository(configuration);
         CookieManager = new CookieManager(configuration);
+        TokenManager = new TokenManager(configuration);
     }
 
     public AuthManager(AuthSchemeOptions options)
     {
         _userRepository = new UserRepository(options.ConnectionString);
-        TokenManager = new TokenManager(options);
         _tokensRepository = new TokensRepository(options.ConnectionString);
         CookieManager = new CookieManager(options);
+        TokenManager = new TokenManager(options);
     }
 
     private async Task<UserDomain?> GetUser(ClaimsPrincipal claims)
@@ -95,7 +97,7 @@ public class AuthManager : IAuthManager
         CookieManager.DeleteTokens(response);
     }
 
-    private async Task SaveTokensAsync(HttpContext context, Blank.User.Tokens tokens, Guid userId)
+    private async Task SaveTokensAsync(HttpContext context, Tokens tokens, Guid userId)
     {
         var tokensDatabase = new TokensDatabase()
         {
@@ -110,7 +112,7 @@ public class AuthManager : IAuthManager
         await _tokensRepository.Create(tokensDatabase);
     }
 
-    private async Task SaveTokensAsync(string ip, Blank.User.Tokens tokens, Guid userId)
+    private async Task SaveTokensAsync(string ip, Tokens tokens, Guid userId)
     {
         var tokensDatabase = new TokensDatabase()
         {
@@ -125,14 +127,14 @@ public class AuthManager : IAuthManager
         await _tokensRepository.Create(tokensDatabase);
     }
 
-    private Blank.User.Tokens CreateTokens(string email)
+    private Tokens CreateTokens(UserDomain userDomain)
     {
-        var claims = TokenManager.CreateIdentityClaims(email);
+        var claims = TokenManager.CreateIdentityClaims();
 
         var token = TokenManager.GenerateToken(claims);
         var refreshToken = TokenManager.GenerateRefreshToken();
 
-        var tokens = new Blank.User.Tokens()
+        var tokens = new Tokens()
         {
             Token = token,
             RefreshToken = refreshToken

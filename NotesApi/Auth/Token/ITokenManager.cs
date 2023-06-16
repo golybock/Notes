@@ -15,7 +15,7 @@ public interface ITokenManager
 
     public ClaimsPrincipal GetPrincipalFromToken(string token);
 
-    public IEnumerable<Claim> CreateIdentityClaims(string email);
+    public IEnumerable<Claim> CreateIdentityClaims(Guid userId, string email);
 
     public ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
     
