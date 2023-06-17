@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using NotesApi.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,9 +9,9 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthentication(options => options.DefaultScheme = "Aboba")
-    .AddScheme<AuthSchemeOptions, AuthHandler>(
-        "Aboba", options =>
+builder.Services.AddAuthentication(AuthSchemeOptions.Name)
+    .AddNoOpAuth(
+        AuthSchemeOptions.Name,  AuthSchemeOptions.Name, options =>
         {
             options.ConnectionString = builder.Configuration.GetConnectionString("notes")!;
             options.Secret = builder.Configuration["JWT:Secret"];
@@ -18,7 +19,16 @@ builder.Services.AddAuthentication(options => options.DefaultScheme = "Aboba")
             options.RefreshTokenLifeTimeInDays = Int32.Parse(builder.Configuration["JWT:RefreshTokenValidityInDays"]);
             options.ValidIssuer = builder.Configuration["JWT:ValidIssuer"];
             options.ValidAudience = builder.Configuration["JWT:ValidAudience"];
+            options.ValidateLifetime = true;
         });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.DefaultPolicy = new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes("Aboba")
+        .RequireAuthenticatedUser()
+        .Build();
+});
 
 // Default Policy
 builder.Services.AddCors(options =>

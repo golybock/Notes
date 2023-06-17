@@ -2,7 +2,7 @@ using NotesApi.Auth.Token;
 
 namespace NotesApi.Auth.Cookie;
 
-public class CookieManager : CookieManagerBase
+public class CookieManager : CookieManagerBase, ICookieManager
 {
     private readonly AuthSchemeOptions? _options;
     private readonly IConfiguration? _configuration;

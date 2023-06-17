@@ -16,7 +16,7 @@ public class AuthHandler : AuthenticationHandler<AuthSchemeOptions>
         ISystemClock clock) 
         : base(options, logger, encoder, clock)
     {
-        _authManager = new AuthManager(options.CurrentValue);
+        _authManager = new AuthManager(options.Get(AuthSchemeOptions.Name));
     }
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -35,7 +35,7 @@ public class AuthHandler : AuthenticationHandler<AuthSchemeOptions>
             var tokenActive = _authManager.TokenManager.TokenActive(tokens.Token!);
             
 
-            var principal = _authManager.TokenManager.GetPrincipalFromToken(tokens.Token!);
+            var principal = _authManager.TokenManager.GetPrincipalFromExpiredToken(tokens.Token!);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
             
             if (tokenActive)

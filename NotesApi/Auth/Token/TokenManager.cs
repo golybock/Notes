@@ -89,7 +89,7 @@ public class TokenManager : ITokenManager
         return new List<Claim>()
         {
             new Claim(ClaimTypes.Name, email),
-            new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+            new Claim(ClaimTypes.Authentication, userId.ToString())
         };
     }
 
@@ -141,7 +141,7 @@ public class TokenManager : ITokenManager
 
     public bool TokenValid(string token)
     {
-        var tokenValidationParameters = GetValidationParameters();
+        var tokenValidationParameters = GetValidationParameters(false);
 
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -156,7 +156,7 @@ public class TokenManager : ITokenManager
 
             return true;
         }
-        catch
+        catch(Exception e)
         {
             return false;
         }

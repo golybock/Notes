@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-
 namespace NotesApi.Auth.Cookie;
 
 // base realize cookie-manager
-public class CookieManagerBase : ICookieManager
+public class CookieManagerBase : Microsoft.AspNetCore.Authentication.Cookies.ICookieManager
 {
     public string? GetRequestCookie(HttpContext context, string key)
     {

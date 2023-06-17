@@ -5,19 +5,21 @@ using Domain.User;
 using DomainBuilder.User;
 using NotesApi.Auth.Cookie;
 using NotesApi.Auth.Token;
+using Repositories.Repositories.Interfaces.User;
 using Repositories.Repositories.User;
+using ICookieManager = NotesApi.Auth.Cookie.ICookieManager;
 
 namespace NotesApi.Auth;
 
 public class AuthManager : IAuthManager
 {
-    public CookieManager CookieManager { get; set; }
-    public TokenManager TokenManager { get; set; }
+    public ICookieManager CookieManager { get; set; }
+    public ITokenManager TokenManager { get; set; }
 
     // database
-    private readonly TokensRepository _tokensRepository;
+    private readonly ITokenRepository _tokensRepository;
     
-    private readonly UserRepository _userRepository;
+    private readonly IUserRepository _userRepository;
 
     public AuthManager(IConfiguration configuration)
     {
@@ -37,12 +39,14 @@ public class AuthManager : IAuthManager
 
     public async Task<UserDomain?> GetUser(ClaimsPrincipal claims)
     {
-        var id = claims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var id = claims.FindFirst(ClaimTypes.Authentication)?.Value;
 
         if (id == null)
             return null;
 
-        var user = await _userRepository.Get(id);
+        Guid guid = Guid.Parse(id);
+        
+        var user = await _userRepository.Get(guid);
 
         if (user == null)
             return null;

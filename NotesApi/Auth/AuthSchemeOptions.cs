@@ -5,6 +5,8 @@ namespace NotesApi.Auth;
 
 public class AuthSchemeOptions : AuthenticationSchemeOptions
 {
+    public static string Name = "Aboba";
+    
     // validate
     public bool ValidateAudience { get; set; }
     

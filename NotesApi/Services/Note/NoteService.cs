@@ -45,6 +45,9 @@ public class NoteService : INoteService
     public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
         var user = await _authManager.GetUser(claims);
+
+        if (user == null)
+            return new UnauthorizedResult();
         
         var notesDomain = await GetNotes(user.Id);
 
