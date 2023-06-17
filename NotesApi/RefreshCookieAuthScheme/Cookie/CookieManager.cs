@@ -1,13 +1,13 @@
-using NotesApi.Auth.Token;
+using NotesApi.RefreshCookieAuthScheme.Token;
 
-namespace NotesApi.Auth.Cookie;
+namespace NotesApi.RefreshCookieAuthScheme.Cookie;
 
 public class CookieManager : CookieManagerBase, ICookieManager
 {
-    private readonly AuthSchemeOptions? _options;
+    private readonly RefreshCookieOptions? _options;
     private readonly IConfiguration? _configuration;
 
-    public CookieManager(AuthSchemeOptions options)
+    public CookieManager(RefreshCookieOptions options)
     {
         _options = options;
     }
@@ -110,7 +110,7 @@ public class CookieManager : CookieManagerBase, ICookieManager
         if (_options == null)
         {
             if (_configuration == null)
-                throw new Exception("Ivalid configuration and options");
+                throw new Exception("Invalid configuration and options");
             
             return int.Parse(_configuration["JWT:RefreshTokenValidityInDays"]!);
         }

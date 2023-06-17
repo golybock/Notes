@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace NotesApi.Auth.Token;
+namespace NotesApi.RefreshCookieAuthScheme.Token;
 
 public interface ITokenManager
 {

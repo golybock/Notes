@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
-using NotesApi.Auth;
+using NotesApi.RefreshCookieAuthScheme;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +9,9 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthentication(AuthSchemeOptions.Name)
-    .AddNoOpAuth(
-        AuthSchemeOptions.Name,  AuthSchemeOptions.Name, options =>
+builder.Services.AddAuthentication(RefreshCookieDefaults.AuthenticationScheme)
+    .AddRefreshCookie(
+        RefreshCookieDefaults.AuthenticationScheme,  RefreshCookieDefaults.AuthenticationScheme, options =>
         {
             options.ConnectionString = builder.Configuration.GetConnectionString("notes")!;
             options.Secret = builder.Configuration["JWT:Secret"];

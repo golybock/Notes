@@ -6,7 +6,8 @@ using DatabaseBuilder.User;
 using Domain.User;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
-using NotesApi.Auth;
+using NotesApi.RefreshCookieAuthScheme;
+using NotesApi.RefreshCookieAuthScheme.AuthManager;
 using NotesApi.Services.Interfaces.User;
 using Repositories.Repositories.User;
 

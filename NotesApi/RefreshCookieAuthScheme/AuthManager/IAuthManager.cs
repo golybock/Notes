@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
 using Domain.User;
-using NotesApi.Auth.Token;
-using ICookieManager = NotesApi.Auth.Cookie.ICookieManager;
+using NotesApi.RefreshCookieAuthScheme.Token;
+using ICookieManager = NotesApi.RefreshCookieAuthScheme.Cookie.ICookieManager;
 
-namespace NotesApi.Auth;
+namespace NotesApi.RefreshCookieAuthScheme.AuthManager;
 
 public interface IAuthManager
 {
@@ -16,6 +16,8 @@ public interface IAuthManager
     public Task SignInAsync(HttpResponse response, UserDomain user);
 
     public Task SignInAsync(HttpResponse response, ClaimsPrincipal principal);
+    
+    public Task SignInAsync(HttpContext context, ClaimsPrincipal principal);
 
     public void SignOut(HttpContext context);
 

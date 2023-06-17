@@ -1,4 +1,4 @@
-namespace NotesApi.Auth.Cookie;
+namespace NotesApi.RefreshCookieAuthScheme.Cookie;
 
 // base realize cookie-manager
 public class CookieManagerBase : Microsoft.AspNetCore.Authentication.Cookies.ICookieManager

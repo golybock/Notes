@@ -1,4 +1,4 @@
-namespace NotesApi.Auth.Cookie;
+namespace NotesApi.RefreshCookieAuthScheme.Cookie;
 
 public static class CookiesList
 {

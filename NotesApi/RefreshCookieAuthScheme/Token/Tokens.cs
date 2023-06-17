@@ -1,4 +1,4 @@
-namespace NotesApi.Auth.Token;
+namespace NotesApi.RefreshCookieAuthScheme.Token;
 
 public class Tokens
 {

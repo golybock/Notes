@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace NotesApi.Auth.Token;
+namespace NotesApi.RefreshCookieAuthScheme.Token;
 
 public class TokenManager : ITokenManager
 {
@@ -12,29 +12,75 @@ public class TokenManager : ITokenManager
         _configuration = configuration;
     }
 
-    public TokenManager(AuthSchemeOptions options)
+    public TokenManager(RefreshCookieOptions options)
     {
         _options = options;
     }
 
     private readonly IConfiguration? _configuration;
 
-    private readonly AuthSchemeOptions? _options;
+    private readonly RefreshCookieOptions? _options;
 
-    // jwt constants from appsettings
-    private string? Secret =>
-        _configuration == null ? _options?.Secret : _configuration["JWT:Secret"];
+    private string ErrorNotFound =>
+        "Token manager: options and configuration not found";
 
-    private string? ValidAudience =>
-        _configuration == null ? _options?.ValidAudience : _configuration["JWT:ValidAudience"];
+    // jwt const from appsettings or options
+    private string? Secret
+    {
+        get
+        {
+            if (_configuration != null)
+                return _configuration["JWT:Secret"];
 
-    private string? ValidIssuer =>
-        _configuration == null ? _options?.ValidIssuer : _configuration["JWT:ValidIssuer"];
+            if (_options == null)
+                throw new Exception(ErrorNotFound);
 
-    private int? TokenValidityInMinutes =>
-        _configuration == null
-            ? _options?.TokenLifeTimeInMinutes
-            : int.Parse(_configuration["JWT:TokenValidityInMinutes"]!);
+            return _options.Secret;
+        }
+    }
+
+    private string? ValidAudience
+    {
+        get
+        {
+            if (_configuration != null)
+                return _configuration["JWT:ValidAudience"];
+
+            if (_options == null)
+                throw new Exception(ErrorNotFound);
+
+            return _options.ValidAudience;
+        }
+    }
+
+    private string? ValidIssuer
+    {
+        get
+        {
+            if (_configuration != null)
+                return _configuration["JWT:ValidIssuer"];
+
+            if (_options == null)
+                throw new Exception(ErrorNotFound);
+
+            return _options.ValidIssuer;
+        }
+    }
+
+    private int? TokenValidityInMinutes
+    {
+        get
+        {
+            if (_configuration != null)
+                return int.Parse(_configuration["JWT:TokenValidityInMinutes"] ??
+                                 throw new Exception("TokenValidityInMinutes Not found"));
+
+            if (_options == null)
+                throw new Exception(ErrorNotFound);
+
+            return _options.TokenLifeTimeInMinutes;
+        }
+    }
 
     private SymmetricSecurityKey IssuerSigningKey =>
         new(Encoding.UTF8.GetBytes(Secret!));
@@ -97,7 +143,7 @@ public class TokenManager : ITokenManager
     {
         if (TokenValidityInMinutes == null)
             throw new Exception("Cannot read token lifetime");
-        
+
         var expires = DateTime.UtcNow.AddMinutes(TokenValidityInMinutes.Value);
 
         // creating token
@@ -156,7 +202,7 @@ public class TokenManager : ITokenManager
 
             return true;
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             return false;
         }

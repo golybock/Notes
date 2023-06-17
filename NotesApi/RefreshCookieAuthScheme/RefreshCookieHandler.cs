@@ -3,20 +3,22 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using ISystemClock = Microsoft.AspNetCore.Authentication.ISystemClock;
 
-namespace NotesApi.Auth;
+namespace NotesApi.RefreshCookieAuthScheme;
 
-public class AuthHandler : AuthenticationHandler<AuthSchemeOptions>
+public class RefreshCookieHandler : AuthenticationHandler<RefreshCookieOptions>
 {
-    private readonly AuthManager _authManager;
+    private readonly AuthManager.AuthManager _authManager;
     
-    public AuthHandler(
-        IOptionsMonitor<AuthSchemeOptions> options,
+    public RefreshCookieHandler(
+        IOptionsMonitor<RefreshCookieOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
         ISystemClock clock) 
         : base(options, logger, encoder, clock)
     {
-        _authManager = new AuthManager(options.Get(AuthSchemeOptions.Name));
+        RefreshCookieOptions o = options.Get(RefreshCookieDefaults.AuthenticationScheme);
+        
+        _authManager = new AuthManager.AuthManager(o);
     }
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()

@@ -1,6 +1,6 @@
-using NotesApi.Auth.Token;
+using NotesApi.RefreshCookieAuthScheme.Token;
 
-namespace NotesApi.Auth.Cookie;
+namespace NotesApi.RefreshCookieAuthScheme.Cookie;
 
 public interface ICookieManager
 {

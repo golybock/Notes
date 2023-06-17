@@ -3,13 +3,13 @@ using System.Security.Claims;
 using Database.User;
 using Domain.User;
 using DomainBuilder.User;
-using NotesApi.Auth.Cookie;
-using NotesApi.Auth.Token;
+using NotesApi.RefreshCookieAuthScheme.Cookie;
+using NotesApi.RefreshCookieAuthScheme.Token;
 using Repositories.Repositories.Interfaces.User;
 using Repositories.Repositories.User;
-using ICookieManager = NotesApi.Auth.Cookie.ICookieManager;
+using ICookieManager = NotesApi.RefreshCookieAuthScheme.Cookie.ICookieManager;
 
-namespace NotesApi.Auth;
+namespace NotesApi.RefreshCookieAuthScheme.AuthManager;
 
 public class AuthManager : IAuthManager
 {
@@ -29,7 +29,7 @@ public class AuthManager : IAuthManager
         TokenManager = new TokenManager(configuration);
     }
 
-    public AuthManager(AuthSchemeOptions options)
+    public AuthManager(RefreshCookieOptions options)
     {
         _userRepository = new UserRepository(options.ConnectionString);
         _tokensRepository = new TokensRepository(options.ConnectionString);
@@ -99,6 +99,11 @@ public class AuthManager : IAuthManager
         await SaveTokensAsync(response.HttpContext, tokens, user.Id);
 
         CookieManager.SetTokens(response, tokens);
+    }
+
+    public async Task SignInAsync(HttpContext context, ClaimsPrincipal principal)
+    {
+        throw new NotImplementedException();
     }
 
     public void SignOut(HttpContext context)
