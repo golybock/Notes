@@ -42,6 +42,8 @@ public class RefreshCookieHandler : AuthenticationHandler<RefreshCookieOptions>
             if (tokenActive)
                 return AuthenticateResult.Success(ticket);
             
+            // todo try refresh tokens, if fail, return 401, else send new tokens
+            
             await _authManager.SignInAsync(Response, principal);
 
             return AuthenticateResult.Success(ticket);
