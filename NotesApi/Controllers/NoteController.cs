@@ -9,7 +9,7 @@ using NotesApi.Services.Note;
 
 namespace NotesApi.Controllers;
 
-[ApiController, Authorize(AuthenticationSchemes = "Aboba")]
+[ApiController, Authorize]
 [Route("api/[controller]")]
 public class NoteController : ControllerBase
 {

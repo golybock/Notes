@@ -25,7 +25,7 @@ builder.Services.AddAuthentication(RefreshCookieDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization(options =>
 {
     options.DefaultPolicy = new AuthorizationPolicyBuilder()
-        .AddAuthenticationSchemes("Aboba")
+        .AddAuthenticationSchemes(RefreshCookieDefaults.AuthenticationScheme)
         .RequireAuthenticatedUser()
         .Build();
 });
