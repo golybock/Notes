@@ -24,7 +24,8 @@ public class TokenManager : ITokenManager
     private string ErrorNotFound =>
         "Token manager: options and configuration not found";
 
-    // jwt const from appsettings or options
+    #region validate params from appsettings or options
+
     private string? Secret
     {
         get
@@ -86,19 +87,37 @@ public class TokenManager : ITokenManager
         new(Encoding.UTF8.GetBytes(Secret!));
 
     private SigningCredentials SigningCredentials =>
-        new SigningCredentials(IssuerSigningKey, SecurityAlgorithms.HmacSha256);
+        new(IssuerSigningKey, SecurityAlgorithms.HmacSha256);
 
+    #endregion
+    
+    #region validate
+
+    private bool ValidateIssuerSigningKey => 
+        _options?.ValidateIssuerSigningKey ?? false;
+
+    private bool ValidateLifetime =>
+        _options?.ValidateLifetime ?? false;
+
+    private bool ValidateIssuer =>
+        _options?.ValidateIssuer ?? false;
+
+    private bool ValidateAudience =>
+        _options?.ValidateAudience ?? false;
+
+    #endregion
+    
     #region token parsing
 
     private TokenValidationParameters GetValidationParameters(bool validateLifeTime = true)
     {
         return new TokenValidationParameters
         {
-            ValidateAudience = true,
-            ValidateIssuer = true,
-            ValidateIssuerSigningKey = true,
+            ValidateIssuerSigningKey = ValidateIssuerSigningKey,
             IssuerSigningKey = IssuerSigningKey,
             ValidateLifetime = validateLifeTime,
+            ValidateAudience = ValidateAudience,
+            ValidateIssuer = ValidateIssuer,
             ValidAudience = ValidAudience,
             ValidIssuer = ValidIssuer
         };
@@ -111,13 +130,13 @@ public class TokenManager : ITokenManager
         var tokenHandler = new JwtSecurityTokenHandler();
 
         var claims = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
-
+        
         return claims;
     }
 
     public ClaimsPrincipal GetPrincipalFromToken(string token)
     {
-        var tokenValidationParameters = GetValidationParameters();
+        var tokenValidationParameters = GetValidationParameters(ValidateLifetime);
 
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -141,11 +160,18 @@ public class TokenManager : ITokenManager
 
     public JwtSecurityToken GenerateJwtSecurityToken(IEnumerable<Claim> claims)
     {
-        if (TokenValidityInMinutes == null)
-            throw new Exception("Cannot read token lifetime");
+        DateTime expires = new DateTime();
 
-        var expires = DateTime.UtcNow.AddMinutes(TokenValidityInMinutes.Value);
-
+        // если включена валидация по времени
+        if (ValidateLifetime)
+        {
+            // время не указано
+            if (TokenValidityInMinutes == null)
+                throw new Exception("Cannot read TokenValidityInMinutes, but validatingLifeTime = true");
+            
+            expires = DateTime.UtcNow.AddMinutes(TokenValidityInMinutes.Value);
+        }
+        
         // creating token
         var token = new JwtSecurityToken(
             issuer: ValidIssuer,
@@ -165,10 +191,8 @@ public class TokenManager : ITokenManager
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public string GenerateRefreshToken()
-    {
-        return Guid.NewGuid().ToString();
-    }
+    public string GenerateRefreshToken() => 
+        Guid.NewGuid().ToString();
 
     #endregion
 
@@ -176,15 +200,14 @@ public class TokenManager : ITokenManager
 
     public bool TokenActive(string token)
     {
-        var tokenTicks = GetTokenExpirationTime(token);
-
-        var tokenDate = DateTimeOffset.FromUnixTimeSeconds(tokenTicks).UtcDateTime;
-
+        var validTo = GetTokenExpirationTime(token);
+        
         var now = DateTime.UtcNow;
 
-        return tokenDate >= now;
+        return validTo >= now;
     }
 
+    // todo refactor
     public bool TokenValid(string token)
     {
         var tokenValidationParameters = GetValidationParameters(false);
@@ -198,6 +221,7 @@ public class TokenManager : ITokenManager
             if (securityToken is not JwtSecurityToken jwtSecurityToken ||
                 !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
                     StringComparison.InvariantCultureIgnoreCase))
+                
                 return false;
 
             return true;
@@ -208,13 +232,13 @@ public class TokenManager : ITokenManager
         }
     }
 
-    private long GetTokenExpirationTime(string token)
+    private DateTime GetTokenExpirationTime(string token)
     {
         var handler = new JwtSecurityTokenHandler();
+        
         var jwtSecurityToken = handler.ReadJwtToken(token);
-        var tokenExp = jwtSecurityToken.Claims.First(claim => claim.Type.Equals("exp")).Value;
-        var ticks = long.Parse(tokenExp);
-        return ticks;
+        
+        return jwtSecurityToken.ValidTo;
     }
 
     #endregion

@@ -28,8 +28,6 @@ public class RefreshCookieOptions : AuthenticationSchemeOptions
 
     public string? Secret { get; set; }
 
-    public SymmetricSecurityKey? IssuerSigningKey { get; set; }
-
     #endregion
 
     #region auth database

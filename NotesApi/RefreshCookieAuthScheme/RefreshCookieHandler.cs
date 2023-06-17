@@ -36,7 +36,6 @@ public class RefreshCookieHandler : AuthenticationHandler<RefreshCookieOptions>
         {
             var tokenActive = _authManager.TokenManager.TokenActive(tokens.Token!);
             
-
             var principal = _authManager.TokenManager.GetPrincipalFromExpiredToken(tokens.Token!);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
             

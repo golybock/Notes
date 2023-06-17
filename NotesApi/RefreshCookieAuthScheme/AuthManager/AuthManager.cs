@@ -37,23 +37,18 @@ public class AuthManager : IAuthManager
         TokenManager = new TokenManager(options);
     }
 
-    public async Task<UserDomain?> GetUser(ClaimsPrincipal claims)
+    public async Task<UserDomain> GetUser(ClaimsPrincipal claims)
     {
         var id = claims.FindFirst(ClaimTypes.Authentication)?.Value;
-
-        if (id == null)
-            return null;
-
-        Guid guid = Guid.Parse(id);
+        
+        Guid guid = Guid.Parse(id!);
         
         var user = await _userRepository.Get(guid);
 
-        if (user == null)
-            return null;
-
-        return UserDomainBuilder.Create(user);
+        return UserDomainBuilder.Create(user!);
     }
 
+    // override IpAddress.Parse
     private IPAddress? GetIpAddress(string ip)
     {
         try
@@ -69,6 +64,7 @@ public class AuthManager : IAuthManager
         }
     }
 
+    // signIn
     public async Task SignInAsync(HttpContext context, UserDomain user)
     {
         var tokens = CreateTokens(user);
@@ -91,9 +87,6 @@ public class AuthManager : IAuthManager
     {
         var user = await GetUser(principal);
 
-        if (user == null)
-            throw new Exception("user not found in principal");
-
         var tokens = CreateTokens(user);
 
         await SaveTokensAsync(response.HttpContext, tokens, user.Id);
@@ -103,9 +96,16 @@ public class AuthManager : IAuthManager
 
     public async Task SignInAsync(HttpContext context, ClaimsPrincipal principal)
     {
-        throw new NotImplementedException();
+        var user = await GetUser(principal);
+
+        var tokens = CreateTokens(user);
+
+        await SaveTokensAsync(context, tokens, user.Id);
+
+        CookieManager.SetTokens(context, tokens);
     }
 
+    // signOut
     public void SignOut(HttpContext context)
     {
         CookieManager.DeleteTokens(context);
@@ -129,6 +129,27 @@ public class AuthManager : IAuthManager
         };
 
         await _tokensRepository.Create(tokensDatabase);
+    }
+
+    // todo use if used SignOut or refresh tokens
+    private async Task DeleteTokens(Tokens tokens)
+    {
+        var dbTokens = await _tokensRepository.Get(tokens.Token!, tokens.RefreshToken!);
+
+        if (dbTokens == null)
+            throw new Exception("Tokens not found");
+        
+        await _tokensRepository.Delete(dbTokens.Id);
+    }
+    
+    private async Task DeleteTokens(string token, string refreshToken)
+    {
+        var dbTokens = await _tokensRepository.Get(token, refreshToken);
+
+        if (dbTokens == null)
+            throw new Exception("Tokens not found");
+        
+        await _tokensRepository.Delete(dbTokens.Id);
     }
 
     private Tokens CreateTokens(UserDomain user)
