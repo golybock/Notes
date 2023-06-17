@@ -11,5 +11,5 @@ public class NoteBlank
     public string? Text { get; set; }
 
     // list of guid tags
-    public List<TagBlank> Tags { get; set; } = new List<TagBlank>();
+    public List<Guid> Tags { get; set; } = new List<Guid>();
 }

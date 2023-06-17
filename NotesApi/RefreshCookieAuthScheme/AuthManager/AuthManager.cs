@@ -105,7 +105,7 @@ public class AuthManager : IAuthManager
         CookieManager.SetTokens(context, tokens);
     }
 
-    // signOut
+    // signOut todo delete tokens
     public void SignOut(HttpContext context)
     {
         CookieManager.DeleteTokens(context);

@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using Blank.Note;
-using Blank.Note.Tag;
 using Database.Note;
 using Database.Note.Tag;
 using DatabaseBuilder.Note;
@@ -12,7 +11,6 @@ using DomainBuilder.Note.Tag;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Enums;
-using NotesApi.RefreshCookieAuthScheme;
 using NotesApi.RefreshCookieAuthScheme.AuthManager;
 using NotesApi.Services.Interfaces.Note;
 using Repositories.Repositories.Note;
@@ -22,6 +20,7 @@ using ViewBuilder.Note;
 
 namespace NotesApi.Services.Note;
 
+// todo optimaze
 public class NoteService : INoteService
 {
     private readonly NoteRepository _noteRepository;
@@ -46,9 +45,6 @@ public class NoteService : INoteService
     public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
         var user = await _authManager.GetUser(claims);
-
-        if (user == null)
-            return new UnauthorizedResult();
         
         var notesDomain = await GetNotes(user.Id);
 
@@ -224,6 +220,7 @@ public class NoteService : INoteService
 
     #region get funcs
 
+    // todo need optimaze get note
     private async Task<List<NoteDomain>> GetNotes(Guid userId)
     {
         var notesDatabase = await _noteRepository.GetNotes(userId);
@@ -352,15 +349,12 @@ public class NoteService : INoteService
         return tagsDomain;
     }
 
-    private async Task CreateNoteTags(Guid noteId, List<TagBlank> noteTags)
+    private async Task CreateNoteTags(Guid noteId, List<Guid> noteTags)
     {
         await _tagRepository.DeleteNoteTags(noteId);
 
         foreach (var noteTag in noteTags)
-        {
-            if (noteTag.Id != null)
-                await _tagRepository.Create(new NoteTagDatabase() {NoteId = noteId, TagId = noteTag.Id.Value});
-        }
+            await _tagRepository.Create(new NoteTagDatabase() {NoteId = noteId, TagId = noteTag});
            
     }
 

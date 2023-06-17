@@ -35,7 +35,7 @@ public class AuthService : IAuthService
         return await _userRepository.Create(newUser);
     }
 
-    #region generating data
+    #region compute hash
 
     // md5 hash password
     private string HashPassword(string password)
@@ -47,25 +47,18 @@ public class AuthService : IAuthService
 
         return Convert.ToBase64String(output);
     }
+    
+    // todo refactor in db to bytes
+    private byte[] HashPasswordBytes(string password)
+    {
+        byte[] input = Encoding.UTF8.GetBytes(password);
+
+        using var md5 = MD5.Create();
+        return md5.ComputeHash(input);
+    }
 
     #endregion
-     
-    #region validation
-
-    // validate password 
-    private bool ValidatePassword(string password) =>
-        password.Any(char.IsLetter) &&
-        password.Any(char.IsDigit) &&
-        password.Any(char.IsUpper) &&
-        password.Any(char.IsLower) &&
-        password.Length >= 8;
-
-    // validate email
-    private bool ValidateEmail(string email) =>
-        new EmailAddressAttribute().IsValid(email);
-
-    #endregion
-
+    
     private async Task<UserDomain?> GetUser(string email)
     {
         var user = await _userRepository.Get(email);
@@ -121,7 +114,7 @@ public class AuthService : IAuthService
         #region generate user and tokens
 
         var id = await CreateUser(userBlank);
-
+        // todo minimaze db requests 
         var newUser = await GetUser(id);
 
         if (newUser == null)
@@ -140,4 +133,20 @@ public class AuthService : IAuthService
 
         return Task.FromResult<IActionResult>(new OkResult());
     }
+    
+    #region validation
+
+    // validate password 
+    private bool ValidatePassword(string password) =>
+        password.Any(char.IsLetter) &&
+        password.Any(char.IsDigit) &&
+        password.Any(char.IsUpper) &&
+        password.Any(char.IsLower) &&
+        password.Length >= 8;
+
+    // validate email
+    private bool ValidateEmail(string email) =>
+        new EmailAddressAttribute().IsValid(email);
+
+    #endregion
 }
