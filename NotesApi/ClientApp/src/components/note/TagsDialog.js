@@ -50,7 +50,7 @@ export default class TagDialog extends React.Component {
         let arr = []
 
         e.forEach(element => {
-            arr.push(element.value);
+            arr.push({ id : element.value, name : element.label});
         });
 
         this.setState({selected: e})

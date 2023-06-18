@@ -6,7 +6,6 @@ import RichTextEditor from "react-rte";
 import DeleteNoteDialog from "./DeleteNoteDialog";
 import ShareNoteDialog from "./ShareNoteDialog";
 import TagDialog from "./TagsDialog";
-import {Await} from "react-router";
 
 export default class Note extends React.Component {
 
@@ -86,20 +85,18 @@ export default class Note extends React.Component {
 
     // update note
     async update() {
-        // let arr = []
-        //
-        // this.state.note.tags.forEach(element => {
-        //     arr.push(element.value);
-        // });
-        //
-        // this.setState({
-        //     note: {
-        //         ...this.state.note,
-        //         tags: arr
-        //     }
-        // })
         
-        await NoteApi.updateNote(this.props.id, this.state.note)
+        let note = this.state.note
+        
+        let arr = []
+
+        this.state.note.tags.forEach(element => {
+            arr.push(element.id);
+        });
+
+        note.tags = arr
+        
+        await NoteApi.updateNote(this.props.id, note)
     }
 
     // onchange text
