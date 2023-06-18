@@ -143,7 +143,7 @@ public class NoteService : INoteService
     {
         var fileName = Guid.NewGuid();
 
-        var path = "wwwroot/" + fileName;
+        var path = "wwwroot/" + fileName + ".png";
 
         await using StreamWriter sw = new StreamWriter(path);
 

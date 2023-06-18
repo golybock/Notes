@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Domain.User;
 using DomainBuilder.User;
+using NotesApi.RefreshCookieAuthScheme;
 using Repositories.Repositories.Interfaces.User;
 using Repositories.Repositories.User;
 
@@ -15,6 +16,11 @@ public class UserManager
         _userRepository = new UserRepository(configuration);
     }
 
+    public UserManager(RefreshCookieOptions options)
+    {
+        _userRepository = new UserRepository(options.ConnectionString);
+    }
+    
     public async Task<UserDomain> GetUser(ClaimsPrincipal claims)
     {
         var id = claims.FindFirst(ClaimTypes.Authentication)?.Value;

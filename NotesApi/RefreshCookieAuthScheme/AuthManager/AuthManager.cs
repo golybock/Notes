@@ -22,12 +22,9 @@ public class AuthManager : IAuthManager
 
     // todo need optimization (used in services)
     private readonly UserManager _userManager;
-    
-    private readonly IUserRepository _userRepository;
 
     public AuthManager(IConfiguration configuration)
     {
-        _userRepository = new UserRepository(configuration);
         _tokensRepository = new TokensRepository(configuration);
         CookieManager = new CookieManager(configuration);
         TokenManager = new TokenManager(configuration);
@@ -36,10 +33,10 @@ public class AuthManager : IAuthManager
 
     public AuthManager(RefreshCookieOptions options)
     {
-        _userRepository = new UserRepository(options.ConnectionString);
         _tokensRepository = new TokensRepository(options.ConnectionString);
         CookieManager = new CookieManager(options);
         TokenManager = new TokenManager(options);
+        _userManager = new UserManager(options);
     }
 
     // override IpAddress.Parse
