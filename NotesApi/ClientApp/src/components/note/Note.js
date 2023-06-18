@@ -86,6 +86,19 @@ export default class Note extends React.Component {
 
     // update note
     async update() {
+        // let arr = []
+        //
+        // this.state.note.tags.forEach(element => {
+        //     arr.push(element.value);
+        // });
+        //
+        // this.setState({
+        //     note: {
+        //         ...this.state.note,
+        //         tags: arr
+        //     }
+        // })
+        
         await NoteApi.updateNote(this.props.id, this.state.note)
     }
 
