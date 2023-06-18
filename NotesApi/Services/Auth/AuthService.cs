@@ -127,11 +127,11 @@ public class AuthService : IAuthService
         return new OkResult();
     }
 
-    public Task<IActionResult> SignOut(HttpContext context)
+    public async Task<IActionResult> SignOut(HttpContext context)
     {
-        _authManager.SignOut(context);
+        await _authManager.SignOutAsync(context);
 
-        return Task.FromResult<IActionResult>(new OkResult());
+        return new OkResult();
     }
     
     #region validation

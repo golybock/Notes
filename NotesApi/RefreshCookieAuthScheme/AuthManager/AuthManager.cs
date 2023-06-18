@@ -105,15 +105,49 @@ public class AuthManager : IAuthManager
         CookieManager.SetTokens(context, tokens);
     }
 
-    // signOut todo delete tokens
-    public void SignOut(HttpContext context)
+    public async Task RefreshTokensAsync(HttpResponse response, ClaimsPrincipal claimsPrincipal, Tokens tokens)
     {
-        CookieManager.DeleteTokens(context);
+        var user = await GetUser(claimsPrincipal);
+
+        
+        // check refresh token on alive
+        await SignOutAsync(response);
+
+        await SignInAsync(response, user);
     }
 
-    public void SignOut(HttpResponse response)
+    public async Task SignOutAsync(HttpContext context)
     {
+        var tokens = CookieManager.GetTokens(context);
+        
+        CookieManager.DeleteTokens(context);
+        
+        if(tokens == null)
+            return;
+
+        var dbTokens = await _tokensRepository.Get(tokens.Token!, tokens.RefreshToken!);
+
+        if(dbTokens == null)
+            return;
+        
+        await _tokensRepository.Delete(dbTokens.Id);
+    }
+
+    public async Task SignOutAsync(HttpResponse response)
+    {
+        var tokens = CookieManager.GetTokens(response.HttpContext);
+        
         CookieManager.DeleteTokens(response);
+        
+        if(tokens == null)
+            return;
+
+        var dbTokens = await _tokensRepository.Get(tokens.Token!, tokens.RefreshToken!);
+
+        if(dbTokens == null)
+            return;
+        
+        await _tokensRepository.Delete(dbTokens.Id);
     }
 
     private async Task SaveTokensAsync(HttpContext context, Tokens tokens, Guid userId)

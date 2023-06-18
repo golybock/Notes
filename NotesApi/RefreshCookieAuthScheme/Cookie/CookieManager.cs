@@ -20,12 +20,15 @@ public class CookieManager : CookieManagerBase, ICookieManager
     private CookieOptions DefaultOptions(DateTime expires) =>
         new (){Expires = expires, Secure = true, SameSite = SameSiteMode.None};
 
-    public Tokens GetTokens(HttpContext context)
+    public Tokens? GetTokens(HttpContext context)
     {
         string? token = GetRequestCookie(context, CookiesList.Token);
 
         string? refreshToken = GetRequestCookie(context, CookiesList.RefreshToken);
 
+        if (token == null || refreshToken == null)
+            return null;
+        
         var tokens = new Tokens()
         {
             Token = token,

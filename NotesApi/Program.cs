@@ -5,7 +5,7 @@ void SetRefreshCookieAuth(IServiceCollection services, IConfiguration configurat
 {
     services.AddAuthentication(RefreshCookieDefaults.AuthenticationScheme)
         .AddRefreshCookie(
-            RefreshCookieDefaults.AuthenticationScheme,  RefreshCookieDefaults.AuthenticationScheme, options =>
+            RefreshCookieDefaults.AuthenticationScheme, RefreshCookieDefaults.AuthenticationScheme, options =>
             {
                 options.ConnectionString = configuration.GetConnectionString("notes")!;
                 options.Secret = configuration["JWT:Secret"];

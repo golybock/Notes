@@ -18,8 +18,10 @@ public interface IAuthManager
     public Task SignInAsync(HttpResponse response, ClaimsPrincipal principal);
     
     public Task SignInAsync(HttpContext context, ClaimsPrincipal principal);
+    
+    public Task RefreshTokensAsync(HttpResponse response, ClaimsPrincipal claimsPrincipal, Tokens tokens);
 
-    public void SignOut(HttpContext context);
+    public Task SignOutAsync(HttpContext context);
 
-    public void SignOut(HttpResponse response);
+    public Task SignOutAsync(HttpResponse response);
 }

@@ -4,7 +4,7 @@ namespace NotesApi.RefreshCookieAuthScheme.Cookie;
 
 public interface ICookieManager
 {
-    public Tokens GetTokens(HttpContext context);
+    public Tokens? GetTokens(HttpContext context);
 
     public Tokens? GetTokens(HttpRequest request);
 
