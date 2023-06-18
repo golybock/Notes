@@ -6,6 +6,7 @@ import RichTextEditor from "react-rte";
 import DeleteNoteDialog from "./DeleteNoteDialog";
 import ShareNoteDialog from "./ShareNoteDialog";
 import TagDialog from "./TagsDialog";
+import {Await} from "react-router";
 
 export default class Note extends React.Component {
 
@@ -45,8 +46,10 @@ export default class Note extends React.Component {
         this.setState({show_tags: true})
     }
 
-    closeTags() {
+    async closeTags() {
         this.setState({show_tags: false})
+
+        await this.loadNote()
     }
 
     async loadNote() {
@@ -173,7 +176,7 @@ export default class Note extends React.Component {
                     <TagDialog show={this.state.show_tags}
                                note={this.state.note}
                                update={async () => await this.update()}
-                               onCloseDialog={() => this.closeTags()}/>
+                               onCloseDialog={async () => await this.closeTags()}/>
 
                 }</div>
         );

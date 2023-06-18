@@ -1,6 +1,7 @@
 import axios from 'axios';
 import ApiBase from "../ApiBase";
 import {NoteBlank} from "../../models/blank/note/NoteBlank";
+import type ShareNoteBlank from "../../models/blank/note/ShareNoteBlank";
 
 export default class NoteApi extends ApiBase {
 
@@ -46,7 +47,7 @@ export default class NoteApi extends ApiBase {
             });
     }
 
-    static async createNote(noteBlank : NoteBlank) {
+    static async createNote(noteBlank: NoteBlank) {
 
         let url = this.baseAddress + "/Note/Note";
 
@@ -60,7 +61,7 @@ export default class NoteApi extends ApiBase {
             });
     }
 
-    static async shareNote(shareBlank : ShareNoteBlank) {
+    static async shareNote(shareBlank: ShareNoteBlank) {
 
         let url = this.baseAddress + "/Note/Share";
 

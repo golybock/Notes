@@ -10,7 +10,8 @@ export default class TagDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected: []
+            selected: [],
+            default_tags : this.props.note.tags
         }
     }
 
@@ -27,12 +28,12 @@ export default class TagDialog extends React.Component {
             let dropDownEle = {label: element.name, value: element.id};
             arr.push(dropDownEle);
         });
-        
+
         this.setState({selected: arr})
     }
 
     async getTags() {
-        
+
         let tags = await TagApi.getTags()
 
         let arr = []
@@ -49,16 +50,17 @@ export default class TagDialog extends React.Component {
         let arr = []
 
         e.forEach(element => {
-            let dropDownEle = {name: element.label, id: element.value};
-            arr.push(dropDownEle);
+            arr.push(element.value);
         });
-        
-        this.setState({selected : e})
-        
+
+        this.setState({selected: e})
+
         this.props.note.tags = arr;
-        
-        // save in note
+    }
+    
+    async updateTags(){
         await this.props.update()
+        await this.props.onCloseDialog()
     }
 
     render() {
@@ -88,7 +90,7 @@ export default class TagDialog extends React.Component {
                                 defaultOptions
                                 value={this.state.selected}
                                 loadOptions={this.getTags}
-                                onChange={(e) => this.tagChosen(e)}
+                                onChange={async (e) => await this.tagChosen(e)}
                             />
 
                         </Form.Group>
@@ -105,7 +107,8 @@ export default class TagDialog extends React.Component {
                         Close
                     </Button>
 
-                    <Button className="btn btn-primary-note">
+                    <Button className="btn btn-primary-note"
+                            onClick={async () => await this.updateTags()}>
                         Save Changes
                     </Button>
 
