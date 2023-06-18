@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using NotesApi.Enums;
 using NotesApi.RefreshCookieAuthScheme.AuthManager;
 using NotesApi.Services.Interfaces.Note;
+using NotesApi.Services.User;
 using Repositories.Repositories.Note;
 using Repositories.Repositories.Note.Tag;
 using Repositories.Repositories.User;
@@ -29,6 +30,7 @@ public class NoteService : INoteService
     private readonly NoteTypeRepository _noteTypeRepository;
     private readonly UserRepository _userRepository;
     private readonly AuthManager _authManager;
+    private readonly UserManager _userManager;
 
     public NoteService(IConfiguration configuration)
     {
@@ -38,13 +40,14 @@ public class NoteService : INoteService
         _noteTypeRepository = new NoteTypeRepository(configuration);
         _userRepository = new UserRepository(configuration);
         _authManager = new AuthManager(configuration);
+        _userManager = new UserManager(configuration);
     }
 
     #region controller funcs (use in controllers)
 
     public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
-        var user = await _authManager.GetUser(claims);
+        var user = await _userManager.GetUser(claims);
         
         var notesDomain = await GetNotes(user.Id);
 
@@ -57,7 +60,7 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> GetShared(ClaimsPrincipal claims)
     {
-        var user = await _authManager.GetUser(claims);
+        var user = await _userManager.GetUser(claims);
         
         var notesDomain = await GetSharedNotes(user.Id);
 
@@ -70,7 +73,7 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> Get(ClaimsPrincipal claims, Guid id)
     {
-        var user = await _authManager.GetUser(claims);
+        var user = await _userManager.GetUser(claims);
         
         var noteDomain = await GetNote(id);
 
@@ -88,7 +91,7 @@ public class NoteService : INoteService
     // not save text and tags, only name and returns id
     public async Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank)
     {
-        var user = await _authManager.GetUser(claims);
+        var user = await _userManager.GetUser(claims);
         
         var noteDatabase = NoteDatabaseBuilder.Create(noteBlank, user.Id);
 
@@ -104,7 +107,7 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> Update(ClaimsPrincipal claims, Guid guid, NoteBlank noteBlank)
     {
-        var user = await _authManager.GetUser(claims);
+        var user = await _userManager.GetUser(claims);
         
         var noteDatabase = await _noteRepository.GetNote(guid);
 
@@ -198,7 +201,7 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> Delete(ClaimsPrincipal claims, Guid id)
     {
-        var user = await _authManager.GetUser(claims);
+        var user = await _userManager.GetUser(claims);
         
         var note = await _noteRepository.GetNote(id);
 
@@ -242,7 +245,7 @@ public class NoteService : INoteService
 
             note.SharedUsers = await GetSharedUsers(note.Id);
 
-            note.OwnerUser = await GetUser(note.OwnerId);
+            note.OwnerUser = await _userManager.GetUser(note.OwnerId);
         }
 
         return notesDomain;
@@ -264,7 +267,7 @@ public class NoteService : INoteService
 
             note.Type = NoteTypeDomainBuilder.Create(type);
             
-            note.OwnerUser = await GetUser(note.OwnerId);
+            note.OwnerUser = await _userManager.GetUser(note.OwnerId);
 
             note.SharedUsers = await GetSharedUsers(note.Id);
             
@@ -314,26 +317,6 @@ public class NoteService : INoteService
         return usersDomain;
     }
 
-    private async Task<UserDomain?> GetUser(string email)
-    {
-        var user = await _userRepository.Get(email);
-
-        if (user == null)
-            return null;
-
-        return UserDomainBuilder.Create(user);
-    }
-
-    private async Task<UserDomain?> GetUser(Guid id)
-    {
-        var user = await _userRepository.Get(id);
-
-        if (user == null)
-            return null;
-
-        return UserDomainBuilder.Create(user);
-    }
-
     #endregion
 
     #region note tags
@@ -355,7 +338,6 @@ public class NoteService : INoteService
 
         foreach (var noteTag in noteTags)
             await _tagRepository.Create(new NoteTagDatabase() {NoteId = noteId, TagId = noteTag});
-           
     }
 
     #endregion

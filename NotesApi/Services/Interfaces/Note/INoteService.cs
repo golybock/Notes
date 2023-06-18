@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Blank.Note;
+using Domain.Note.Tag;
 using Domain.User;
 using Microsoft.AspNetCore.Mvc;
 using Views.Note;

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using NotesApi.RefreshCookieAuthScheme;
 using NotesApi.RefreshCookieAuthScheme.AuthManager;
 using NotesApi.Services.Interfaces.User;
+using NotesApi.Services.User;
 using Repositories.Repositories.User;
 
 namespace NotesApi.Services.Auth;
@@ -17,9 +18,11 @@ public class AuthService : IAuthService
 {
     private readonly UserRepository _userRepository;
     private readonly AuthManager _authManager;
+    private readonly UserManager _userManager;
 
     public AuthService(IConfiguration configuration)
     {
+        _userManager = new UserManager(configuration);
         _authManager = new AuthManager(configuration);
         _userRepository = new UserRepository(configuration);
     }
@@ -58,30 +61,10 @@ public class AuthService : IAuthService
     }
 
     #endregion
-    
-    private async Task<UserDomain?> GetUser(string email)
-    {
-        var user = await _userRepository.Get(email);
-
-        if (user == null)
-            return null;
-        
-        return UserDomainBuilder.Create(user);
-    }
-    
-    private async Task<UserDomain?> GetUser(Guid id)
-    {
-        var user = await _userRepository.Get(id);
-
-        if (user == null)
-            return null;
-        
-        return UserDomainBuilder.Create(user);
-    }
 
     public async Task<IActionResult> SignIn(HttpContext context, LoginBlank loginBlank)
     {
-        var user = await GetUser(loginBlank.Email);
+        var user = await _userManager.GetUser(loginBlank.Email);
 
         if (user == null)
             return new UnauthorizedResult();
@@ -98,7 +81,7 @@ public class AuthService : IAuthService
     {
         #region check client data
 
-        var user = await GetUser(userBlank.Email);
+        var user = await _userManager.GetUser(userBlank.Email);
 
         if (user != null)
             return new BadRequestObjectResult("Такой email уже зарегистрирован");
@@ -115,7 +98,7 @@ public class AuthService : IAuthService
 
         var id = await CreateUser(userBlank);
         // todo minimaze db requests 
-        var newUser = await GetUser(id);
+        var newUser = await _userManager.GetUser(id);
 
         if (newUser == null)
             return new BadRequestResult();

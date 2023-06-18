@@ -5,6 +5,7 @@ using Domain.User;
 using DomainBuilder.User;
 using NotesApi.RefreshCookieAuthScheme.Cookie;
 using NotesApi.RefreshCookieAuthScheme.Token;
+using NotesApi.Services.User;
 using Repositories.Repositories.Interfaces.User;
 using Repositories.Repositories.User;
 using ICookieManager = NotesApi.RefreshCookieAuthScheme.Cookie.ICookieManager;
@@ -18,6 +19,9 @@ public class AuthManager : IAuthManager
 
     // database
     private readonly ITokenRepository _tokensRepository;
+
+    // todo need optimization (used in services)
+    private readonly UserManager _userManager;
     
     private readonly IUserRepository _userRepository;
 
@@ -27,6 +31,7 @@ public class AuthManager : IAuthManager
         _tokensRepository = new TokensRepository(configuration);
         CookieManager = new CookieManager(configuration);
         TokenManager = new TokenManager(configuration);
+        _userManager = new UserManager(configuration);
     }
 
     public AuthManager(RefreshCookieOptions options)
@@ -35,17 +40,6 @@ public class AuthManager : IAuthManager
         _tokensRepository = new TokensRepository(options.ConnectionString);
         CookieManager = new CookieManager(options);
         TokenManager = new TokenManager(options);
-    }
-
-    public async Task<UserDomain> GetUser(ClaimsPrincipal claims)
-    {
-        var id = claims.FindFirst(ClaimTypes.Authentication)?.Value;
-        
-        Guid guid = Guid.Parse(id!);
-        
-        var user = await _userRepository.Get(guid);
-
-        return UserDomainBuilder.Create(user!);
     }
 
     // override IpAddress.Parse
@@ -85,7 +79,7 @@ public class AuthManager : IAuthManager
 
     public async Task SignInAsync(HttpResponse response, ClaimsPrincipal principal)
     {
-        var user = await GetUser(principal);
+        var user = await _userManager.GetUser(principal);
 
         var tokens = CreateTokens(user);
 
@@ -96,7 +90,7 @@ public class AuthManager : IAuthManager
 
     public async Task SignInAsync(HttpContext context, ClaimsPrincipal principal)
     {
-        var user = await GetUser(principal);
+        var user = await _userManager.GetUser(principal);
 
         var tokens = CreateTokens(user);
 
@@ -107,7 +101,7 @@ public class AuthManager : IAuthManager
 
     public async Task RefreshTokensAsync(HttpResponse response, ClaimsPrincipal claimsPrincipal, Tokens tokens)
     {
-        var user = await GetUser(claimsPrincipal);
+        var user = await _userManager.GetUser(claimsPrincipal);
 
         var dbTokens = await _tokensRepository.Get(tokens.Token!, tokens.RefreshToken!);
 
