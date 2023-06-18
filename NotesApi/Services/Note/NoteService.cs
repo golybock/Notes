@@ -139,6 +139,19 @@ public class NoteService : INoteService
         return result ? new OkResult() : new BadRequestResult();
     }
 
+    public async Task<IActionResult> UploadImage(IFormFile formFile)
+    {
+        var fileName = Guid.NewGuid();
+
+        var path = "wwwroot/" + fileName;
+
+        await using StreamWriter sw = new StreamWriter(path);
+
+        await formFile.CopyToAsync(sw.BaseStream);
+
+        return new OkObjectResult(fileName);
+    }
+
     public async Task<IActionResult> Share(ClaimsPrincipal claims, ShareBlank shareBlank)
     {
         var note = await GetNote(shareBlank.NoteId);

@@ -14,12 +14,10 @@ namespace NotesApi.Controllers;
 public class NoteController : ControllerBase
 {
     private readonly NoteService _noteService;
-    private readonly AuthManager _authManager;
-    
+
     public NoteController(IConfiguration configuration)
     {
         _noteService = new NoteService(configuration);
-        _authManager = new AuthManager(configuration);
     }
 
     [HttpGet("Notes")]
@@ -50,6 +48,12 @@ public class NoteController : ControllerBase
     public async Task<IActionResult> Delete(Guid guid)
     {
         return await _noteService.Delete(User, guid);
+    }
+    
+    [HttpDelete("Image")]
+    public async Task<IActionResult> UploadImage(IFormFile formFile)
+    {
+        return await _noteService.UploadImage(formFile);
     }
     
     [HttpGet("SharedNotes")]
