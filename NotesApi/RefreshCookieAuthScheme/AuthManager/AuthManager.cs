@@ -109,10 +109,19 @@ public class AuthManager : IAuthManager
     {
         var user = await GetUser(claimsPrincipal);
 
-        
-        // check refresh token on alive
-        await SignOutAsync(response);
+        var dbTokens = await _tokensRepository.Get(tokens.Token!, tokens.RefreshToken!);
 
+        if (dbTokens == null)
+            throw new Exception("Tokens in db not found");
+
+        // check refresh token on alive
+        if (dbTokens.CreationDate.AddDays(7) < DateTime.UtcNow)
+        {
+            await SignOutAsync(response);
+            
+            throw new Exception("Refresh token died");
+        }
+        
         await SignInAsync(response, user);
     }
 
