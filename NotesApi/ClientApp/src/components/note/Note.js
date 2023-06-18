@@ -15,6 +15,7 @@ export default class Note extends React.Component {
         this.state = {
             id: this.props.id,
             note: new NoteBlank("", "", []),
+            // noteView : null,
             value: RichTextEditor.createValueFromString("", "html"),
             show_dialog_delete: false,
             show_dialog_share: false,
@@ -59,6 +60,21 @@ export default class Note extends React.Component {
         if (note !== null) {
             // save in state
             this.setState({note: note})
+
+            // let arr = []
+            //
+            // this.state.noteView.tags.forEach(element => {
+            //     arr.push(element.value);
+            // });
+            //
+            // this.setState({note: note})
+            //
+            // this.setState({
+            //     note: {
+            //         ...this.state.note,
+            //         tags: arr
+            //     }
+            // })
 
             // render text
             let text = RichTextEditor.createValueFromString(note.text, "html");
@@ -134,14 +150,14 @@ export default class Note extends React.Component {
 
                     <button className="form-control btn btn-secondary"
                             style={{width: "10rem"}}
-                            onClick={this.props.onClose}>
-                        Back
+                            onClick={() => this.showTags()}>
+                        Tags
                     </button>
 
                     <button className="form-control btn btn-secondary"
                             style={{width: "10rem"}}
-                            onClick={() => this.showTags()}>
-                        Tags
+                            onClick={this.props.onClose}>
+                        Close
                     </button>
 
                 </div>
@@ -178,7 +194,8 @@ export default class Note extends React.Component {
                                update={async () => await this.update()}
                                onCloseDialog={async () => await this.closeTags()}/>
 
-                }</div>
+                }
+            </div>
         );
     }
 }
