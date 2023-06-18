@@ -40,7 +40,7 @@ public static class NoteFileManager
     /// <returns>path to file</returns>
     public static async Task<string> CreateNoteText(string text)
     {
-        string fileName = $"{Guid.NewGuid()}.txt";
+        string fileName = $"{Guid.NewGuid()}.html";
 
         string source = $"Files/{fileName}";
 
