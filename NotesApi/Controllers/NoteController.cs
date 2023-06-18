@@ -50,7 +50,7 @@ public class NoteController : ControllerBase
         return await _noteService.Delete(User, guid);
     }
     
-    [HttpDelete("Image")]
+    [HttpPost("Image")]
     public async Task<IActionResult> UploadImage(IFormFile formFile)
     {
         return await _noteService.UploadImage(formFile);
