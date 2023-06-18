@@ -15,6 +15,15 @@ void SetRefreshCookieAuth(IServiceCollection services, IConfiguration configurat
                 options.ValidAudience = configuration["JWT:ValidAudience"];
                 options.ValidateLifetime = true;
             });
+        // .AddGoogle(options =>
+        // {
+        //     options.ClientId = configuration["Google:ClientId"]!;
+        //     options.ClientSecret = configuration["Google:ClientSecret"]!;
+        //     options.ClaimsIssuer = configuration["JWT:ValidIssuer"];
+        //     options.AccessType = "offline";
+        //     options.CallbackPath = "/signin-google";
+        //     options.SignInScheme = RefreshCookieDefaults.AuthenticationScheme; 
+        // });
 
     services.AddAuthorization(options =>
     {
@@ -53,6 +62,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
