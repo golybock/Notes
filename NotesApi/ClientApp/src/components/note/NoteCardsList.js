@@ -14,7 +14,7 @@ export default class NoteCardsList extends React.Component{
 
                     {this.props.notes
                         .map(note =>
-                            <NoteCard note={note} open={this.props.open}/>)
+                            <NoteCard key={note.id} note={note} open={this.props.open}/>)
                     }
 
                 </div>
