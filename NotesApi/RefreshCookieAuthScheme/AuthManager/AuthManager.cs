@@ -142,12 +142,7 @@ public class AuthManager : IAuthManager
         if(tokens == null)
             return;
 
-        var dbTokens = await _tokensRepository.Get(tokens.Token!, tokens.RefreshToken!);
-
-        if(dbTokens == null)
-            return;
-        
-        await _tokensRepository.Delete(dbTokens.Id);
+        await _tokensRepository.Delete(tokens.Token!, tokens.RefreshToken!);
     }
 
     private async Task SaveTokensAsync(HttpContext context, Tokens tokens, Guid userId)
@@ -162,27 +157,6 @@ public class AuthManager : IAuthManager
         };
 
         await _tokensRepository.Create(tokensDatabase);
-    }
-
-    // todo use if used SignOut or refresh tokens
-    private async Task DeleteTokens(Tokens tokens)
-    {
-        var dbTokens = await _tokensRepository.Get(tokens.Token!, tokens.RefreshToken!);
-
-        if (dbTokens == null)
-            throw new Exception("Tokens not found");
-        
-        await _tokensRepository.Delete(dbTokens.Id);
-    }
-    
-    private async Task DeleteTokens(string token, string refreshToken)
-    {
-        var dbTokens = await _tokensRepository.Get(token, refreshToken);
-
-        if (dbTokens == null)
-            throw new Exception("Tokens not found");
-        
-        await _tokensRepository.Delete(dbTokens.Id);
     }
 
     private Tokens CreateTokens(UserDomain user)
