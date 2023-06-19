@@ -235,31 +235,15 @@ public class NoteService : INoteService
     #endregion
 
     #region get funcs
-
-    // todo need optimaze get note
+    
     private async Task<List<NoteDomain>> GetNotes(Guid userId)
     {
         var notesDatabase = await _noteRepository.GetNotes(userId);
 
-        var notesDomain = notesDatabase
-            .Select(NoteDomainBuilder.Create)
-            .ToList();
+        var notesDomain = new List<NoteDomain>();
 
-        foreach (var note in notesDomain)
-        {
-            var type = await _noteTypeRepository.Get(note.TypeId);
-
-            note.Type = NoteTypeDomainBuilder.Create(type);
-
-            note.Tags = await GetNoteTags(note.Id);
-
-            if (note.SourcePath != null)
-                note.Text = await NoteFileManager.GetNoteText(note.SourcePath);
-
-            note.SharedUsers = await GetSharedUsers(note.Id);
-
-            note.OwnerUser = await _userManager.GetUser(note.OwnerId);
-        }
+        foreach (var note in notesDatabase)
+            notesDomain.Add(await GetNoteDomain(note));
 
         return notesDomain;
     }
@@ -268,25 +252,10 @@ public class NoteService : INoteService
     {
         var notesDatabase = await _noteRepository.GetShared(userId);
 
-        var notesDomain = notesDatabase
-            .Select(NoteDomainBuilder.Create)
-            .ToList();
+        var notesDomain = new List<NoteDomain>();
 
-        foreach (var note in notesDomain)
-        {
-            var type = await _noteTypeRepository.Get(note.TypeId);
-
-            note.Tags = await GetNoteTags(note.Id);
-
-            note.Type = NoteTypeDomainBuilder.Create(type);
-            
-            note.OwnerUser = await _userManager.GetUser(note.OwnerId);
-
-            note.SharedUsers = await GetSharedUsers(note.Id);
-            
-            if (note.SourcePath != null)
-                note.Text = await NoteFileManager.GetNoteText(note.SourcePath);
-        }
+        foreach (var note in notesDatabase)
+            notesDomain.Add(await GetNoteDomain(note));
 
         return notesDomain;
     }
@@ -298,6 +267,24 @@ public class NoteService : INoteService
         if (noteDatabase == null)
             return null;
 
+        var noteDomain = await GetFullNoteDomain(noteDatabase);
+        
+        return noteDomain;
+    }
+
+    private async Task<List<UserDomain>> GetSharedUsers(Guid noteId)
+    {
+        var users = await _shareNoteRepository.GetSharedUsers(noteId);
+
+        var usersDomain = users
+            .Select(UserDomainBuilder.Create)
+            .ToList();
+
+        return usersDomain;
+    }
+
+    private async Task<NoteDomain> GetFullNoteDomain(NoteDatabase noteDatabase)
+    {
         var noteDomain = NoteDomainBuilder.Create(noteDatabase);
 
         if (noteDatabase.SourcePath != null)
@@ -315,19 +302,26 @@ public class NoteService : INoteService
         noteDomain.Tags = await GetNoteTags(noteDatabase.Id);
 
         noteDomain.SharedUsers = await GetSharedUsers(noteDomain.Id);
-        
+
         return noteDomain;
     }
-
-    private async Task<List<UserDomain>> GetSharedUsers(Guid noteId)
+    
+    private async Task<NoteDomain> GetNoteDomain(NoteDatabase noteDatabase)
     {
-        var users = await _shareNoteRepository.GetSharedUsers(noteId);
+        var noteDomain = NoteDomainBuilder.Create(noteDatabase);
 
-        var usersDomain = users
-            .Select(UserDomainBuilder.Create)
-            .ToList();
+        var type = await _noteTypeRepository.Get(noteDomain.TypeId);
 
-        return usersDomain;
+        var user = await _userRepository.Get(noteDomain.OwnerId);
+
+        if (user != null)
+            noteDomain.OwnerUser = UserDomainBuilder.Create(user);
+
+        noteDomain.Type = NoteTypeDomainBuilder.Create(type);
+
+        noteDomain.Tags = await GetNoteTags(noteDatabase.Id);
+        
+        return noteDomain;
     }
 
     #endregion
