@@ -15,6 +15,4 @@ public class TokensDatabase
     public DateTime CreationDate { get; set; }
 
     public IPAddress? Ip { get; set; } = null!;
-    
-    public bool Active { get; set; }
 }

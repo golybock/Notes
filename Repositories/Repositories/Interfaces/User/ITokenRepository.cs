@@ -10,9 +10,9 @@ public interface ITokenRepository
 
     public Task<TokensDatabase?> Get(string token, string refreshToken);
 
-    public Task<bool> SetNotActive(int id);
-
     public Task<int> Create(TokensDatabase tokensDatabase);
     
     public Task<bool> Delete(int id);
+    
+    public Task<bool> Delete(string token, string refreshToken);
 }

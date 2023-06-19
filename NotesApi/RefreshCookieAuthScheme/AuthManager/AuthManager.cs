@@ -157,7 +157,6 @@ public class AuthManager : IAuthManager
             Token = tokens.Token!,
             RefreshToken = tokens.RefreshToken!,
             Ip = GetIpAddress(context.Request.Host.Host),
-            Active = true,
             UserId = userId,
             CreationDate = DateTime.UtcNow
         };

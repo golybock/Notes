@@ -12,8 +12,7 @@ public class TokensReader : IReader<TokensDatabase>
     private const string RefreshToken = "refresh_token";
     private const string CreatedDate = "created_date";
     private const string Ip = "ip";
-    private const string Active = "active";
-    
+
     public static async Task<TokensDatabase?> ReadAsync(NpgsqlDataReader reader)
     {
         while (await reader.ReadAsync())
@@ -26,8 +25,7 @@ public class TokensReader : IReader<TokensDatabase>
             tokensDatabase.RefreshToken = reader.GetString(reader.GetOrdinal(RefreshToken));
             tokensDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal(CreatedDate));
             tokensDatabase.Ip = (IPAddress) reader.GetValue(reader.GetOrdinal(Ip));
-            tokensDatabase.Active = reader.GetBoolean(reader.GetOrdinal(Active));
-            
+
             return tokensDatabase;
         }
 
@@ -48,8 +46,7 @@ public class TokensReader : IReader<TokensDatabase>
             tokensDatabase.RefreshToken = reader.GetString(reader.GetOrdinal(RefreshToken));
             tokensDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal(CreatedDate));
             tokensDatabase.Ip = (IPAddress) reader.GetValue(reader.GetOrdinal(Ip));
-            tokensDatabase.Active = reader.GetBoolean(reader.GetOrdinal(Active));
-            
+
             tokensDatabases.Add(tokensDatabase);
         }
 

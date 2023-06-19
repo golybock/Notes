@@ -106,69 +106,6 @@ public class TokensRepository : RepositoryBase, ITokenRepository
         }
     }
 
-    public async Task<bool> SetNotActive(int id)
-    {
-        string query = "update tokens set active = false where id = $1";
-
-        var connection = GetConnection();
-
-        try
-        {
-            await connection.OpenAsync();
-
-            NpgsqlCommand command = new NpgsqlCommand(query, connection)
-            {
-                Parameters =
-                {
-                    new NpgsqlParameter() {Value = id},
-                }
-            };
-
-            return await command.ExecuteNonQueryAsync() > 0;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        finally
-        {
-            await connection.CloseAsync();
-        }
-    }
-    
-    public async Task<bool> SetNotActive(string token, string refreshToken)
-    {
-        string query = "update tokens set active = false where token= $1 and refresh_token = $2";
-
-        var connection = GetConnection();
-
-        try
-        {
-            await connection.OpenAsync();
-
-            NpgsqlCommand command = new NpgsqlCommand(query, connection)
-            {
-                Parameters =
-                {
-                    new NpgsqlParameter() {Value = token},
-                    new NpgsqlParameter() {Value = refreshToken}
-                }
-            };
-
-            return await command.ExecuteNonQueryAsync() > 0;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        finally
-        {
-            await connection.CloseAsync();
-        }
-    }
-
     public async Task<int> Create(TokensDatabase tokensDatabase)
     {
         string query = "insert into tokens(user_id, token, refresh_token, ip)" +
@@ -212,5 +149,37 @@ public class TokensRepository : RepositoryBase, ITokenRepository
     public async Task<bool> Delete(int id)
     {
         return await DeleteAsync("tokens", "id", id) > 0;
+    }
+
+    public async Task<bool> Delete(string token, string refreshToken)
+    {
+        var connection = GetConnection();
+
+        try
+        {
+            connection.Open();
+
+            var query = $"delete from tokens where token = $1 and refresh_token = $2";
+
+            await using var cmd = new NpgsqlCommand(query, connection)
+            {
+                Parameters =
+                {
+                    new NpgsqlParameter { Value = token },
+                    new NpgsqlParameter { Value = refreshToken }
+                }
+            };
+
+            return await cmd.ExecuteNonQueryAsync() > 0;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
     }
 }
