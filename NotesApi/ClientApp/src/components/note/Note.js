@@ -6,7 +6,6 @@ import RichTextEditor from "react-rte";
 import DeleteNoteDialog from "./DeleteNoteDialog";
 import ShareNoteDialog from "./ShareNoteDialog";
 import TagDialog from "./TagsDialog";
-// import hotkeys from "hotkeys-js";
 
 export default class Note extends React.Component {
 
@@ -22,36 +21,6 @@ export default class Note extends React.Component {
             show_tags: false
         };
     }
-
-    // onFocus = (event) => {
-    //     // we stop bubbling to prevent something higher in the tree from setting it's own handler
-    //     // event.stopPropagation();
-    //     // attaching hotkeys
-    //     hotkeys("ctrl+c,ctrl+v", this.onHotKey);
-    // };
-
-    // onBlur = (event) => {
-    //     // we again stop event from bubbling
-    //     // event.stopPropagation();
-    //     // and removing hotkey
-    //     hotkeys.unbind("ctrl+c,ctrl+v");
-    // };
-    //
-    // onHotKey = (event, handler) => {
-    //     switch (handler.key) {
-    //         case "ctrl+c": {
-    //             console.log("Copy", "beba");
-    //             // this.setState({copiedText: document.activeElement.innerText});
-    //             break;
-    //         }
-    //         case "ctrl+v": {
-    //             console.log("Paste:", "beb");
-    //             break;
-    //         }
-    //         default:
-    //             break;
-    //     }
-    // };
 
     async componentDidMount() {
         await this.loadNote();
@@ -91,6 +60,21 @@ export default class Note extends React.Component {
             // save in state
             this.setState({note: note})
 
+            // let arr = []
+            //
+            // this.state.noteView.tags.forEach(element => {
+            //     arr.push(element.value);
+            // });
+            //
+            // this.setState({note: note})
+            //
+            // this.setState({
+            //     note: {
+            //         ...this.state.note,
+            //         tags: arr
+            //     }
+            // })
+
             // render text
             let text = RichTextEditor.createValueFromString(note.text, "html");
 
@@ -101,9 +85,9 @@ export default class Note extends React.Component {
 
     // update note
     async update() {
-
+        
         let note = this.state.note
-
+        
         let arr = []
 
         this.state.note.tags.forEach(element => {
@@ -111,7 +95,7 @@ export default class Note extends React.Component {
         });
 
         note.tags = arr
-
+        
         await NoteApi.updateNote(this.props.id, note)
     }
 
