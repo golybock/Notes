@@ -7,13 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Blank\Blank.csproj" />
       <ProjectReference Include="..\DatabaseBuilder\DatabaseBuilder.csproj" />
-      <ProjectReference Include="..\DomainBuilder\DomainBuilder.csproj" />
-      <ProjectReference Include="..\Domain\Domain.csproj" />
-      <ProjectReference Include="..\ViewBuilder\ViewBuilder.csproj" />
-      <ProjectReference Include="..\View\View.csproj" />
-      <ProjectReference Include="..\Database\Database.csproj" />
       <ProjectReference Include="..\Database\Database.csproj" />
     </ItemGroup>
 

@@ -1,7 +1,7 @@
 ﻿using Database.Note;
 using Npgsql;
 
-namespace Repositories.Repositories.Readers.Note;
+namespace Repositories.Readers.Note;
 
 public class NoteTypeReader : IReader<NoteTypeDatabase>
 {

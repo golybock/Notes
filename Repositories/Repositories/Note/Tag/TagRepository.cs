@@ -1,8 +1,8 @@
 using Database.Note.Tag;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using Repositories.Repositories.Interfaces.Note.Tag;
-using Repositories.Repositories.Readers.Note.Tag;
+using Repositories.Interfaces.Note.Tag;
+using Repositories.Readers.Note.Tag;
 
 namespace Repositories.Repositories.Note.Tag;
 

@@ -2,7 +2,7 @@ using System.Net;
 using Database.User;
 using Npgsql;
 
-namespace Repositories.Repositories.Readers.User;
+namespace Repositories.Readers.User;
 
 public class TokensReader : IReader<TokensDatabase>
 {

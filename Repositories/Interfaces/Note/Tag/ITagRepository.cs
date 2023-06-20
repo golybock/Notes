@@ -1,6 +1,6 @@
 using Database.Note.Tag;
 
-namespace Repositories.Repositories.Interfaces.Note.Tag;
+namespace Repositories.Interfaces.Note.Tag;
 
 public interface ITagRepository
 {

@@ -1,7 +1,7 @@
 using Database.Note;
 using Database.User;
 
-namespace Repositories.Repositories.Interfaces.Note;
+namespace Repositories.Interfaces.Note;
 
 public interface ISharedNotesRepository
 {

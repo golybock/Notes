@@ -1,7 +1,7 @@
 using Database.Note.Tag;
 using Npgsql;
 
-namespace Repositories.Repositories.Readers.Note.Tag;
+namespace Repositories.Readers.Note.Tag;
 
 public class NoteTagReader : IReader<NoteTagDatabase>
 {

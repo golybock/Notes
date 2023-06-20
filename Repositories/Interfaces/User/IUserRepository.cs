@@ -1,6 +1,6 @@
 using Database.User;
 
-namespace Repositories.Repositories.Interfaces.User;
+namespace Repositories.Interfaces.User;
 
 public interface IUserRepository
 {

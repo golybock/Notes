@@ -1,8 +1,8 @@
 using Database.User;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using Repositories.Repositories.Interfaces.User;
-using Repositories.Repositories.Readers.User;
+using Repositories.Interfaces.User;
+using Repositories.Readers.User;
 
 namespace Repositories.Repositories.User;
 

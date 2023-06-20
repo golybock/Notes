@@ -80,3 +80,12 @@ create table if not exists shared_notes
         references permissions_level
 );
 
+create table logs
+(
+    id serial primary key,
+    timestamp timestamptz default now(),
+    action varchar(500) not null,
+    user_id uuid references users not null ,
+    note_id uuid references note null 
+)
+

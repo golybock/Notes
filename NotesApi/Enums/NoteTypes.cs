@@ -3,5 +3,6 @@ namespace NotesApi.Enums;
 public enum NoteTypes
 {
     Private,
-    Public
+    Public,
+    Deleted
 }

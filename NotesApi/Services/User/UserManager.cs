@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Domain.User;
 using DomainBuilder.User;
 using NotesApi.RefreshCookieAuthScheme;
-using Repositories.Repositories.Interfaces.User;
+using Repositories.Interfaces.User;
 using Repositories.Repositories.User;
 
 namespace NotesApi.Services.User;

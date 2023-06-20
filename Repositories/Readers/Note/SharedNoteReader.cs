@@ -1,8 +1,7 @@
 ﻿using Database.Note;
-using Database.User;
 using Npgsql;
 
-namespace Repositories.Repositories.Readers.Note;
+namespace Repositories.Readers.Note;
 
 public class SharedNoteReader : IReader<SharedNoteDatabase>
 {

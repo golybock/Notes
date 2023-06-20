@@ -1,6 +1,6 @@
 using Npgsql;
 
-namespace Repositories.Repositories.Readers;
+namespace Repositories.Readers;
 
 public interface IReader<T>
 {

@@ -1,6 +1,5 @@
 import React from "react";
-import { Stage, Layer, Rect, Transformer, Image } from 'react-konva';
-import URLImage from "./layers/UrlImage";
+import { Stage, Layer } from 'react-konva';
 import Rectangle from "./layers/Rectangle";
 
 export default class ImagesLayer extends React.Component {

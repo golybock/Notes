@@ -2,9 +2,9 @@
 using Database.User;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using Repositories.Repositories.Interfaces.Note;
-using Repositories.Repositories.Readers.Note;
-using Repositories.Repositories.Readers.User;
+using Repositories.Interfaces.Note;
+using Repositories.Readers.Note;
+using Repositories.Readers.User;
 
 namespace Repositories.Repositories.Note;
 

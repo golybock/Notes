@@ -6,7 +6,7 @@ using DomainBuilder.User;
 using NotesApi.RefreshCookieAuthScheme.Cookie;
 using NotesApi.RefreshCookieAuthScheme.Token;
 using NotesApi.Services.User;
-using Repositories.Repositories.Interfaces.User;
+using Repositories.Interfaces.User;
 using Repositories.Repositories.User;
 using ICookieManager = NotesApi.RefreshCookieAuthScheme.Cookie.ICookieManager;
 
