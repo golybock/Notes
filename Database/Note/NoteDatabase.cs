@@ -9,8 +9,8 @@ public class NoteDatabase
     public DateTime CreationDate { get; set; }
     
     public DateTime EditedDate { get; set; }
-    
-    public string? SourcePath { get; set; }
+
+    public string SourcePath { get; set; } = null!;
     
     public int TypeId { get; set; }
     

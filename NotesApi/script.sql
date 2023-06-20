@@ -26,8 +26,7 @@ create table if not exists tokens
     token         text                                   not null,
     refresh_token text                                   not null,
     created_date  timestamp with time zone default now() not null,
-    ip            inet,
-    active        boolean                  default true
+    ip            inet
 );
 
 create table if not exists permissions_level
@@ -46,12 +45,12 @@ create table if not exists note_type
 
 create table if not exists note
 (
-    header       varchar(250)             not null,
-    created_date timestamp with time zone not null,
-    edited_date  timestamp with time zone not null,
-    source_path  text,
-    id           uuid                     not null
+    id           uuid                                   not null
         primary key,
+    header       varchar(250)                           not null,
+    created_date timestamp with time zone default now() not null,
+    edited_date  timestamp with time zone default now() not null,
+    source_path  text                                   not null,
     type_id      integer
         references note_type,
     owner_id     uuid
@@ -80,12 +79,15 @@ create table if not exists shared_notes
         references permissions_level
 );
 
-create table logs
+create table if not exists logs
 (
-    id serial primary key,
-    timestamp timestamptz default now(),
-    action varchar(500) not null,
-    user_id uuid references users not null ,
-    note_id uuid references note null 
-)
+    id        serial
+        primary key,
+    timestamp timestamp with time zone default now(),
+    action    varchar(500) not null,
+    user_id   uuid         not null
+        references users,
+    note_id   uuid
+        references note
+);
 

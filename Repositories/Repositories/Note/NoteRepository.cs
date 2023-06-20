@@ -73,7 +73,8 @@ public class NoteRepository : RepositoryBase, INoteRepository
 
     public async Task<List<NoteDatabase>> GetShared(Guid userId)
     {
-        string query = "select * from note join shared_notes sn on note.id = sn.note_id where sn.user_id = $1";
+        string query = "select * from note left join shared_notes " +
+                       "sn on note.id = sn.note_id where sn.user_id = $1";
 
         var connection = GetConnection();
 
@@ -103,8 +104,8 @@ public class NoteRepository : RepositoryBase, INoteRepository
 
     public async Task<Guid> Create(NoteDatabase noteDatabase)
     {
-        string query = "insert into note(header, created_date, edited_date, source_path, owner_id, id, type_id)" +
-                       "values ($1, $2, $3, $4, $5, $6, $7) returning id";
+        string query = "insert into note(header, source_path, owner_id, id, type_id)" +
+                       "values ($1, $2, $3, $4, $5) returning id";
 
         var connection = GetConnection();
 
@@ -117,9 +118,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
                 Parameters =
                 {
                     new NpgsqlParameter() { Value = noteDatabase.Header },
-                    new NpgsqlParameter() { Value = noteDatabase.CreationDate },
-                    new NpgsqlParameter() { Value = noteDatabase.EditedDate },
-                    new NpgsqlParameter() { Value = noteDatabase.SourcePath == null ? DBNull.Value : noteDatabase.SourcePath },
+                    new NpgsqlParameter() { Value = noteDatabase.SourcePath },
                     new NpgsqlParameter() { Value = noteDatabase.OwnerId },
                     new NpgsqlParameter() { Value = noteDatabase.Id },
                     new NpgsqlParameter() { Value = 1 },
