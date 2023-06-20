@@ -12,7 +12,9 @@ public interface ILogRepository
 
     public Task<int> Create(LogsDatabase noteDatabase);
 
-    public Task<bool> DeleteUser(Guid userId);
+    public Task<int> Delete(int id);
+
+    public Task<int> DeleteUser(Guid userId);
     
-    public Task<bool> DeleteNotes(Guid noteId);
+    public Task<int> DeleteNotes(Guid noteId);
 }
