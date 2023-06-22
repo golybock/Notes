@@ -3,10 +3,12 @@ using Blank.Note;
 using Database.Note;
 using Database.Note.Tag;
 using DatabaseBuilder.Note;
+using DatabaseBuilder.Note.Layers;
 using Domain.Note;
 using Domain.Note.Tag;
 using Domain.User;
 using DomainBuilder.Note;
+using DomainBuilder.Note.Layers;
 using DomainBuilder.Note.Tag;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +21,7 @@ using Repositories.Repositories.Note;
 using Repositories.Repositories.Note.Tag;
 using Repositories.Repositories.User;
 using ViewBuilder.Note;
+using ViewBuilder.Note.Layers;
 
 namespace NotesApi.Services.Note;
 
@@ -116,14 +119,24 @@ public class NoteService : INoteService
 
         if (noteBlank.Text != null)
         {
-            if (File.Exists(noteDatabase.SourcePath))
+            if (NoteFileManager.FilesExists(noteDatabase.SourcePath))
             {
                 await NoteFileManager.UpdateNoteText(noteDatabase.SourcePath, noteBlank.Text);
+
+                var imagesDatabase = noteBlank.Images.Select(ImageNoteDatabaseBuilder.Create).ToList();
+                
+                var imagesDomain = imagesDatabase.Select(ImageNoteDomainBuilder.Create).ToList();
+                
+                var imagesView = imagesDomain.Select(ImageNoteViewBuilder.Create).ToList();
+
+                await NoteFileManager.UpdateNoteImages(noteDatabase.SourcePath, imagesView);
             }
             else
             {
-                var path = await NoteFileManager.CreateNoteText(noteBlank.Text);
+                var path = await NoteFileManager.CreateNoteFiles();
 
+                await NoteFileManager.UpdateNoteText(path, noteBlank.Text);
+                
                 newNoteDatabase.SourcePath = path;
             }
         }

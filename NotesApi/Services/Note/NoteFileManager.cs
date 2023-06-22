@@ -9,6 +9,21 @@ public static class NoteFileManager
 
     private static readonly string ImagesLayerFormat = ".json";
 
+    public static bool FilesExists(string source)
+    {
+        string textFile = "Files/" + source + TextLayerFormat;
+        
+        string imagesFile = "Files/" + source + ImagesLayerFormat;
+
+        if (!File.Exists(textFile))
+            return false;
+        
+        if (!File.Exists(imagesFile))
+            return false;
+        
+        return true;
+    }
+
     /// <summary>
     /// read text from source
     /// </summary>
@@ -52,7 +67,7 @@ public static class NoteFileManager
     /// <param name="text">note text</param>
     public static async Task UpdateNoteText(string fileName, string text)
     {
-        string source = $"Files/{fileName}";
+        string source = $"Files/{fileName}" + TextLayerFormat;
 
         await using StreamWriter sw = new StreamWriter(source);
 
@@ -66,7 +81,7 @@ public static class NoteFileManager
     /// <returns>path to file</returns>
     public static async Task<string> CreateNoteText(string text)
     {
-        string fileName = $"{Guid.NewGuid()}.html";
+        string fileName = $"{Guid.NewGuid()}" + TextLayerFormat;
 
         string source = $"Files/{fileName}";
 

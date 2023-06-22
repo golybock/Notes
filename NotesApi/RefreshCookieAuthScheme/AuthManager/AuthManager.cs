@@ -105,6 +105,7 @@ public class AuthManager : IAuthManager
         if (dbTokens == null)
             throw new Exception("Tokens in db not found");
 
+        // todo refactor to get time from settings
         // check refresh token on alive
         if (dbTokens.CreationDate.AddDays(7) < DateTime.UtcNow)
         {
