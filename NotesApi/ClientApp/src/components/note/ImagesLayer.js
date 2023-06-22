@@ -19,7 +19,6 @@ export default class ImagesLayer extends React.Component {
             y: 10,
             width: 100,
             height: 100,
-            fill: 'red',
             id: 'rect1',
         },
         {
@@ -27,7 +26,6 @@ export default class ImagesLayer extends React.Component {
             y: 150,
             width: 100,
             height: 100,
-            fill: 'green',
             id: 'rect2',
         },
     ];
@@ -67,7 +65,6 @@ export default class ImagesLayer extends React.Component {
                             />
                         );
                     })}
-                    {/*<URLImage  x={150} />*/}
                 </Layer>
             </Stage>
         )

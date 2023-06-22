@@ -1,3 +1,4 @@
+using Domain.Note.Layers;
 using Domain.Note.Tag;
 using Domain.User;
 
@@ -14,18 +15,14 @@ public class NoteDomain
     public DateTime EditedDate { get; set; }
     
     public string? Text { get; set; }
-    
-    public string? SourcePath { get; set; }
-    
-    public Guid OwnerId { get; set; }
-    
-    public int TypeId { get; set; }
 
     public NoteTypeDomain? Type { get; set; }
     
     public UserDomain? OwnerUser { get; set; }
 
     public List<UserDomain> SharedUsers { get; set; } = new List<UserDomain>();
+
+    public List<ImageNoteDomain> Images { get; set; } = new List<ImageNoteDomain>();
 
     public List<TagDomain> Tags { get; set; } = new List<TagDomain>();
 }

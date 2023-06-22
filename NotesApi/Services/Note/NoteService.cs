@@ -22,27 +22,22 @@ using ViewBuilder.Note;
 
 namespace NotesApi.Services.Note;
 
-// todo optimaze
 public class NoteService : INoteService
 {
-    private readonly LogService<NoteService> _logService;
     private readonly NoteRepository _noteRepository;
     private readonly TagRepository _tagRepository;
     private readonly ShareNoteRepository _shareNoteRepository;
     private readonly NoteTypeRepository _noteTypeRepository;
     private readonly UserRepository _userRepository;
-    private readonly AuthManager _authManager;
     private readonly UserManager _userManager;
 
     public NoteService(IConfiguration configuration)
     {
-        _logService = new LogService<NoteService>(configuration);
         _noteRepository = new NoteRepository(configuration);
         _tagRepository = new TagRepository(configuration);
         _shareNoteRepository = new ShareNoteRepository(configuration);
         _noteTypeRepository = new NoteTypeRepository(configuration);
         _userRepository = new UserRepository(configuration);
-        _authManager = new AuthManager(configuration);
         _userManager = new UserManager(configuration);
     }
 
@@ -51,7 +46,7 @@ public class NoteService : INoteService
     public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
         var user = await _userManager.GetUser(claims);
-        
+
         var notesDomain = await GetNotes(user.Id);
 
         var notesView = notesDomain
@@ -64,7 +59,7 @@ public class NoteService : INoteService
     public async Task<IActionResult> GetShared(ClaimsPrincipal claims)
     {
         var user = await _userManager.GetUser(claims);
-        
+
         var notesDomain = await GetSharedNotes(user.Id);
 
         var notesView = notesDomain
@@ -77,7 +72,7 @@ public class NoteService : INoteService
     public async Task<IActionResult> Get(ClaimsPrincipal claims, Guid id)
     {
         var user = await _userManager.GetUser(claims);
-        
+
         var noteDomain = await GetNote(id);
 
         if (noteDomain == null)
@@ -92,23 +87,26 @@ public class NoteService : INoteService
     public async Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank)
     {
         var user = await _userManager.GetUser(claims);
-        
-        var noteDatabase = NoteDatabaseBuilder.Create(noteBlank, user.Id);
 
-        noteDatabase.SourcePath = await NoteFileManager.CreateNoteText("");
-        noteDatabase.CreationDate = DateTime.Now;
-        noteDatabase.EditedDate = DateTime.Now;
-        noteDatabase.Id = Guid.NewGuid();
+        var source = await NoteFileManager.CreateNoteText("");
+
+        var id = Guid.NewGuid();
+        
+        var noteDatabase = NoteDatabaseBuilder.Create(id, source, noteBlank, user.Id);
+        
+        noteDatabase.CreationDate = DateTime.UtcNow;
+        noteDatabase.EditedDate = DateTime.UtcNow;
 
         var result = await _noteRepository.Create(noteDatabase);
 
         return result != Guid.Empty ? new OkObjectResult(noteDatabase.Id) : new BadRequestResult();
     }
 
+    // todo update security level
     public async Task<IActionResult> Update(ClaimsPrincipal claims, Guid guid, NoteBlank noteBlank)
     {
         var user = await _userManager.GetUser(claims);
-        
+
         var noteDatabase = await _noteRepository.GetNote(guid);
 
         if (noteDatabase == null)
@@ -118,7 +116,7 @@ public class NoteService : INoteService
 
         if (noteBlank.Text != null)
         {
-            if (noteDatabase.SourcePath != null)
+            if (File.Exists(noteDatabase.SourcePath))
             {
                 await NoteFileManager.UpdateNoteText(noteDatabase.SourcePath, noteBlank.Text);
             }
@@ -130,7 +128,7 @@ public class NoteService : INoteService
             }
         }
 
-        newNoteDatabase.EditedDate = DateTime.Now;
+        newNoteDatabase.EditedDate = DateTime.UtcNow;
 
         await CreateNoteTags(guid, noteBlank.Tags);
 
@@ -159,6 +157,11 @@ public class NoteService : INoteService
         if (note == null)
             return new NotFoundResult();
 
+        var user = await _userManager.GetUser(claims);
+        
+        if (user.Id != note.OwnerUser?.Id)
+            return new BadRequestObjectResult("Access denied");
+        
         var sharedUser = await _userRepository.Get(shareBlank.Email);
 
         if (sharedUser == null)
@@ -185,6 +188,11 @@ public class NoteService : INoteService
         if (note == null)
             return new NotFoundResult();
 
+        var user = await _userManager.GetUser(claims);
+        
+        if (user.Id != note.OwnerUser?.Id)
+            return new BadRequestObjectResult("Access denied");
+        
         var sharedUser = await _userRepository.Get(shareBlank.Email);
 
         if (sharedUser == null)
@@ -202,20 +210,26 @@ public class NoteService : INoteService
         if (note == null)
             return new NotFoundResult();
 
+        var user = await _userManager.GetUser(claims);
+
+        if (user.Id != note.OwnerUser?.Id)
+            return new BadRequestObjectResult("Access denied");
+
         var sharedUser = await _userRepository.Get(email);
 
         if (sharedUser == null)
-            return new NotFoundResult();
+            return new NotFoundObjectResult("User not found");
 
         var res = await _shareNoteRepository.Delete(id, sharedUser.Id);
 
         return res ? new OkResult() : new BadRequestObjectResult("Error delete");
     }
 
+    // todo refactor to set type 'deleted' and add trash
     public async Task<IActionResult> Delete(ClaimsPrincipal claims, Guid id)
     {
         var user = await _userManager.GetUser(claims);
-        
+
         var note = await _noteRepository.GetNote(id);
 
         if (note == null)
@@ -235,7 +249,7 @@ public class NoteService : INoteService
     #endregion
 
     #region get funcs
-    
+
     private async Task<List<NoteDomain>> GetNotes(Guid userId)
     {
         var notesDatabase = await _noteRepository.GetNotes(userId);
@@ -268,7 +282,7 @@ public class NoteService : INoteService
             return null;
 
         var noteDomain = await GetFullNoteDomain(noteDatabase);
-        
+
         return noteDomain;
     }
 
@@ -287,12 +301,11 @@ public class NoteService : INoteService
     {
         var noteDomain = NoteDomainBuilder.Create(noteDatabase);
 
-        if (noteDatabase.SourcePath != null)
-            noteDomain.Text = await NoteFileManager.GetNoteText(noteDatabase.SourcePath);
+        noteDomain.Text = await NoteFileManager.GetNoteText(noteDatabase.SourcePath);
 
-        var type = await _noteTypeRepository.Get(noteDomain.TypeId);
+        var type = await _noteTypeRepository.Get(noteDatabase.TypeId);
 
-        var user = await _userRepository.Get(noteDomain.OwnerId);
+        var user = await _userRepository.Get(noteDatabase.OwnerId);
 
         if (user != null)
             noteDomain.OwnerUser = UserDomainBuilder.Create(user);
@@ -305,14 +318,14 @@ public class NoteService : INoteService
 
         return noteDomain;
     }
-    
+
     private async Task<NoteDomain> GetNoteDomain(NoteDatabase noteDatabase)
     {
         var noteDomain = NoteDomainBuilder.Create(noteDatabase);
 
-        var type = await _noteTypeRepository.Get(noteDomain.TypeId);
+        var type = await _noteTypeRepository.Get(noteDatabase.TypeId);
 
-        var user = await _userRepository.Get(noteDomain.OwnerId);
+        var user = await _userRepository.Get(noteDatabase.OwnerId);
 
         if (user != null)
             noteDomain.OwnerUser = UserDomainBuilder.Create(user);
@@ -320,7 +333,7 @@ public class NoteService : INoteService
         noteDomain.Type = NoteTypeDomainBuilder.Create(type);
 
         noteDomain.Tags = await GetNoteTags(noteDatabase.Id);
-        
+
         return noteDomain;
     }
 

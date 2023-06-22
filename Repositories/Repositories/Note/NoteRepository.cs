@@ -209,6 +209,46 @@ public class NoteRepository : RepositoryBase, INoteRepository
         }
     }
 
+    public async Task<NoteDatabase?> GetSharedNote(Guid userId, Guid noteId)
+    {
+        string query =
+            "select * from note n " +
+            "inner join shared_notes sn " +
+            "on n.id = sn.note_id " +
+            "where sn.user_id = $1 and " +
+            "sn.note_id = $2 ";
+        
+        var connection = GetConnection();
+
+        try
+        {
+            await connection.OpenAsync();
+
+            NpgsqlCommand command = new NpgsqlCommand(query, connection)
+            {
+                Parameters =
+                {
+                    new NpgsqlParameter() { Value = userId },
+                    new NpgsqlParameter() { Value = noteId }
+                }
+            };
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            // returns value(null if not found)
+            return await NoteReader.ReadAsync(reader);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+    }
+
     public async Task<bool> Delete(Guid id)
     {
         return await DeleteAsync("note", "id", id) > 0;

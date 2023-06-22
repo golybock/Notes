@@ -1,3 +1,4 @@
+using Views.Note.Layers;
 using Views.Note.Tag;
 using Views.User;
 
@@ -20,6 +21,8 @@ public class NoteView
     public UserView? OwnerUser { get; set; }
 
     public List<UserView> SharedUsers { get; set; } = new List<UserView>();
+
+    public List<ImageNoteView> Images { get; set; } = new List<ImageNoteView>();
 
     public List<TagView> Tags { get; set; } = new List<TagView>();
 }

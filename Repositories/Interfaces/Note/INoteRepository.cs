@@ -16,5 +16,7 @@ public interface INoteRepository
     
     public Task<bool> UpdateType(Guid id, int type);
 
+    public Task<NoteDatabase?> GetSharedNote(Guid userId, Guid noteId);
+
     public Task<bool> Delete(Guid id);
 }

@@ -1,7 +1,14 @@
+using System.Text.Json;
+using Views.Note.Layers;
+
 namespace NotesApi.Services.Note;
 
 public static class NoteFileManager
 {
+    private static readonly string TextLayerFormat = ".html";
+
+    private static readonly string ImagesLayerFormat = ".json";
+    
     /// <summary>
     /// read text from source
     /// </summary>
@@ -9,7 +16,7 @@ public static class NoteFileManager
     /// <returns></returns>
     public static async Task<string?> GetNoteText(string source)
     {
-        string path = "Files/" + source;
+        string path = "Files/" + source + TextLayerFormat;
 
         if (!File.Exists(path))
             return null;
@@ -17,6 +24,25 @@ public static class NoteFileManager
         using StreamReader sr = new StreamReader(path);
 
         return await sr.ReadToEndAsync();
+    }
+    
+    /// <summary>
+    /// Read note images from images layer
+    /// </summary>
+    /// <param name="source"></param>
+    /// <returns></returns>
+    public static async Task<List<ImageNoteView>?> GetNoteImages(string source)
+    {
+        string path = "Files/" + source + ImagesLayerFormat;
+
+        if (!File.Exists(path))
+            return null;
+
+        using StreamReader sr = new StreamReader(path);
+
+        var text = await sr.ReadToEndAsync();
+
+        return JsonSerializer.Deserialize<List<ImageNoteView>>(text);
     }
 
     /// <summary>
@@ -47,6 +73,42 @@ public static class NoteFileManager
         await using StreamWriter sw = new StreamWriter(source);
 
         await sw.WriteLineAsync(text);
+
+        return fileName;
+    }
+    
+    /// <summary>
+    /// Update note images layer
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="images"></param>
+    public static async Task UpdateNoteImages(string source, List<ImageNoteView> images)
+    {
+        string fullPath = $"Files/{source}" + ImagesLayerFormat;
+
+        await using StreamWriter sw = new StreamWriter(fullPath);
+
+        string json = JsonSerializer.Serialize(images);
+        
+        await sw.WriteLineAsync(json);
+    }
+    
+    /// <summary>
+    /// Create note images layer
+    /// </summary>
+    /// <param name="images"></param>
+    /// <returns></returns>
+    public static async Task<string> CreateNoteImages(List<ImageNoteView> images)
+    {
+        string fileName = $"{Guid.NewGuid()}" + ImagesLayerFormat;
+
+        string source = $"Files/{fileName}";
+
+        await using StreamWriter sw = new StreamWriter(source);
+
+        string json = JsonSerializer.Serialize(images);
+        
+        await sw.WriteLineAsync(json);
 
         return fileName;
     }
