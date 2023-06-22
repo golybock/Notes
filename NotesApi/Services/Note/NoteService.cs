@@ -117,28 +117,25 @@ public class NoteService : INoteService
 
         var newNoteDatabase = NoteDatabaseBuilder.Create(noteBlank);
 
-        if (noteBlank.Text != null)
+        if (NoteFileManager.FilesExists(noteDatabase.SourcePath))
         {
-            if (NoteFileManager.FilesExists(noteDatabase.SourcePath))
-            {
-                await NoteFileManager.UpdateNoteText(noteDatabase.SourcePath, noteBlank.Text);
+            await NoteFileManager.UpdateNoteText(noteDatabase.SourcePath, noteBlank.Text ?? string.Empty);
 
-                var imagesDatabase = noteBlank.Images.Select(ImageNoteDatabaseBuilder.Create).ToList();
+            var imagesDatabase = noteBlank.Images.Select(ImageNoteDatabaseBuilder.Create).ToList();
                 
-                var imagesDomain = imagesDatabase.Select(ImageNoteDomainBuilder.Create).ToList();
+            var imagesDomain = imagesDatabase.Select(ImageNoteDomainBuilder.Create).ToList();
                 
-                var imagesView = imagesDomain.Select(ImageNoteViewBuilder.Create).ToList();
+            var imagesView = imagesDomain.Select(ImageNoteViewBuilder.Create).ToList();
 
-                await NoteFileManager.UpdateNoteImages(noteDatabase.SourcePath, imagesView);
-            }
-            else
-            {
-                var path = await NoteFileManager.CreateNoteFiles();
+            await NoteFileManager.UpdateNoteImages(noteDatabase.SourcePath, imagesView);
+        }
+        else
+        {
+            var path = await NoteFileManager.CreateNoteFiles();
 
-                await NoteFileManager.UpdateNoteText(path, noteBlank.Text);
+            newNoteDatabase.SourcePath = path;
                 
-                newNoteDatabase.SourcePath = path;
-            }
+            await NoteFileManager.UpdateNoteText(path, noteBlank.Text ?? string.Empty);
         }
 
         newNoteDatabase.EditedDate = DateTime.UtcNow;
