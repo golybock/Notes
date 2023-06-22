@@ -86,12 +86,12 @@ public class NoteService : INoteService
     // not save text and tags, only name and returns id
     public async Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank)
     {
-        var user = await _userManager.GetUser(claims);
-
-        var source = await NoteFileManager.CreateNoteText("");
-
         var id = Guid.NewGuid();
         
+        var user = await _userManager.GetUser(claims);
+
+        var source = await NoteFileManager.CreateNoteFiles();
+
         var noteDatabase = NoteDatabaseBuilder.Create(id, source, noteBlank, user.Id);
         
         noteDatabase.CreationDate = DateTime.UtcNow;

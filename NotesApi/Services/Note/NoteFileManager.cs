@@ -8,7 +8,7 @@ public static class NoteFileManager
     private static readonly string TextLayerFormat = ".html";
 
     private static readonly string ImagesLayerFormat = ".json";
-    
+
     /// <summary>
     /// read text from source
     /// </summary>
@@ -25,7 +25,7 @@ public static class NoteFileManager
 
         return await sr.ReadToEndAsync();
     }
-    
+
     /// <summary>
     /// Read note images from images layer
     /// </summary>
@@ -76,7 +76,7 @@ public static class NoteFileManager
 
         return fileName;
     }
-    
+
     /// <summary>
     /// Update note images layer
     /// </summary>
@@ -89,10 +89,10 @@ public static class NoteFileManager
         await using StreamWriter sw = new StreamWriter(fullPath);
 
         string json = JsonSerializer.Serialize(images);
-        
+
         await sw.WriteLineAsync(json);
     }
-    
+
     /// <summary>
     /// Create note images layer
     /// </summary>
@@ -107,9 +107,34 @@ public static class NoteFileManager
         await using StreamWriter sw = new StreamWriter(source);
 
         string json = JsonSerializer.Serialize(images);
-        
+
         await sw.WriteLineAsync(json);
 
         return fileName;
+    }
+
+    /// <summary>
+    /// Create note images layer
+    /// </summary>
+    /// <returns>source</returns>
+    public static async Task<string> CreateNoteFiles()
+    {
+        Guid id = Guid.NewGuid();
+
+        string fileNameImages = $"{id}" + ImagesLayerFormat;
+
+        string fileNameText = $"{id}" + TextLayerFormat;
+
+        string sourceText = $"Files/{fileNameText}";
+
+        string sourceImages = $"Files/{fileNameImages}";
+
+        await using (var stream = File.Create(sourceText))
+            stream.Close();
+
+        await using (var stream = File.Create(sourceImages))
+            stream.Close();
+
+        return id.ToString();
     }
 }
