@@ -120,7 +120,7 @@ public class LogsRepository : RepositoryBase, ILogRepository
                 {
                     new NpgsqlParameter() { Value = noteDatabase.Action },
                     new NpgsqlParameter() { Value = noteDatabase.UserId },
-                    new NpgsqlParameter() { Value = noteDatabase.NoteId }
+                    new NpgsqlParameter() { Value = noteDatabase.NoteId == null ? DBNull.Value : noteDatabase.NoteId }
                 }
             };
 

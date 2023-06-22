@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using NotesApi.Enums;
 using NotesApi.RefreshCookieAuthScheme.AuthManager;
 using NotesApi.Services.Interfaces.Note;
+using NotesApi.Services.Logs;
 using NotesApi.Services.User;
 using Repositories.Repositories.Note;
 using Repositories.Repositories.Note.Tag;
@@ -24,6 +25,7 @@ namespace NotesApi.Services.Note;
 // todo optimaze
 public class NoteService : INoteService
 {
+    private readonly LogService<NoteService> _logService;
     private readonly NoteRepository _noteRepository;
     private readonly TagRepository _tagRepository;
     private readonly ShareNoteRepository _shareNoteRepository;
@@ -34,6 +36,7 @@ public class NoteService : INoteService
 
     public NoteService(IConfiguration configuration)
     {
+        _logService = new LogService<NoteService>(configuration);
         _noteRepository = new NoteRepository(configuration);
         _tagRepository = new TagRepository(configuration);
         _shareNoteRepository = new ShareNoteRepository(configuration);
@@ -79,9 +82,6 @@ public class NoteService : INoteService
 
         if (noteDomain == null)
             return new NotFoundResult();
-
-        if (noteDomain.OwnerUser?.Email != user.Email)
-            return new BadRequestObjectResult("Access denied");
 
         var noteView = NoteViewBuilder.Create(noteDomain);
 
