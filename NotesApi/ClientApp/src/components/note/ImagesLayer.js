@@ -7,6 +7,12 @@ export default class ImagesLayer extends React.Component {
     constructor(props) {
         super(props);
 
+        document.onpaste = (evt) => {
+            const dT = evt.clipboardData || window.clipboardData;
+            const file = dT.files[ 0 ];
+            console.log( file );
+        };
+        
         this.state = {
             rectangles: this.initialRectangles,
             selected: null
@@ -32,8 +38,13 @@ export default class ImagesLayer extends React.Component {
 
     checkDeselect = (e) => {
         // deselect when clicked on empty area
-        const clickedOnEmpty = e.target === e.target.getStage();
-        if (clickedOnEmpty) {
+        try {
+            const clickedOnEmpty = e.target === e.target.getStage();
+            if (clickedOnEmpty) {
+                this.setState({selected: null});
+            }    
+        }
+        catch{
             this.setState({selected: null});
         }
     };

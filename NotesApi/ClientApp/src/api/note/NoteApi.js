@@ -88,6 +88,10 @@ export default class NoteApi extends ApiBase {
                 return null;
             });
     }
+    
+    static async uploadFile(){
+        
+    }
 
     static async deleteNote(guid) {
 

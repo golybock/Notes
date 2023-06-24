@@ -6,6 +6,7 @@ import RichTextEditor from "react-rte";
 import DeleteNoteDialog from "./DeleteNoteDialog";
 import ShareNoteDialog from "./ShareNoteDialog";
 import TagDialog from "./TagsDialog";
+import ImagesLayer from "./ImagesLayer";
 
 export default class Note extends React.Component {
 
@@ -59,21 +60,6 @@ export default class Note extends React.Component {
         if (note !== null) {
             // save in state
             this.setState({note: note})
-
-            // let arr = []
-            //
-            // this.state.noteView.tags.forEach(element => {
-            //     arr.push(element.value);
-            // });
-            //
-            // this.setState({note: note})
-            //
-            // this.setState({
-            //     note: {
-            //         ...this.state.note,
-            //         tags: arr
-            //     }
-            // })
 
             // render text
             let text = RichTextEditor.createValueFromString(note.text, "html");
@@ -203,8 +189,11 @@ export default class Note extends React.Component {
                                note={this.state.note}
                                update={async () => await this.update()}
                                onCloseDialog={async () => await this.closeTags()}/>
-
+                    
                 }
+
+                <ImagesLayer/>
+                
             </div>
         );
     }
