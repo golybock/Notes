@@ -310,9 +310,10 @@ public class NoteService : INoteService
 
         noteDomain.Text = await NoteFileManager.GetNoteText(noteDatabase.SourcePath);
 
-        var noteImagesDB = await NoteFileManager.GetNoteImages(noteDatabase.SourcePath);
-        
-        noteDomain.Images = noteImagesDB.Select(ImageNoteDomainBuilder.Create).ToList();
+        var noteImagesDb = await NoteFileManager.GetNoteImages(noteDatabase.SourcePath);
+
+        if (noteImagesDb != null) 
+            noteDomain.Images = noteImagesDb.Select(ImageNoteDomainBuilder.Create).ToList();
 
         var type = await _noteTypeRepository.Get(noteDatabase.TypeId);
 

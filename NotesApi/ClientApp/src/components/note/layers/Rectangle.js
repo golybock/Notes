@@ -6,12 +6,11 @@ export default class Rectangle extends React.Component {
     constructor(props) {
         super(props);
 
-        this.trRef = React.createRef();
-        this.shapeRef = React.createRef();
-
         this.state = {
             isSelected : false,
-            image: null
+            image: null,
+            trRef : React.createRef(),
+            shapeRef : React.createRef()
         }
     }
 
@@ -52,7 +51,7 @@ export default class Rectangle extends React.Component {
                         this.props.onSelect()
                         this.setState({isSelected: true})
                     }}
-                    ref={this.shapeRef}
+                    ref={this.state.shapeRef}
                     {...this.props.shapeProps}
                     draggable
                     onDragEnd={(e) => {
@@ -63,7 +62,7 @@ export default class Rectangle extends React.Component {
                         });
                     }}
                     onTransformEnd={(e) => {
-                        const node = this.shapeRef.current;
+                        const node = this.state.shapeRef.current;
                         const scaleX = node.scaleX();
                         const scaleY = node.scaleY();
 
@@ -82,7 +81,7 @@ export default class Rectangle extends React.Component {
                 />
                 {this.state.isSelected && (
                     <Transformer
-                        ref={this.trRef}
+                        ref={this.state.trRef}
                         boundBoxFunc={(oldBox, newBox) => {
                             // limit resize
                             if (newBox.width < 5 || newBox.height < 5) {

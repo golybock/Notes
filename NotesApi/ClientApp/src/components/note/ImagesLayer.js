@@ -1,27 +1,39 @@
 import React from "react";
 import {Stage, Layer} from 'react-konva';
+import NoteApi from "../../api/note/NoteApi";
 import Rectangle from "./layers/Rectangle";
+import Note from "./Note";
+import ImageNoteBlank from "../../models/blank/note/ImageNoteBlank";
 
 export default class ImagesLayer extends React.Component {
 
     constructor(props) {
         super(props);
 
-        // load images to server
-        document.onpaste = (evt) => {
-            const dt = evt.clipboardData || window.clipboardData;
-
-            if (dt !== undefined) {
-                const file = dt.files[0];
-                console.log(file);
-            }
-
-        };
-
         this.state = {
             images: this.props.images,
             selected: null
         }
+    }
+
+    async componentDidMount() {
+        // load images to server
+        document.onpaste = async (evt) => {
+            const dt = evt.clipboardData || window.clipboardData;
+
+            if (dt !== undefined) {
+                const file = dt.files[0];
+
+                let id = await NoteApi.uploadFile(file)
+
+                this.props.note.images.push(new ImageNoteBlank(id, 150, 150, 150, 150, null))
+
+                await this.props.uploadImage();
+
+                console.log(id)
+            }
+
+        };
     }
 
     checkDeselect = (e) => {

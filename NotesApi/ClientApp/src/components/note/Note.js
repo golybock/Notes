@@ -71,9 +71,9 @@ export default class Note extends React.Component {
 
     // update note
     async update() {
-        
+
         let note = this.state.note
-        
+
         let arr = []
 
         this.state.note.tags.forEach(element => {
@@ -81,8 +81,13 @@ export default class Note extends React.Component {
         });
 
         note.tags = arr
-        
+
         await NoteApi.updateNote(this.props.id, note)
+    }
+
+    async uploadImage() {
+        await this.update();
+        await this.loadNote();
     }
 
     // onchange text
@@ -189,13 +194,15 @@ export default class Note extends React.Component {
                                note={this.state.note}
                                update={async () => await this.update()}
                                onCloseDialog={async () => await this.closeTags()}/>
-                    
+
                 }
 
                 {this.state.note.images &&
-                    <ImagesLayer images={this.state.note.images}/>    
+                    <ImagesLayer images={this.state.note.images}
+                                 note={this.state.note}
+                                 uploadImage={async () => await this.uploadImage()}/>
                 }
-                
+
             </div>
         );
     }

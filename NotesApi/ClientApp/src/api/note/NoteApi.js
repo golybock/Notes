@@ -1,6 +1,7 @@
 import axios from 'axios';
 import ApiBase from "../ApiBase";
 import {NoteBlank} from "../../models/blank/note/NoteBlank";
+import FormData from "form-data";
 import type ShareNoteBlank from "../../models/blank/note/ShareNoteBlank";
 
 export default class NoteApi extends ApiBase {
@@ -88,9 +89,22 @@ export default class NoteApi extends ApiBase {
                 return null;
             });
     }
-    
-    static async uploadFile(){
-        
+
+    static async uploadFile(file) {
+
+        let url = this.baseAddress + '/Note/Image';
+
+        let formData = new FormData()
+
+        formData.append("image", file, file.name)
+
+        return await axios.post(url, formData)
+            .then(async res => {
+                return await res.data;
+            })
+            .catch((e) => {
+                return null;
+            })
     }
 
     static async deleteNote(guid) {
