@@ -1,5 +1,5 @@
 import React from "react";
-import { Stage, Layer } from 'react-konva';
+import {Stage, Layer} from 'react-konva';
 import Rectangle from "./layers/Rectangle";
 
 export default class ImagesLayer extends React.Component {
@@ -7,34 +7,22 @@ export default class ImagesLayer extends React.Component {
     constructor(props) {
         super(props);
 
+        // load images to server
         document.onpaste = (evt) => {
-            const dT = evt.clipboardData || window.clipboardData;
-            const file = dT.files[ 0 ];
-            console.log( file );
+            const dt = evt.clipboardData || window.clipboardData;
+
+            if (dt !== undefined) {
+                const file = dt.files[0];
+                console.log(file);
+            }
+
         };
-        
+
         this.state = {
-            rectangles: this.initialRectangles,
+            images: this.props.images,
             selected: null
         }
     }
-
-    initialRectangles = [
-        {
-            x: 10,
-            y: 10,
-            width: 100,
-            height: 100,
-            id: 'rect1',
-        },
-        {
-            x: 150,
-            y: 150,
-            width: 100,
-            height: 100,
-            id: 'rect2',
-        },
-    ];
 
     checkDeselect = (e) => {
         // deselect when clicked on empty area
@@ -42,9 +30,8 @@ export default class ImagesLayer extends React.Component {
             const clickedOnEmpty = e.target === e.target.getStage();
             if (clickedOnEmpty) {
                 this.setState({selected: null});
-            }    
-        }
-        catch{
+            }
+        } catch {
             this.setState({selected: null});
         }
     };
@@ -58,20 +45,19 @@ export default class ImagesLayer extends React.Component {
                 onTouchStart={() => this.checkDeselect()}
             >
                 <Layer>
-                    {this.state.rectangles.map((rect, i) => {
+                    {this.state.images.map((img) => {
                         return (
                             <Rectangle
-                                src="https://konvajs.org/assets/yoda.jpg"
-                                key={i}
-                                shapeProps={rect}
-                                isSelected={rect.id === this.state.selected}
+                                src={img.url}
+                                key={img.id}
+                                shapeProps={img}
                                 onSelect={() => {
-                                    this.setState({selected: rect.id});
+                                    this.setState({selected: img.id});
                                 }}
                                 onChange={(newAttrs) => {
-                                    const rects = this.state.rectangles.slice();
-                                    rects[i] = newAttrs;
-                                    this.setState({rectangles: rects})
+                                    const rects = this.state.images.slice();
+                                    rects[img.id] = newAttrs;
+                                    this.setState({images: rects})
                                 }}
                             />
                         );

@@ -15,7 +15,6 @@ public class ImageNoteDomainBuilder
             Width = imageNoteDatabase.Width,
             Height = imageNoteDatabase.Height,
             SvgCode = imageNoteDatabase.SvgCode,
-            Url = imageNoteDatabase.Url
         };
     } 
 }

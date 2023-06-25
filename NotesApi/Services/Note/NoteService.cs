@@ -122,12 +122,8 @@ public class NoteService : INoteService
             await NoteFileManager.UpdateNoteText(noteDatabase.SourcePath, noteBlank.Text ?? string.Empty);
 
             var imagesDatabase = noteBlank.Images.Select(ImageNoteDatabaseBuilder.Create).ToList();
-                
-            var imagesDomain = imagesDatabase.Select(ImageNoteDomainBuilder.Create).ToList();
-                
-            var imagesView = imagesDomain.Select(ImageNoteViewBuilder.Create).ToList();
 
-            await NoteFileManager.UpdateNoteImages(noteDatabase.SourcePath, imagesView);
+            await NoteFileManager.UpdateNoteImages(noteDatabase.SourcePath, imagesDatabase);
         }
         else
         {
@@ -307,11 +303,16 @@ public class NoteService : INoteService
         return usersDomain;
     }
 
+    // todo refactor
     private async Task<NoteDomain> GetFullNoteDomain(NoteDatabase noteDatabase)
     {
         var noteDomain = NoteDomainBuilder.Create(noteDatabase);
 
         noteDomain.Text = await NoteFileManager.GetNoteText(noteDatabase.SourcePath);
+
+        var noteImagesDB = await NoteFileManager.GetNoteImages(noteDatabase.SourcePath);
+        
+        noteDomain.Images = noteImagesDB.Select(ImageNoteDomainBuilder.Create).ToList();
 
         var type = await _noteTypeRepository.Get(noteDatabase.TypeId);
 

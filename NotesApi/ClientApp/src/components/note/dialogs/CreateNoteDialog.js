@@ -1,11 +1,10 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import NoteApi from "../../api/note/NoteApi";
-import {NoteBlank} from "../../models/blank/note/NoteBlank";
+import NoteApi from "../../../api/note/NoteApi";
+import {NoteBlank} from "../../../models/blank/note/NoteBlank";
 
 export default class CreateNoteDialog extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {

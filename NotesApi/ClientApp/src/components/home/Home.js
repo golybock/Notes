@@ -3,7 +3,7 @@ import "./Home.css"
 import NoteApi from "../../api/note/NoteApi";
 import Note from "../note/Note";
 import NoteCardsList from "../note/NoteCardsList";
-import CreateNoteDialog from "../note/CreateNoteDialog";
+import CreateNoteDialog from "../note/dialogs/CreateNoteDialog";
 
 export default class Home extends React.Component {
     

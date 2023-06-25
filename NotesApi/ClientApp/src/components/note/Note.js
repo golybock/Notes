@@ -3,8 +3,8 @@ import "./Note.css"
 import NoteApi from "../../api/note/NoteApi";
 import {NoteBlank} from "../../models/blank/note/NoteBlank";
 import RichTextEditor from "react-rte";
-import DeleteNoteDialog from "./DeleteNoteDialog";
-import ShareNoteDialog from "./ShareNoteDialog";
+import DeleteNoteDialog from "./dialogs/DeleteNoteDialog";
+import ShareNoteDialog from "./dialogs/ShareNoteDialog";
 import TagDialog from "./TagsDialog";
 import ImagesLayer from "./ImagesLayer";
 
@@ -192,7 +192,9 @@ export default class Note extends React.Component {
                     
                 }
 
-                <ImagesLayer/>
+                {this.state.note.images &&
+                    <ImagesLayer images={this.state.note.images}/>    
+                }
                 
             </div>
         );

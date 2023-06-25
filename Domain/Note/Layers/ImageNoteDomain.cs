@@ -13,6 +13,6 @@ public class ImageNoteDomain
     public int Height { get; set; }
     
     public string? SvgCode { get; set; }
-    
-    public string? Url { get; set; }
+
+    public string? Url => $"https://localhost:7058/{Id}.png";
 }

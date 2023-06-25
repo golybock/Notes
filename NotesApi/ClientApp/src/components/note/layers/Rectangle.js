@@ -10,7 +10,7 @@ export default class Rectangle extends React.Component {
         this.shapeRef = React.createRef();
 
         this.state = {
-            isSelected : this.props.isSelected,
+            isSelected : false,
             image: null
         }
     }
@@ -80,7 +80,7 @@ export default class Rectangle extends React.Component {
                         });
                     }}
                 />
-                {this.props.isSelected && (
+                {this.state.isSelected && (
                     <Transformer
                         ref={this.trRef}
                         boundBoxFunc={(oldBox, newBox) => {

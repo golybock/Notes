@@ -1,4 +1,6 @@
 using System.Text.Json;
+using Database.Note.Layers;
+using Domain.Note.Layers;
 using Views.Note.Layers;
 
 namespace NotesApi.Services.Note;
@@ -46,7 +48,7 @@ public static class NoteFileManager
     /// </summary>
     /// <param name="source"></param>
     /// <returns></returns>
-    public static async Task<List<ImageNoteView>?> GetNoteImages(string source)
+    public static async Task<List<ImageNoteDatabase>?> GetNoteImages(string source)
     {
         string path = "Files/" + source + ImagesLayerFormat;
 
@@ -57,7 +59,7 @@ public static class NoteFileManager
 
         var text = await sr.ReadToEndAsync();
 
-        return JsonSerializer.Deserialize<List<ImageNoteView>>(text);
+        return JsonSerializer.Deserialize<List<ImageNoteDatabase>>(text);
     }
 
     /// <summary>
@@ -97,7 +99,7 @@ public static class NoteFileManager
     /// </summary>
     /// <param name="source"></param>
     /// <param name="images"></param>
-    public static async Task UpdateNoteImages(string source, List<ImageNoteView> images)
+    public static async Task UpdateNoteImages(string source, List<ImageNoteDatabase> images)
     {
         string fullPath = $"Files/{source}" + ImagesLayerFormat;
 
@@ -113,7 +115,7 @@ public static class NoteFileManager
     /// </summary>
     /// <param name="images"></param>
     /// <returns></returns>
-    public static async Task<string> CreateNoteImages(List<ImageNoteView> images)
+    public static async Task<string> CreateNoteImages(List<ImageNoteDatabase> images)
     {
         string fileName = $"{Guid.NewGuid()}" + ImagesLayerFormat;
 

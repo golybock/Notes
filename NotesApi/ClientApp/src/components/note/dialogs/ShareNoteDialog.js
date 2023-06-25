@@ -2,8 +2,8 @@ import React from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import NoteApi from "../../api/note/NoteApi";
-import ShareNoteBlank from "../../models/blank/note/ShareNoteBlank";
+import NoteApi from "../../../api/note/NoteApi";
+import ShareNoteBlank from "../../../models/blank/note/ShareNoteBlank";
 
 export default class ShareNoteDialog extends React.Component {
 
