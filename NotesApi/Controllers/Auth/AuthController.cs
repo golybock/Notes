@@ -32,10 +32,4 @@ public class AuthController : ControllerBase, IAuthController
     {
         return await _authService.SignOut(HttpContext);
     }
-
-    // [HttpPost("UpdatePassword")]
-    // public async Task<IActionResult> UpdatePassword(string newPassword)
-    // {
-    //     return await _authService.UpdatePassword(newPassword, HttpContext);
-    // }
 }

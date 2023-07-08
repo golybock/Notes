@@ -5,14 +5,19 @@ void SetRefreshCookieAuth(IServiceCollection services, IConfiguration configurat
 {
     services.AddAuthentication(RefreshCookieDefaults.AuthenticationScheme)
         .AddRefreshCookie(
-            RefreshCookieDefaults.AuthenticationScheme, RefreshCookieDefaults.AuthenticationScheme, options =>
+            RefreshCookieDefaults.AuthenticationScheme,
+            RefreshCookieDefaults.AuthenticationScheme,
+            options =>
             {
                 options.ConnectionString = configuration.GetConnectionString("notes")!;
                 options.Secret = configuration["JWT:Secret"];
-                options.TokenLifeTimeInMinutes = int.Parse(configuration["JWT:TokenValidityInMinutes"]);
-                options.RefreshTokenLifeTimeInDays = Int32.Parse(configuration["JWT:RefreshTokenValidityInDays"]);
+                options.TokenLifeTimeInMinutes = int.Parse(configuration["JWT:TokenValidityInMinutes"]!);
+                options.RefreshTokenLifeTimeInDays = Int32.Parse(configuration["JWT:RefreshTokenValidityInDays"]!);
                 options.ValidIssuer = configuration["JWT:ValidIssuer"];
                 options.ValidAudience = configuration["JWT:ValidAudience"];
+                options.ValidateIssuer = true;
+                options.ValidateAudience = true;
+                options.ValidateIssuerSigningKey = true;
                 options.ValidateLifetime = true;
             });
 
@@ -39,7 +44,7 @@ void SetCors(IServiceCollection services)
                     .AllowAnyHeader()
                     .AllowCredentials();
             });
-    }); 
+    });
 }
 
 var builder = WebApplication.CreateBuilder(args);

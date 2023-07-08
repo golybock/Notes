@@ -21,10 +21,4 @@ public class UserController : ControllerBase
     {
         return await _userService.Get(User);
     }
-    
-    // [HttpPut("User")]
-    // public async Task<IActionResult> UpdateUser(UserBlank userBlank)
-    // {
-    //     return await _userService.Update(HttpContext, userBlank);
-    // }
 }

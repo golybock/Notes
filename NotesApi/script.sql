@@ -79,15 +79,3 @@ create table if not exists shared_notes
         references permissions_level
 );
 
-create table if not exists logs
-(
-    id        serial
-        primary key,
-    timestamp timestamp with time zone default now(),
-    action    varchar(500) not null,
-    user_id   uuid         not null
-        references users,
-    note_id   uuid
-        references note
-);
-
