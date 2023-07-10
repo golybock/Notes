@@ -24,13 +24,12 @@ export default class App extends React.Component {
         let isAuth = user != null;
 
         this.setState({isAuth: isAuth})
-        this.setState({login: !isAuth})
     }
 
     auth() {
         this.setState({isAuth: true});
     }
-    
+
     render() {
         return (
             <div className="App">
@@ -38,22 +37,23 @@ export default class App extends React.Component {
                 {/*nav bar*/}
                 {this.state.isAuth && (
                     <nav className="Nav-panel">
+                        
                         <Link className="Navbar-item" to="/">
                             <img src={Cat} alt={Cat} className="App-logo"/>
                         </Link>
-                        {/*<Link className="Navbar-item" to="/">Главная</Link>*/}
+                        
                         <Link className="Navbar-item" to="/account">Акаунт</Link>
+                        
                     </nav>
                 )}
 
                 {/*main content*/}
                 {this.state.isAuth && (
                     <div>
-                        {/*routes*/}
                         <Routes>
                             <Route path="/" element={<Home/>}/>
                             <Route path="/account" element={<Account/>}/>
-                            <Route path="*" element={<PageNotFound/>} />
+                            <Route path="*" element={<PageNotFound/>}/>
                         </Routes>
                     </div>
                 )}

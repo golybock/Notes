@@ -3,7 +3,7 @@ import {Stage, Layer} from 'react-konva';
 import NoteApi from "../../api/note/NoteApi";
 import Rectangle from "./layers/Rectangle";
 import Note from "./Note";
-import ImageNoteBlank from "../../models/blank/note/ImageNoteBlank";
+import NoteImageBlank from "../../models/blank/note/NoteImageBlank";
 
 export default class ImagesLayer extends React.Component {
 
@@ -26,7 +26,7 @@ export default class ImagesLayer extends React.Component {
 
                 let id = await NoteApi.uploadFile(file, this.props.note.id)
 
-                this.props.note.images.push(new ImageNoteBlank(id, 150, 150, 150, 150, null))
+                this.props.note.images.push(new NoteImageBlank(id, 150, 150, 150, 150, null))
 
                 await this.props.uploadImage();
 
