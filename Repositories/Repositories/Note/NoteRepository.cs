@@ -13,9 +13,9 @@ public class NoteRepository : RepositoryBase, INoteRepository
     // Get note if available for user
     public async Task<NoteDatabase?> GetNote(Guid guid, Guid userId)
     {
-        string query = "select * from note join shared_notes sn on note.id = sn.note_id " +
-                       "where note.id = $1 and " +
-                       "(note.owner_id = user_id or sn.user_id = user_id) " +
+        string query = "select * from note left join shared_notes sn on note.id = sn.note_id " +
+                       "where note.id = $1::uuid and " +
+                       "(note.owner_id = $2::uuid or sn.user_id = $2::uuid) " +
                        "limit 1";
 
         var connection = GetConnection();
@@ -26,7 +26,11 @@ public class NoteRepository : RepositoryBase, INoteRepository
 
             NpgsqlCommand command = new NpgsqlCommand(query, connection)
             {
-                Parameters = { new NpgsqlParameter() { Value = guid } }
+                Parameters =
+                {
+                    new NpgsqlParameter() { Value = guid },
+                    new NpgsqlParameter() { Value = userId }
+                }
             };
 
             await using var reader = await command.ExecuteReaderAsync();

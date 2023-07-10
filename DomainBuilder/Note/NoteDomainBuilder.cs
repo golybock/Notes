@@ -18,6 +18,31 @@ public static class NoteDomainBuilder
         };
     }
     
+    public static NoteDomain Create(NoteDatabase noteDatabase, NoteTypeDatabase? noteTypeDatabase)
+    {
+        return new NoteDomain()
+        {
+            Id = noteDatabase.Id,
+            Header = noteDatabase.Header,
+            CreationDate = noteDatabase.CreationDate,
+            EditedDate = noteDatabase.EditedDate,
+            Type = NoteTypeDomainBuilder.Create(noteTypeDatabase)
+        };
+    }
+    
+    public static NoteDomain Create(NoteDatabase noteDatabase, NoteTypeDatabase? noteTypeDatabase, string? text)
+    {
+        return new NoteDomain()
+        {
+            Id = noteDatabase.Id,
+            Header = noteDatabase.Header,
+            Text = text,
+            CreationDate = noteDatabase.CreationDate,
+            EditedDate = noteDatabase.EditedDate,
+            Type = NoteTypeDomainBuilder.Create(noteTypeDatabase)
+        };
+    }
+
     public static NoteDomain Create(NoteDatabase noteDatabase, string text)
     {
         return new NoteDomain()

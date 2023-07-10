@@ -9,7 +9,6 @@ public class NoteReader : IReader<NoteDatabase>
     private const string OwnerId = "owner_id";
     private const string Header = "header";
     private const string CreatedDate = "created_date";
-    private const string SourcePath = "source_path";
     private const string TypeId = "type_id";
     private const string EditedDate = "edited_date";
     

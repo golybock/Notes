@@ -73,7 +73,7 @@ public class NoteService : INoteService
     {
         var user = await _userManager.GetUser(claims);
 
-        var noteDomain = await GetNote(id);
+        var noteDomain = await GetNote(id, user.Id);
 
         if (noteDomain == null)
             return new NotFoundResult();
@@ -105,24 +105,14 @@ public class NoteService : INoteService
     {
         var user = await _userManager.GetUser(claims);
 
-        var noteDatabase = await _noteRepository.GetNote(guid);
+        var noteDatabase = await _noteRepository.GetNote(guid, user.Id);
 
         if (noteDatabase == null)
             return new NotFoundResult();
 
         var newNoteDatabase = NoteDatabaseBuilder.Create(noteBlank);
 
-        if (NoteFileManager.FilesExists(noteDatabase.Id.ToString()))
-        {
-            await NoteFileManager.UpdateNoteText(noteDatabase.Id.ToString(), noteBlank.Text ?? string.Empty);
-        }
-        else
-        {
-            var path = await NoteFileManager.CreateNoteFiles();
-            
-                
-            await NoteFileManager.UpdateNoteText(path, noteBlank.Text ?? string.Empty);
-        }
+        await NoteFileManager.UpdateNoteText(noteDatabase.Id, noteBlank.Text ?? string.Empty);
 
         newNoteDatabase.EditedDate = DateTime.UtcNow;
 
@@ -148,12 +138,12 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> Share(ClaimsPrincipal claims, ShareBlank shareBlank)
     {
-        var note = await GetNote(shareBlank.NoteId);
+        var user = await _userManager.GetUser(claims);
 
+        var note = await GetNote(shareBlank.NoteId, user.Id);
+        
         if (note == null)
             return new NotFoundResult();
-
-        var user = await _userManager.GetUser(claims);
         
         if (user.Id != note.OwnerUser?.Id)
             return new BadRequestObjectResult("Access denied");
@@ -179,12 +169,12 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> UpdateShare(ClaimsPrincipal claims, ShareBlank shareBlank)
     {
-        var note = await GetNote(shareBlank.NoteId);
+        var user = await _userManager.GetUser(claims);
+        
+        var note = await GetNote(shareBlank.NoteId, user.Id);
 
         if (note == null)
             return new NotFoundResult();
-
-        var user = await _userManager.GetUser(claims);
         
         if (user.Id != note.OwnerUser?.Id)
             return new BadRequestObjectResult("Access denied");
@@ -201,16 +191,16 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> DeleteShare(ClaimsPrincipal claims, Guid id, string email)
     {
-        var note = await GetNote(id);
+        var user = await _userManager.GetUser(claims);
+
+        var note = await GetNote(id, user.Id);
 
         if (note == null)
             return new NotFoundResult();
-
-        var user = await _userManager.GetUser(claims);
-
+        
         if (user.Id != note.OwnerUser?.Id)
             return new BadRequestObjectResult("Access denied");
-
+        
         var sharedUser = await _userRepository.Get(email);
 
         if (sharedUser == null)
@@ -226,17 +216,14 @@ public class NoteService : INoteService
     {
         var user = await _userManager.GetUser(claims);
 
-        var note = await _noteRepository.GetNote(id);
+        var note = await _noteRepository.GetNote(id, user.Id);
 
         if (note == null)
             return new NotFoundResult();
 
         if (note.OwnerId != user.Id)
             return new BadRequestObjectResult("Access denied");
-
-        await _tagRepository.DeleteNoteTags(note.Id);
-        await _shareNoteRepository.DeleteNoteShare(note.Id);
-
+        
         var result = await _noteRepository.Delete(id);
 
         return result ? new OkResult() : new BadRequestObjectResult("Error delete");
@@ -270,9 +257,9 @@ public class NoteService : INoteService
         return notesDomain;
     }
 
-    private async Task<NoteDomain?> GetNote(Guid id)
+    private async Task<NoteDomain?> GetNote(Guid id, Guid userId)
     {
-        var noteDatabase = await _noteRepository.GetNote(id);
+        var noteDatabase = await _noteRepository.GetNote(id, userId);
 
         if (noteDatabase == null)
             return null;
@@ -296,24 +283,17 @@ public class NoteService : INoteService
     // todo refactor
     private async Task<NoteDomain> GetFullNoteDomain(NoteDatabase noteDatabase)
     {
-        var noteDomain = NoteDomainBuilder.Create(noteDatabase);
-
-        noteDomain.Text = await NoteFileManager.GetNoteText(noteDatabase.SourcePath);
-
-        var noteImagesDb = await NoteFileManager.GetNoteImages(noteDatabase.SourcePath);
-
-        if (noteImagesDb != null) 
-            noteDomain.Images = noteImagesDb.Select(ImageNoteDomainBuilder.Create).ToList();
+        var text = await NoteFileManager.GetNoteText(noteDatabase.Id);
 
         var type = await _noteTypeRepository.Get(noteDatabase.TypeId);
 
         var user = await _userRepository.Get(noteDatabase.OwnerId);
+        
+        var noteDomain = NoteDomainBuilder.Create(noteDatabase, type, text);
 
         if (user != null)
             noteDomain.OwnerUser = UserDomainBuilder.Create(user);
-
-        noteDomain.Type = NoteTypeDomainBuilder.Create(type);
-
+        
         noteDomain.Tags = await GetNoteTags(noteDatabase.Id);
 
         noteDomain.SharedUsers = await GetSharedUsers(noteDomain.Id);
@@ -323,17 +303,15 @@ public class NoteService : INoteService
 
     private async Task<NoteDomain> GetNoteDomain(NoteDatabase noteDatabase)
     {
-        var noteDomain = NoteDomainBuilder.Create(noteDatabase);
-
         var type = await _noteTypeRepository.Get(noteDatabase.TypeId);
 
         var user = await _userRepository.Get(noteDatabase.OwnerId);
 
+        var noteDomain = NoteDomainBuilder.Create(noteDatabase, type);
+        
         if (user != null)
             noteDomain.OwnerUser = UserDomainBuilder.Create(user);
-
-        noteDomain.Type = NoteTypeDomainBuilder.Create(type);
-
+        
         noteDomain.Tags = await GetNoteTags(noteDatabase.Id);
 
         return noteDomain;
