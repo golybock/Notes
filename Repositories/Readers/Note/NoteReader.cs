@@ -25,8 +25,7 @@ public class NoteReader : IReader<NoteDatabase>
             noteDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal(CreatedDate));
             noteDatabase.EditedDate = reader.GetDateTime(reader.GetOrdinal(EditedDate));
             noteDatabase.TypeId = reader.GetInt32(reader.GetOrdinal(TypeId));
-            noteDatabase.SourcePath = reader.GetString(reader.GetOrdinal(SourcePath));
-            
+
             return noteDatabase;
         }
 
@@ -47,8 +46,7 @@ public class NoteReader : IReader<NoteDatabase>
             noteDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal(CreatedDate));
             noteDatabase.EditedDate = reader.GetDateTime(reader.GetOrdinal(EditedDate));
             noteDatabase.TypeId = reader.GetInt32(reader.GetOrdinal(TypeId));
-            noteDatabase.SourcePath = reader.GetString(reader.GetOrdinal(SourcePath)); 
-            
+
             noteDatabases.Add(noteDatabase);
         }
 
