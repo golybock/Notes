@@ -10,9 +10,13 @@ public class NoteRepository : RepositoryBase, INoteRepository
 {
     public NoteRepository(IConfiguration configuration) : base(configuration) { }
 
-    public async Task<NoteDatabase?> GetNote(Guid guid)
+    // Get note if available for user
+    public async Task<NoteDatabase?> GetNote(Guid guid, Guid userId)
     {
-        string query = "select * from note where id = $1";
+        string query = "select * from note join shared_notes sn on note.id = sn.note_id " +
+                       "where note.id = $1 and " +
+                       "(note.owner_id = user_id or sn.user_id = user_id) " +
+                       "limit 1";
 
         var connection = GetConnection();
 
@@ -104,8 +108,8 @@ public class NoteRepository : RepositoryBase, INoteRepository
 
     public async Task<Guid> Create(NoteDatabase noteDatabase)
     {
-        string query = "insert into note(header, source_path, owner_id, id, type_id)" +
-                       "values ($1, $2, $3, $4, $5) returning id";
+        string query = "insert into note(header, owner_id, id, type_id)" +
+                       "values ($1, $2, $3, $4) returning id";
 
         var connection = GetConnection();
 
@@ -118,7 +122,6 @@ public class NoteRepository : RepositoryBase, INoteRepository
                 Parameters =
                 {
                     new NpgsqlParameter() { Value = noteDatabase.Header },
-                    new NpgsqlParameter() { Value = noteDatabase.SourcePath },
                     new NpgsqlParameter() { Value = noteDatabase.OwnerId },
                     new NpgsqlParameter() { Value = noteDatabase.Id },
                     new NpgsqlParameter() { Value = 1 },

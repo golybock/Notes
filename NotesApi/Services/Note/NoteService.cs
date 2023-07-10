@@ -3,48 +3,45 @@ using Blank.Note;
 using Database.Note;
 using Database.Note.Tag;
 using DatabaseBuilder.Note;
-using DatabaseBuilder.Note.Layers;
 using Domain.Note;
 using Domain.Note.Tag;
 using Domain.User;
 using DomainBuilder.Note;
-using DomainBuilder.Note.Layers;
 using DomainBuilder.Note.Tag;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Enums;
-using NotesApi.RefreshCookieAuthScheme.AuthManager;
 using NotesApi.Services.Interfaces.Note;
-using NotesApi.Services.Logs;
 using NotesApi.Services.User;
 using Repositories.Repositories.Note;
 using Repositories.Repositories.Note.Tag;
 using Repositories.Repositories.User;
 using ViewBuilder.Note;
-using ViewBuilder.Note.Layers;
 
 namespace NotesApi.Services.Note;
 
 public class NoteService : INoteService
 {
-    private readonly NoteRepository _noteRepository;
-    private readonly TagRepository _tagRepository;
     private readonly ShareNoteRepository _shareNoteRepository;
+    private readonly NoteImageRepository _noteImageRepository;
     private readonly NoteTypeRepository _noteTypeRepository;
+    private readonly NoteRepository _noteRepository;
     private readonly UserRepository _userRepository;
+    private readonly TagRepository _tagRepository;
     private readonly UserManager _userManager;
 
     public NoteService(IConfiguration configuration)
     {
-        _noteRepository = new NoteRepository(configuration);
-        _tagRepository = new TagRepository(configuration);
+        _noteImageRepository = new NoteImageRepository(configuration);
         _shareNoteRepository = new ShareNoteRepository(configuration);
         _noteTypeRepository = new NoteTypeRepository(configuration);
+        _noteRepository = new NoteRepository(configuration);
         _userRepository = new UserRepository(configuration);
+        _tagRepository = new TagRepository(configuration);
         _userManager = new UserManager(configuration);
     }
 
-    #region controller funcs (use in controllers)
+    #region controller funcs (used in controllers)
 
     public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
@@ -93,9 +90,7 @@ public class NoteService : INoteService
         
         var user = await _userManager.GetUser(claims);
 
-        var source = await NoteFileManager.CreateNoteFiles();
-
-        var noteDatabase = NoteDatabaseBuilder.Create(id, source, noteBlank, user.Id);
+        var noteDatabase = NoteDatabaseBuilder.Create(id, noteBlank, user.Id);
         
         noteDatabase.CreationDate = DateTime.UtcNow;
         noteDatabase.EditedDate = DateTime.UtcNow;
@@ -117,19 +112,14 @@ public class NoteService : INoteService
 
         var newNoteDatabase = NoteDatabaseBuilder.Create(noteBlank);
 
-        if (NoteFileManager.FilesExists(noteDatabase.SourcePath))
+        if (NoteFileManager.FilesExists(noteDatabase.Id.ToString()))
         {
-            await NoteFileManager.UpdateNoteText(noteDatabase.SourcePath, noteBlank.Text ?? string.Empty);
-
-            var imagesDatabase = noteBlank.Images.Select(ImageNoteDatabaseBuilder.Create).ToList();
-
-            await NoteFileManager.UpdateNoteImages(noteDatabase.SourcePath, imagesDatabase);
+            await NoteFileManager.UpdateNoteText(noteDatabase.Id.ToString(), noteBlank.Text ?? string.Empty);
         }
         else
         {
             var path = await NoteFileManager.CreateNoteFiles();
-
-            newNoteDatabase.SourcePath = path;
+            
                 
             await NoteFileManager.UpdateNoteText(path, noteBlank.Text ?? string.Empty);
         }

@@ -30,4 +30,14 @@ public static class NoteDatabaseBuilder
             OwnerId = ownerId
         };
     }
+    
+    public static NoteDatabase Create(Guid id, NoteBlank noteBlank, Guid ownerId)
+    {
+        return new NoteDatabase()
+        {
+            Id = id,
+            Header = noteBlank.Header,
+            OwnerId = ownerId
+        };
+    }
 }

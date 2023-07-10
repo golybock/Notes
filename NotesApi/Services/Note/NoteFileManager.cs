@@ -5,32 +5,15 @@ namespace NotesApi.Services.Note;
 public static class NoteFileManager
 {
     private static readonly string TextLayerFormat = ".html";
-
-    private static readonly string ImagesLayerFormat = ".json";
-
-    public static bool FilesExists(string source)
-    {
-        string textFile = "Files/" + source + TextLayerFormat;
-        
-        string imagesFile = "Files/" + source + ImagesLayerFormat;
-
-        if (!File.Exists(textFile))
-            return false;
-        
-        if (!File.Exists(imagesFile))
-            return false;
-        
-        return true;
-    }
-
+    
     /// <summary>
     /// read text from source
     /// </summary>
-    /// <param name="source"></param>
+    /// <param name="noteId"></param>
     /// <returns></returns>
-    public static async Task<string?> GetNoteText(string source)
+    public static async Task<string?> GetNoteText(Guid noteId)
     {
-        string path = "Files/" + source + TextLayerFormat;
+        string path = "Files/" + noteId + TextLayerFormat;
 
         if (!File.Exists(path))
             return null;
@@ -41,13 +24,13 @@ public static class NoteFileManager
     }
 
     /// <summary>
-    /// Write text into file by source 
+    /// Write text into file by source (if file not exists, it can be created) 
     /// </summary>
-    /// <param name="fileName">filName </param>
+    /// <param name="noteId">filName </param>
     /// <param name="text">note text</param>
-    public static async Task UpdateNoteText(string fileName, string text)
+    public static async Task UpdateNoteText(Guid noteId, string text)
     {
-        string source = $"Files/{fileName}" + TextLayerFormat;
+        string source = $"Files/{noteId}" + TextLayerFormat;
 
         await using StreamWriter sw = new StreamWriter(source);
 
@@ -57,36 +40,31 @@ public static class NoteFileManager
     /// <summary>
     /// Generate path file, write into file text and returns filepath
     /// </summary>
+    /// <param name="noteId">note id</param>
     /// <param name="text">note text</param>
     /// <returns>path to file</returns>
-    public static async Task<string> CreateNoteText(string text)
+    public static async Task CreateNoteText(Guid noteId, string text)
     {
-        string fileName = $"{Guid.NewGuid()}" + TextLayerFormat;
+        string fileName = $"{noteId}" + TextLayerFormat;
 
         string source = $"Files/{fileName}";
 
         await using StreamWriter sw = new StreamWriter(source);
 
         await sw.WriteLineAsync(text);
-
-        return fileName;
     }
 
     /// <summary>
     /// Create note images layer
     /// </summary>
     /// <returns>source</returns>
-    public static async Task<string> CreateNoteFiles()
+    public static async Task CreateNoteFiles(Guid noteId)
     {
-        Guid id = Guid.NewGuid();
+        string fileName = $"{noteId}" + TextLayerFormat;
 
-        string fileNameText = $"{id}" + TextLayerFormat;
+        string source = $"Files/{fileName}";
 
-        string sourceText = $"Files/{fileNameText}";
-
-        await using (var stream = File.Create(sourceText))
-            stream.Close();
-
-        return id.ToString();
+        await using var stream = File.Create(source);
+        stream.Close();
     }
 }

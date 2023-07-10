@@ -4,7 +4,7 @@ namespace Repositories.Interfaces.Note;
 
 public interface INoteRepository
 {
-    public Task<NoteDatabase?> GetNote(Guid id);
+    public Task<NoteDatabase?> GetNote(Guid id, Guid userId);
 
     public Task<List<NoteDatabase>> GetNotes(Guid userId);
     
