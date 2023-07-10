@@ -5,15 +5,16 @@ namespace ViewBuilder.Note;
 
 public class NoteImageViewBuilder
 {
-    public static NoteImageView Create(NoteImageDomain imageNoteDatabase)
+    public static NoteImageView Create(NoteImageDomain imageDomain)
     {
         return new NoteImageView()
         {
-            Id = imageNoteDatabase.Id,
-            X = imageNoteDatabase.X,
-            Y = imageNoteDatabase.Y,
-            Width = imageNoteDatabase.Width,
-            Height = imageNoteDatabase.Height
+            Id = imageDomain.Id,
+            X = imageDomain.X,
+            Y = imageDomain.Y,
+            Width = imageDomain.Width,
+            Height = imageDomain.Height,
+            Url = imageDomain.Url
         };
     }  
 }

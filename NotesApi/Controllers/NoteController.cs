@@ -51,14 +51,14 @@ public class NoteController : ControllerBase
     }
     
     [HttpPost("Image")]
-    public async Task<IActionResult> UploadImage()
+    public async Task<IActionResult> UploadImage(Guid noteId)
     {
         var file = Request.Form.Files.FirstOrDefault();
 
         if (file == null)
             return BadRequest();
         
-        return await _noteService.UploadImage(file);
+        return await _noteService.UploadImage(file, noteId);
     }
     
     [HttpGet("SharedNotes")]

@@ -123,13 +123,17 @@ public class NoteService : INoteService
         return result ? new OkResult() : new BadRequestResult();
     }
 
-    public async Task<IActionResult> UploadImage(IFormFile formFile)
+    public async Task<IActionResult> UploadImage(IFormFile formFile, Guid noteId)
     {
         var fileName = Guid.NewGuid();
 
         var path = "wwwroot/" + fileName + ".png";
 
         await using StreamWriter sw = new StreamWriter(path);
+
+        var imageDatabase = NoteImageDatabaseBuilder.CreateDefault(fileName, noteId);
+
+        await _noteImageRepository.Create(imageDatabase);
 
         await formFile.CopyToAsync(sw.BaseStream);
 
@@ -296,6 +300,8 @@ public class NoteService : INoteService
         
         noteDomain.Tags = await GetNoteTags(noteDatabase.Id);
 
+        noteDomain.Images = await GetNoteImagesDomain(noteDatabase.Id);
+
         noteDomain.SharedUsers = await GetSharedUsers(noteDomain.Id);
 
         return noteDomain;
@@ -315,6 +321,15 @@ public class NoteService : INoteService
         noteDomain.Tags = await GetNoteTags(noteDatabase.Id);
 
         return noteDomain;
+    }
+
+    private async Task<List<NoteImageDomain>> GetNoteImagesDomain(Guid noteId)
+    {
+        var images = await _noteImageRepository.GetImages(noteId);
+
+        var imagesDomain = images.Select(NoteImageDomainBuilder.Create).ToList();
+
+        return imagesDomain;
     }
 
     #endregion

@@ -90,9 +90,9 @@ export default class NoteApi extends ApiBase {
             });
     }
 
-    static async uploadFile(file) {
+    static async uploadFile(file, noteId) {
 
-        let url = this.baseAddress + '/Note/Image';
+        let url = this.baseAddress + '/Note/Image?noteId=' + noteId;
 
         let formData = new FormData()
 

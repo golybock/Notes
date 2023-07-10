@@ -24,7 +24,7 @@ export default class ImagesLayer extends React.Component {
             if (dt !== undefined) {
                 const file = dt.files[0];
 
-                let id = await NoteApi.uploadFile(file)
+                let id = await NoteApi.uploadFile(file, this.props.note.id)
 
                 this.props.note.images.push(new ImageNoteBlank(id, 150, 150, 150, 150, null))
 

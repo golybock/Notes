@@ -17,7 +17,7 @@ public interface INoteService
 
     public Task<IActionResult> Update(ClaimsPrincipal claims, Guid id, NoteBlank noteBlank);
 
-    public Task<IActionResult> UploadImage(IFormFile formFile);
+    public Task<IActionResult> UploadImage(IFormFile formFile, Guid noteId);
 
     public Task<IActionResult> Share(ClaimsPrincipal claims, ShareBlank shareBlank);
 
