@@ -1,7 +1,5 @@
 using System.Text.Json;
 using Database.Note.Layers;
-using Domain.Note.Layers;
-using Views.Note.Layers;
 
 namespace NotesApi.Services.Note;
 

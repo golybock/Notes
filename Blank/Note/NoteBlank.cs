@@ -1,7 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Blank.Note.Layers;
-using Blank.Note.Tag;
-
 namespace Blank.Note;
 
 public class NoteBlank
@@ -10,7 +6,7 @@ public class NoteBlank
     
     public string? Text { get; set; }
     
-    public List<ImageNoteBlank> Images { get; set; } = new List<ImageNoteBlank>();
+    public List<NoteImageBlank> Images { get; set; } = new List<NoteImageBlank>();
     
     public List<Guid> Tags { get; set; } = new List<Guid>();
 }

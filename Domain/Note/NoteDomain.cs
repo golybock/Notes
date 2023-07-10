@@ -1,4 +1,3 @@
-using Domain.Note.Layers;
 using Domain.Note.Tag;
 using Domain.User;
 
@@ -22,7 +21,7 @@ public class NoteDomain
 
     public List<UserDomain> SharedUsers { get; set; } = new List<UserDomain>();
 
-    public List<ImageNoteDomain> Images { get; set; } = new List<ImageNoteDomain>();
+    public List<NoteImageDomain> Images { get; set; } = new List<NoteImageDomain>();
 
     public List<TagDomain> Tags { get; set; } = new List<TagDomain>();
 }

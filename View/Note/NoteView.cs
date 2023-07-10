@@ -1,4 +1,3 @@
-using Views.Note.Layers;
 using Views.Note.Tag;
 using Views.User;
 
@@ -22,7 +21,7 @@ public class NoteView
 
     public List<UserView> SharedUsers { get; set; } = new List<UserView>();
 
-    public List<ImageNoteView> Images { get; set; } = new List<ImageNoteView>();
+    public List<NoteImageView> Images { get; set; } = new List<NoteImageView>();
 
     public List<TagView> Tags { get; set; } = new List<TagView>();
 }

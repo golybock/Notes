@@ -1,11 +1,7 @@
 using Domain.Note;
-using Domain.Note.Tag;
-using ViewBuilder.Note.Layers;
 using ViewBuilder.Note.Tag;
 using ViewBuilder.User;
 using Views.Note;
-using Views.Note.Tag;
-using Views.User;
 
 namespace ViewBuilder.Note;
 
@@ -40,7 +36,7 @@ public static class NoteViewBuilder
             .ToList();
 
         note.Images = noteDomain.Images
-            .Select(ImageNoteViewBuilder.Create)
+            .Select(NoteImageViewBuilder.Create)
             .ToList();
 
         return note;

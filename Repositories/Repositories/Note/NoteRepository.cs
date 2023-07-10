@@ -251,6 +251,6 @@ public class NoteRepository : RepositoryBase, INoteRepository
 
     public async Task<bool> Delete(Guid id)
     {
-        return await DeleteAsync("note", "id", id) > 0;
+        return await DeleteCascadeAsync("note", "id", id) > 0;
     }
 }

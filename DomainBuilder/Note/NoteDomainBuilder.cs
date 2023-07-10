@@ -1,9 +1,6 @@
 using Database.Note;
 using Database.User;
 using Domain.Note;
-using Domain.Note.Layers;
-using Domain.Note.Tag;
-using Domain.User;
 using DomainBuilder.User;
 
 namespace DomainBuilder.Note;
@@ -45,7 +42,7 @@ public static class NoteDomainBuilder
         };
     }
     
-    public static NoteDomain Create(NoteDatabase noteDatabase, string text, List<UserDatabase> sharedUsers, List<ImageNoteDomain> images)
+    public static NoteDomain Create(NoteDatabase noteDatabase, string text, List<UserDatabase> sharedUsers, List<NoteImageDatabase> images)
     {
         return new NoteDomain()
         {
@@ -55,7 +52,7 @@ public static class NoteDomainBuilder
             CreationDate = noteDatabase.CreationDate,
             EditedDate = noteDatabase.EditedDate,
             SharedUsers = sharedUsers.Select(UserDomainBuilder.Create).ToList(),
-            Images = images
+            Images = images.Select(NoteImageDomainBuilder.Create).ToList()
         };
     }
 }

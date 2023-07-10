@@ -1,6 +1,6 @@
-namespace Views.Note.Layers;
+namespace Views.Note;
 
-public class ImageNoteView
+public class NoteImageView
 {
     public Guid Id { get; set; }
     
@@ -11,8 +11,6 @@ public class ImageNoteView
     public int Width { get; set; }
     
     public int Height { get; set; }
-    
-    public string? SvgCode { get; set; }
-    
+
     public string? Url { get; set; }
 }

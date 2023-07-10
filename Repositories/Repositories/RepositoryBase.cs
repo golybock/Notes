@@ -62,4 +62,35 @@ public abstract class RepositoryBase
             await connection.CloseAsync();
         }
     }
+    
+    protected async Task<int> DeleteCascadeAsync(string table, string column, object param)
+    {
+        var connection = GetConnection();
+
+        try
+        {
+            connection.Open();
+
+            var query = $"delete from {table} where {column} = $1 cascade";
+
+            await using var cmd = new NpgsqlCommand(query, connection)
+            {
+                Parameters =
+                {
+                    new NpgsqlParameter { Value = param }
+                }
+            };
+
+            return await cmd.ExecuteNonQueryAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return -1;
+        }
+        finally
+        {
+            await connection.CloseAsync();
+        }
+    }
 }

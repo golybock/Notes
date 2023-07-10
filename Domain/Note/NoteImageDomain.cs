@@ -1,8 +1,10 @@
-namespace Domain.Note.Layers;
+namespace Domain.Note;
 
-public class ImageNoteDomain
+public class NoteImageDomain
 {
     public Guid Id { get; set; }
+    
+    public Guid NoteId { get; set; }
     
     public int X { get; set; }
     
@@ -11,8 +13,6 @@ public class ImageNoteDomain
     public int Width { get; set; }
     
     public int Height { get; set; }
-    
-    public string? SvgCode { get; set; }
 
     public string? Url => $"https://localhost:7058/{Id}.png";
 }

@@ -1,6 +1,6 @@
-namespace Database.Note.Layers;
+namespace Blank.Note;
 
-public class ImageNoteDatabase
+public class NoteImageBlank
 {
     public Guid Id { get; set; }
     
@@ -11,8 +11,4 @@ public class ImageNoteDatabase
     public int Width { get; set; }
     
     public int Height { get; set; }
-    
-    public string? SvgCode { get; set; }
-    
-    public string? Url { get; set; }
 }
