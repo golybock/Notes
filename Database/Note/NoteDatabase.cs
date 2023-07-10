@@ -10,8 +10,6 @@ public class NoteDatabase
     
     public DateTime EditedDate { get; set; }
 
-    public string SourcePath { get; set; } = null!;
-    
     public int TypeId { get; set; }
     
     public Guid OwnerId { get; set; }

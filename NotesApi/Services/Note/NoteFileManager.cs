@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Database.Note.Layers;
 
 namespace NotesApi.Services.Note;
 
@@ -42,25 +41,6 @@ public static class NoteFileManager
     }
 
     /// <summary>
-    /// Read note images from images layer
-    /// </summary>
-    /// <param name="source"></param>
-    /// <returns></returns>
-    public static async Task<List<ImageNoteDatabase>?> GetNoteImages(string source)
-    {
-        string path = "Files/" + source + ImagesLayerFormat;
-
-        if (!File.Exists(path))
-            return null;
-
-        using StreamReader sr = new StreamReader(path);
-
-        var text = await sr.ReadToEndAsync();
-
-        return JsonSerializer.Deserialize<List<ImageNoteDatabase>>(text);
-    }
-
-    /// <summary>
     /// Write text into file by source 
     /// </summary>
     /// <param name="fileName">filName </param>
@@ -93,42 +73,6 @@ public static class NoteFileManager
     }
 
     /// <summary>
-    /// Update note images layer
-    /// </summary>
-    /// <param name="source"></param>
-    /// <param name="images"></param>
-    public static async Task UpdateNoteImages(string source, List<ImageNoteDatabase> images)
-    {
-        string fullPath = $"Files/{source}" + ImagesLayerFormat;
-
-        await using StreamWriter sw = new StreamWriter(fullPath);
-
-        string json = JsonSerializer.Serialize(images);
-
-        await sw.WriteLineAsync(json);
-    }
-
-    /// <summary>
-    /// Create note images layer
-    /// </summary>
-    /// <param name="images"></param>
-    /// <returns></returns>
-    public static async Task<string> CreateNoteImages(List<ImageNoteDatabase> images)
-    {
-        string fileName = $"{Guid.NewGuid()}" + ImagesLayerFormat;
-
-        string source = $"Files/{fileName}";
-
-        await using StreamWriter sw = new StreamWriter(source);
-
-        string json = JsonSerializer.Serialize(images);
-
-        await sw.WriteLineAsync(json);
-
-        return fileName;
-    }
-
-    /// <summary>
     /// Create note images layer
     /// </summary>
     /// <returns>source</returns>
@@ -136,18 +80,11 @@ public static class NoteFileManager
     {
         Guid id = Guid.NewGuid();
 
-        string fileNameImages = $"{id}" + ImagesLayerFormat;
-
         string fileNameText = $"{id}" + TextLayerFormat;
 
         string sourceText = $"Files/{fileNameText}";
 
-        string sourceImages = $"Files/{fileNameImages}";
-
         await using (var stream = File.Create(sourceText))
-            stream.Close();
-
-        await using (var stream = File.Create(sourceImages))
             stream.Close();
 
         return id.ToString();

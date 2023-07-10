@@ -22,28 +22,6 @@ public static class NoteDatabaseBuilder
         };
     }
 
-    
-    public static NoteDatabase Create(Guid id, string sourcePath, NoteBlank noteBlank)
-    {
-        return new NoteDatabase()
-        {
-            Id = id,
-            Header = noteBlank.Header,
-            SourcePath = sourcePath
-        };
-    }
-    
-    public static NoteDatabase Create(Guid id, string sourcePath, NoteBlank noteBlank, Guid ownerId)
-    {
-        return new NoteDatabase()
-        {
-            Id = id,
-            Header = noteBlank.Header,
-            SourcePath = sourcePath,
-            OwnerId = ownerId
-        };
-    }
-    
     public static NoteDatabase Create(NoteBlank noteBlank, Guid ownerId)
     {
         return new NoteDatabase()
