@@ -125,4 +125,9 @@ public class NoteImageRepository: RepositoryBase, INoteImageRepository
     {
         return await DeleteAsync("note_images", "id", id) > 0;
     }
+
+    public async Task<bool> Clear(Guid noteId)
+    {
+        return await DeleteAsync("note_images", "note_id", noteId) > 0;
+    }
 }

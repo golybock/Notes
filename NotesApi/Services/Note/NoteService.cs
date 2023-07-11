@@ -114,6 +114,11 @@ public class NoteService : INoteService
 
         await NoteFileManager.UpdateNoteText(noteDatabase.Id, noteBlank.Text ?? string.Empty);
 
+        await _noteImageRepository.Clear(guid);
+        
+        foreach (var image in noteBlank.Images)
+            await CreateOrUpdateImage(image, guid);
+
         newNoteDatabase.EditedDate = DateTime.UtcNow;
 
         await CreateNoteTags(guid, noteBlank.Tags);
@@ -333,6 +338,14 @@ public class NoteService : INoteService
     }
 
     #endregion
+
+    private async Task CreateOrUpdateImage(NoteImageBlank noteImageBlank, Guid noteId)
+    {
+        var db = NoteImageDatabaseBuilder.Create(noteImageBlank, noteId);
+
+        await _noteImageRepository.Create(db);
+    }
+    
 
     #region note tags
 

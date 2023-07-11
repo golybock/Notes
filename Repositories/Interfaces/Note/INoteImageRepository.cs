@@ -11,4 +11,6 @@ public interface INoteImageRepository
     public Task<bool> Update(Guid id, NoteImageDatabase noteImageDatabase);
     
     public Task<bool> Delete(Guid id);
+    
+    public Task<bool> Clear(Guid noteId);
 }

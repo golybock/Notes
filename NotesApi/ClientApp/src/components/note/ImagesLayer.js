@@ -29,11 +29,13 @@ export default class ImagesLayer extends React.Component {
                 this.props.note.images.push(new NoteImageBlank(id, 150, 150, 150, 150, null))
 
                 await this.props.uploadImage();
-
-                console.log(id)
             }
 
         };
+    }
+    
+    async setImages(images){
+        this.props.note.images = images;
     }
 
     checkDeselect = (e) => {
@@ -69,7 +71,7 @@ export default class ImagesLayer extends React.Component {
                                 onChange={(newAttrs) => {
                                     const rects = this.state.images.slice();
                                     rects[img.id] = newAttrs;
-                                    this.setState({images: rects})
+                                    this.setImages(rects);
                                 }}
                             />
                         );

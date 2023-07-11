@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./Note.css"
 import NoteApi from "../../api/note/NoteApi";
 import {NoteBlank} from "../../models/blank/note/NoteBlank";
@@ -7,6 +7,7 @@ import DeleteNoteDialog from "./dialogs/DeleteNoteDialog";
 import ShareNoteDialog from "./dialogs/ShareNoteDialog";
 import TagDialog from "./TagsDialog";
 import ImagesLayer from "./ImagesLayer";
+import {Await} from "react-router";
 
 export default class Note extends React.Component {
 
@@ -21,10 +22,21 @@ export default class Note extends React.Component {
             show_dialog_share: false,
             show_tags: false
         };
+
+        this.intervalId = setInterval(async () => {
+            await this.update();
+            console.log("timer")
+            await this.loadNote();
+        }, 3000);
     }
 
     async componentDidMount() {
+
         await this.loadNote();
+    }
+
+    componentWillUnmount(){
+        clearInterval(this.intervalId);
     }
 
     showDialogDelete() {
@@ -86,7 +98,9 @@ export default class Note extends React.Component {
     }
 
     async uploadImage() {
+
         await this.update();
+
         await this.loadNote();
     }
 
@@ -104,8 +118,6 @@ export default class Note extends React.Component {
 
             // rendered value
             this.setState({value: value})
-
-            await this.update()
         }
     }
 
@@ -117,8 +129,6 @@ export default class Note extends React.Component {
                 header: value
             }
         })
-
-        await this.update()
     }
 
     render() {
@@ -197,11 +207,12 @@ export default class Note extends React.Component {
 
                 }
 
-                {this.state.note.images &&
-                    <ImagesLayer images={this.state.note.images}
-                                 note={this.state.note}
-                                 uploadImage={async () => await this.uploadImage()}/>
-                }
+                {/*todo need refactor*/}
+                {/*{this.state.note.images &&*/}
+                {/*    <ImagesLayer images={this.state.note.images}*/}
+                {/*                 note={this.state.note}*/}
+                {/*                 uploadImage={async () => await this.uploadImage()}/>*/}
+                {/*}*/}
 
             </div>
         );

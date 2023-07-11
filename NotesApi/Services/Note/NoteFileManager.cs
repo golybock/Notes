@@ -53,18 +53,4 @@ public static class NoteFileManager
 
         await sw.WriteLineAsync(text);
     }
-
-    /// <summary>
-    /// Create note images layer
-    /// </summary>
-    /// <returns>source</returns>
-    public static async Task CreateNoteFiles(Guid noteId)
-    {
-        string fileName = $"{noteId}" + TextLayerFormat;
-
-        string source = $"Files/{fileName}";
-
-        await using var stream = File.Create(source);
-        stream.Close();
-    }
 }
