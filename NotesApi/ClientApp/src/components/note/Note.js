@@ -26,7 +26,6 @@ export default class Note extends React.Component {
         this.intervalId = setInterval(async () => {
             await this.update();
             console.log("timer")
-            await this.loadNote();
         }, 3000);
     }
 
