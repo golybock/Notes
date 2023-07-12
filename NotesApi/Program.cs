@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using NotesApi.RefreshCookieAuthScheme;
+using NotesApi.RefreshCookieAuthScheme.AuthManager;
 using NotesApi.RefreshCookieAuthScheme.CacheService;
+using NotesApi.RefreshCookieAuthScheme.Cookie;
+using NotesApi.RefreshCookieAuthScheme.Token;
 using NotesApi.Services.Auth;
 using NotesApi.Services.Interfaces.Note;
 using NotesApi.Services.Interfaces.Note.Tag;
@@ -8,6 +11,8 @@ using NotesApi.Services.Interfaces.User;
 using NotesApi.Services.Note;
 using NotesApi.Services.Note.Tag;
 using NotesApi.Services.User;
+using Repositories.Interfaces.User;
+using Repositories.Repositories.User;
 
 void SetRefreshCookieAuth(IServiceCollection services, IConfiguration configuration)
 {
@@ -43,6 +48,11 @@ void SetServices(IServiceCollection services)
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<ITagService, TagService>();
     services.AddScoped<IAuthService, AuthService>();
+    services.AddScoped<ITokenCacheService, TokenCacheService>();
+    services.AddScoped<IAuthManager, AuthManager>();
+    services.AddScoped<ITokenRepository, TokensRepository>();
+    services.AddScoped<ICookieManager, CookieManager>();
+    services.AddScoped<ITokenManager, TokenManager>();
 }
 
 void SetCors(IServiceCollection services)

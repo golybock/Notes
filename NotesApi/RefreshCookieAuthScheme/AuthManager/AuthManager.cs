@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Database.User;
 using Domain.User;
 using DomainBuilder.User;
+using NotesApi.RefreshCookieAuthScheme.CacheService;
 using NotesApi.RefreshCookieAuthScheme.Cookie;
 using NotesApi.RefreshCookieAuthScheme.Token;
 using NotesApi.Services.User;
@@ -16,6 +17,7 @@ public class AuthManager : IAuthManager
 {
     public ICookieManager CookieManager { get; set; }
     public ITokenManager TokenManager { get; set; }
+    public ITokenCacheService TokenCacheService { get; set; }
 
     // database
     private readonly ITokenRepository _tokensRepository;
@@ -23,20 +25,17 @@ public class AuthManager : IAuthManager
     // todo need optimization (used in services)
     private readonly UserManager _userManager;
 
-    public AuthManager(IConfiguration configuration)
+    public AuthManager(IConfiguration configuration,
+        ITokenRepository tokensRepository,
+        ICookieManager cookieManager,
+        ITokenManager tokenManager,
+        ITokenCacheService tokenCacheService)
     {
-        _tokensRepository = new TokensRepository(configuration);
-        CookieManager = new CookieManager(configuration);
-        TokenManager = new TokenManager(configuration);
+        _tokensRepository = tokensRepository;
+        CookieManager = cookieManager;
+        TokenManager = tokenManager;
+        TokenCacheService = tokenCacheService;
         _userManager = new UserManager(configuration);
-    }
-
-    public AuthManager(RefreshCookieOptions options)
-    {
-        _tokensRepository = new TokensRepository(options.ConnectionString);
-        CookieManager = new CookieManager(options);
-        TokenManager = new TokenManager(options);
-        _userManager = new UserManager(options);
     }
 
     // override IpAddress.Parse
@@ -110,37 +109,37 @@ public class AuthManager : IAuthManager
         if (dbTokens.CreationDate.AddDays(7) < DateTime.UtcNow)
         {
             await SignOutAsync(response);
-            
+
             throw new Exception("Refresh token died");
         }
-        
+
         await SignInAsync(response, user);
     }
 
     public async Task SignOutAsync(HttpContext context)
     {
         var tokens = CookieManager.GetTokens(context);
-        
+
         CookieManager.DeleteTokens(context);
-        
-        if(tokens == null)
+
+        if (tokens == null)
             return;
 
         var dbTokens = await _tokensRepository.Get(tokens.Token!, tokens.RefreshToken!);
 
-        if(dbTokens == null)
+        if (dbTokens == null)
             return;
-        
+
         await _tokensRepository.Delete(dbTokens.Id);
     }
 
     public async Task SignOutAsync(HttpResponse response)
     {
         var tokens = CookieManager.GetTokens(response.HttpContext);
-        
+
         CookieManager.DeleteTokens(response);
-        
-        if(tokens == null)
+
+        if (tokens == null)
             return;
 
         await _tokensRepository.Delete(tokens.Token!, tokens.RefreshToken!);

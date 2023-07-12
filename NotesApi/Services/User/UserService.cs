@@ -17,12 +17,12 @@ namespace NotesApi.Services.User;
 public class UserService : IUserService
 {
     private readonly UserRepository _userRepository;
-    private readonly AuthManager _authManager;
+    private readonly IAuthManager _authManager;
     private readonly UserManager _userManager;
 
-    public UserService(IConfiguration configuration)
+    public UserService(IConfiguration configuration, IAuthManager authManager)
     {
-        _authManager = new AuthManager(configuration);
+        _authManager = authManager;
         _userManager = new UserManager(configuration);
         _userRepository = new UserRepository(configuration);
     }

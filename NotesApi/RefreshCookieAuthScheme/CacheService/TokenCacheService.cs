@@ -4,22 +4,16 @@ using NotesApi.RefreshCookieAuthScheme.Token;
 
 namespace NotesApi.RefreshCookieAuthScheme.CacheService;
 
-public class TokensCacheService : ITokensCacheService
+public class TokenCacheService : ITokenCacheService
 {
     private readonly IDistributedCache _cache;
 
-    private readonly DateTime _refreshTokenLifeTime;
-    
     private string Key(string email, string refreshToken) => $"{email}:{refreshToken}";
-    
-    private DateTime RefreshTokenLifeTime =>
-        DateTime.UtcNow.AddTicks(_refreshTokenLifeTime.Ticks);
 
-    public TokensCacheService(IDistributedCache cache, DateTime refreshTokenLifeTime)
+    public TokenCacheService(IDistributedCache cache)
     {
         _cache = cache;
-
-        _refreshTokenLifeTime = refreshTokenLifeTime;
+        
     }
 
     public async Task<Tokens?> GetTokens(string email, string refreshToken)
@@ -32,11 +26,13 @@ public class TokensCacheService : ITokensCacheService
         return JsonSerializer.Deserialize<Tokens>(tokens);
     }
 
-    public async Task SetTokens(string email, Tokens tokens)
+    public async Task SetTokens(string email, Tokens tokens, DateTime refreshTokenLifeTime)
     {
+        var tokenLifeTime = DateTime.UtcNow.AddTicks(refreshTokenLifeTime.Ticks);
+        
         var options = new DistributedCacheEntryOptions()
         {
-            AbsoluteExpiration = new DateTimeOffset(RefreshTokenLifeTime)
+            AbsoluteExpiration = new DateTimeOffset(tokenLifeTime)
         };
 
         var key = Key(email, tokens.RefreshToken);

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Domain.User;
+using NotesApi.RefreshCookieAuthScheme.CacheService;
 using NotesApi.RefreshCookieAuthScheme.Token;
 using ICookieManager = NotesApi.RefreshCookieAuthScheme.Cookie.ICookieManager;
 
@@ -10,6 +11,8 @@ public interface IAuthManager
     public ICookieManager CookieManager { get; protected set; }
     
     public ITokenManager TokenManager { get; protected set; }
+    
+    public ITokenCacheService TokenCacheService { get; protected set; }
     
     public Task SignInAsync(HttpContext context, UserDomain user);
     

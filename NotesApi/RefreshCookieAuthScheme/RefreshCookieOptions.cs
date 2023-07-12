@@ -35,4 +35,7 @@ public class RefreshCookieOptions : AuthenticationSchemeOptions
     public string ConnectionString { get; set; } = null!;
 
     #endregion
+
+    public DateTime RefreshTokenLifeTime =>
+        new DateTime(9999, RefreshTokenLifeTimeInDays, 1);
 }

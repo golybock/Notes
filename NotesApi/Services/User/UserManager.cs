@@ -16,11 +16,6 @@ public class UserManager
         _userRepository = new UserRepository(configuration);
     }
 
-    public UserManager(RefreshCookieOptions options)
-    {
-        _userRepository = new UserRepository(options.ConnectionString);
-    }
-    
     public async Task<UserDomain> GetUser(ClaimsPrincipal claims)
     {
         var id = claims.FindFirst(ClaimTypes.Authentication)?.Value;

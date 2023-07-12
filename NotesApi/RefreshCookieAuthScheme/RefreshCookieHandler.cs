@@ -1,5 +1,6 @@
 ﻿using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using NotesApi.RefreshCookieAuthScheme.AuthManager;
 using NotesApi.RefreshCookieAuthScheme.CacheService;
@@ -10,18 +11,22 @@ namespace NotesApi.RefreshCookieAuthScheme;
 public class RefreshCookieHandler : AuthenticationHandler<RefreshCookieOptions>
 {
     private readonly IAuthManager _authManager;
-    private readonly ITokensCacheService _tokensCacheService;
+    private readonly ITokenCacheService _tokenCacheService;
     
     public RefreshCookieHandler(
         IOptionsMonitor<RefreshCookieOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
-        ISystemClock clock) 
+        ISystemClock clock,
+        ITokenCacheService tokenCacheService,
+        IAuthManager authManager) 
         : base(options, logger, encoder, clock)
     {
-        var o = options.Get(RefreshCookieDefaults.AuthenticationScheme);
+        // var opt = options.Get(RefreshCookieDefaults.AuthenticationScheme);
         
-        _authManager = new AuthManager.AuthManager(o);
+        _authManager = authManager;
+        
+        _tokenCacheService = tokenCacheService;
     }
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
