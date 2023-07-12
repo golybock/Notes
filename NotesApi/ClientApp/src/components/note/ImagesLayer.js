@@ -30,7 +30,6 @@ export default class ImagesLayer extends React.Component {
 
                 await this.props.uploadImage();
             }
-
         };
     }
     

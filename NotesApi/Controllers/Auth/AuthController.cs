@@ -1,6 +1,7 @@
 using Blank.User;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Services.Auth;
+using NotesApi.Services.Interfaces.User;
 
 namespace NotesApi.Controllers.Auth;
 
@@ -8,11 +9,11 @@ namespace NotesApi.Controllers.Auth;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase, IAuthController
 {
-    private readonly AuthService _authService;
+    private readonly IAuthService _authService;
 
-    public AuthController(IConfiguration configuration)
+    public AuthController(IAuthService authService)
     {
-        _authService = new AuthService(configuration);
+        _authService = authService;
     }
     
     [HttpPost("SignIn")]

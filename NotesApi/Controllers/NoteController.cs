@@ -13,11 +13,11 @@ namespace NotesApi.Controllers;
 [Route("api/[controller]")]
 public class NoteController : ControllerBase
 {
-    private readonly NoteService _noteService;
+    private readonly INoteService _noteService;
 
-    public NoteController(IConfiguration configuration)
+    public NoteController(INoteService noteService)
     {
-        _noteService = new NoteService(configuration);
+        _noteService = noteService;
     }
 
     [HttpGet("Notes")]

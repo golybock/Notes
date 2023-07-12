@@ -1,11 +1,18 @@
 using Microsoft.AspNetCore.Authorization;
 using NotesApi.RefreshCookieAuthScheme;
+using NotesApi.RefreshCookieAuthScheme.CacheService;
+using NotesApi.Services.Auth;
+using NotesApi.Services.Interfaces.Note;
+using NotesApi.Services.Interfaces.Note.Tag;
+using NotesApi.Services.Interfaces.User;
+using NotesApi.Services.Note;
+using NotesApi.Services.Note.Tag;
+using NotesApi.Services.User;
 
 void SetRefreshCookieAuth(IServiceCollection services, IConfiguration configuration)
 {
     services.AddAuthentication(RefreshCookieDefaults.AuthenticationScheme)
         .AddRefreshCookie(
-            RefreshCookieDefaults.AuthenticationScheme,
             RefreshCookieDefaults.AuthenticationScheme,
             options =>
             {
@@ -30,6 +37,14 @@ void SetRefreshCookieAuth(IServiceCollection services, IConfiguration configurat
     });
 }
 
+void SetServices(IServiceCollection services)
+{
+    services.AddScoped<INoteService, NoteService>();
+    services.AddScoped<IUserService, UserService>();
+    services.AddScoped<ITagService, TagService>();
+    services.AddScoped<IAuthService, AuthService>();
+}
+
 void SetCors(IServiceCollection services)
 {
     // Default Policy
@@ -49,9 +64,17 @@ void SetCors(IServiceCollection services)
 
 var builder = WebApplication.CreateBuilder(args);
 
+// добавление кэширования
+builder.Services.AddStackExchangeRedisCache(options => {
+    options.Configuration = "127.0.0.1:6379";
+    options.InstanceName = "local";
+});
+
 SetRefreshCookieAuth(builder.Services, builder.Configuration);
 
 SetCors(builder.Services);
+
+SetServices(builder.Services);
 
 builder.Services.AddControllers();
 

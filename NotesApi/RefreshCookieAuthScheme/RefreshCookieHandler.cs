@@ -1,13 +1,16 @@
 ﻿using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
+using NotesApi.RefreshCookieAuthScheme.AuthManager;
+using NotesApi.RefreshCookieAuthScheme.CacheService;
 using ISystemClock = Microsoft.AspNetCore.Authentication.ISystemClock;
 
 namespace NotesApi.RefreshCookieAuthScheme;
 
 public class RefreshCookieHandler : AuthenticationHandler<RefreshCookieOptions>
 {
-    private readonly AuthManager.AuthManager _authManager;
+    private readonly IAuthManager _authManager;
+    private readonly ITokensCacheService _tokensCacheService;
     
     public RefreshCookieHandler(
         IOptionsMonitor<RefreshCookieOptions> options,
@@ -16,7 +19,7 @@ public class RefreshCookieHandler : AuthenticationHandler<RefreshCookieOptions>
         ISystemClock clock) 
         : base(options, logger, encoder, clock)
     {
-        RefreshCookieOptions o = options.Get(RefreshCookieDefaults.AuthenticationScheme);
+        var o = options.Get(RefreshCookieDefaults.AuthenticationScheme);
         
         _authManager = new AuthManager.AuthManager(o);
     }

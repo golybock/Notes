@@ -1,6 +1,7 @@
 using Blank.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NotesApi.Services.Interfaces.User;
 using NotesApi.Services.User;
 
 namespace NotesApi.Controllers.User;
@@ -9,11 +10,11 @@ namespace NotesApi.Controllers.User;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
 
-    public UserController(IConfiguration configuration)
+    public UserController(IUserService userService)
     {
-        _userService = new UserService(configuration);
+        _userService = userService;
     }
 
     [HttpGet("User")]

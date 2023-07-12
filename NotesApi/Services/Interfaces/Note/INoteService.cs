@@ -13,6 +13,8 @@ public interface INoteService
 
     public Task<IActionResult> Get(ClaimsPrincipal claims, Guid id);
 
+    public Task<IActionResult> GetShared(ClaimsPrincipal claims);
+
     public Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank);
 
     public Task<IActionResult> Update(ClaimsPrincipal claims, Guid id, NoteBlank noteBlank);
