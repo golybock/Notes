@@ -8,12 +8,14 @@ namespace NotesApi.RefreshCookieAuthScheme.AuthManager;
 
 public interface IAuthManager
 {
+    public RefreshCookieOptions Options { get; set; }
+    
     public ICookieManager CookieManager { get; protected set; }
     
     public ITokenManager TokenManager { get; protected set; }
     
     public ITokenCacheService TokenCacheService { get; protected set; }
-    
+
     public Task SignInAsync(HttpContext context, UserDomain user);
     
     public Task SignInAsync(HttpResponse response, UserDomain user);

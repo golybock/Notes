@@ -11,22 +11,18 @@ namespace NotesApi.RefreshCookieAuthScheme;
 public class RefreshCookieHandler : AuthenticationHandler<RefreshCookieOptions>
 {
     private readonly IAuthManager _authManager;
-    private readonly ITokenCacheService _tokenCacheService;
     
     public RefreshCookieHandler(
         IOptionsMonitor<RefreshCookieOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
         ISystemClock clock,
-        ITokenCacheService tokenCacheService,
         IAuthManager authManager) 
         : base(options, logger, encoder, clock)
     {
-        // var opt = options.Get(RefreshCookieDefaults.AuthenticationScheme);
-        
         _authManager = authManager;
         
-        _tokenCacheService = tokenCacheService;
+        _authManager.Options = options.Get(RefreshCookieDefaults.AuthenticationScheme);
     }
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()

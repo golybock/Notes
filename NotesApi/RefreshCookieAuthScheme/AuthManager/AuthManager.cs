@@ -2,13 +2,10 @@ using System.Net;
 using System.Security.Claims;
 using Database.User;
 using Domain.User;
-using DomainBuilder.User;
 using NotesApi.RefreshCookieAuthScheme.CacheService;
-using NotesApi.RefreshCookieAuthScheme.Cookie;
 using NotesApi.RefreshCookieAuthScheme.Token;
 using NotesApi.Services.User;
 using Repositories.Interfaces.User;
-using Repositories.Repositories.User;
 using ICookieManager = NotesApi.RefreshCookieAuthScheme.Cookie.ICookieManager;
 
 namespace NotesApi.RefreshCookieAuthScheme.AuthManager;
@@ -19,19 +16,15 @@ public class AuthManager : IAuthManager
     public ITokenManager TokenManager { get; set; }
     public ITokenCacheService TokenCacheService { get; set; }
 
-    // database
-    private readonly ITokenRepository _tokensRepository;
-
-    // todo need optimization (used in services)
     private readonly UserManager _userManager;
+    
+    public RefreshCookieOptions? Options { get; set; }
 
     public AuthManager(IConfiguration configuration,
-        ITokenRepository tokensRepository,
         ICookieManager cookieManager,
         ITokenManager tokenManager,
         ITokenCacheService tokenCacheService)
     {
-        _tokensRepository = tokensRepository;
         CookieManager = cookieManager;
         TokenManager = tokenManager;
         TokenCacheService = tokenCacheService;
@@ -99,14 +92,14 @@ public class AuthManager : IAuthManager
     {
         var user = await _userManager.GetUser(claimsPrincipal);
 
-        var dbTokens = await _tokensRepository.Get(tokens.Token!, tokens.RefreshToken!);
-
-        if (dbTokens == null)
-            throw new Exception("Tokens in db not found");
+        var cachedTokens = await TokenCacheService.GetTokens(user.Id, tokens.RefreshToken);
+        
+        if (cachedTokens == null)
+            throw new Exception("Tokens in cache not found");
 
         // todo refactor to get time from settings
         // check refresh token on alive
-        if (dbTokens.CreationDate.AddDays(7) < DateTime.UtcNow)
+        if (cachedTokens.CreationDate.AddDays(7) < DateTime.UtcNow)
         {
             await SignOutAsync(response);
 
@@ -125,12 +118,7 @@ public class AuthManager : IAuthManager
         if (tokens == null)
             return;
 
-        var dbTokens = await _tokensRepository.Get(tokens.Token!, tokens.RefreshToken!);
-
-        if (dbTokens == null)
-            return;
-
-        await _tokensRepository.Delete(dbTokens.Id);
+        await DeleteTokensCache(tokens);
     }
 
     public async Task SignOutAsync(HttpResponse response)
@@ -142,21 +130,24 @@ public class AuthManager : IAuthManager
         if (tokens == null)
             return;
 
-        await _tokensRepository.Delete(tokens.Token!, tokens.RefreshToken!);
+        await DeleteTokensCache(tokens);
     }
 
     private async Task SaveTokensAsync(HttpContext context, Tokens tokens, Guid userId)
     {
         var tokensDatabase = new TokensDatabase()
         {
-            Token = tokens.Token!,
-            RefreshToken = tokens.RefreshToken!,
+            Token = tokens.Token,
+            RefreshToken = tokens.RefreshToken,
             Ip = GetIpAddress(context.Request.Host.Host),
             UserId = userId,
             CreationDate = DateTime.UtcNow
         };
 
-        await _tokensRepository.Create(tokensDatabase);
+        if (Options == null)
+            throw new Exception("Options is null");
+        
+        await TokenCacheService.SetTokens(userId, tokensDatabase, Options.RefreshTokenLifeTime);
     }
 
     private Tokens CreateTokens(UserDomain user)
@@ -173,5 +164,15 @@ public class AuthManager : IAuthManager
         };
 
         return tokens;
+    }
+
+    // get user from claims and delete pair user:refreshToken from cache
+    private async Task DeleteTokensCache(Tokens tokens)
+    {
+        var claims = TokenManager.GetPrincipalFromToken(tokens.Token);
+        
+        var user = await _userManager.GetUser(claims);
+
+        await TokenCacheService.DeleteTokens(user.Id ,tokens.RefreshToken);
     }
 }

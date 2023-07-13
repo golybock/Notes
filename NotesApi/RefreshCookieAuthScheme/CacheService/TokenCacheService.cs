@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Database.User;
 using Microsoft.Extensions.Caching.Distributed;
 using NotesApi.RefreshCookieAuthScheme.Token;
 
@@ -8,7 +9,7 @@ public class TokenCacheService : ITokenCacheService
 {
     private readonly IDistributedCache _cache;
 
-    private string Key(string email, string refreshToken) => $"{email}:{refreshToken}";
+    private string Key(Guid userId, string refreshToken) => $"{userId}:{refreshToken}";
 
     public TokenCacheService(IDistributedCache cache)
     {
@@ -16,17 +17,17 @@ public class TokenCacheService : ITokenCacheService
         
     }
 
-    public async Task<Tokens?> GetTokens(string email, string refreshToken)
+    public async Task<TokensDatabase?> GetTokens(Guid userId, string refreshToken)
     {
-        var tokens = await _cache.GetStringAsync(Key(email, refreshToken));
+        var tokens = await _cache.GetStringAsync(Key(userId, refreshToken));
 
         if (tokens == null)
             return null;
 
-        return JsonSerializer.Deserialize<Tokens>(tokens);
+        return JsonSerializer.Deserialize<TokensDatabase>(tokens);
     }
 
-    public async Task SetTokens(string email, Tokens tokens, DateTime refreshTokenLifeTime)
+    public async Task SetTokens(Guid userId, TokensDatabase tokens, DateTime refreshTokenLifeTime)
     {
         var tokenLifeTime = DateTime.UtcNow.AddTicks(refreshTokenLifeTime.Ticks);
         
@@ -35,10 +36,17 @@ public class TokenCacheService : ITokenCacheService
             AbsoluteExpiration = new DateTimeOffset(tokenLifeTime)
         };
 
-        var key = Key(email, tokens.RefreshToken);
+        var key = Key(userId, tokens.RefreshToken);
 
         var value = JsonSerializer.Serialize(tokens);
 
         await _cache.SetStringAsync(key, value, options);
+    }
+
+    public async Task DeleteTokens(Guid userId, string refreshToken)
+    {
+        var key = Key(userId, refreshToken);
+
+        await _cache.RemoveAsync(key);
     }
 }
