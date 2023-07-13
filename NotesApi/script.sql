@@ -14,19 +14,8 @@ create table if not exists users
     email         varchar(500) not null
         constraint user_email_key
             unique,
-    password_hash text
-);
-
-create table if not exists tokens
-(
-    id            serial
-        primary key,
-    user_id       uuid
-        references users,
-    token         text                                   not null,
-    refresh_token text                                   not null,
-    created_date  timestamp with time zone default now() not null,
-    ip            inet
+    password_hash text,
+    name          varchar(250)
 );
 
 create table if not exists permissions_level
@@ -45,12 +34,11 @@ create table if not exists note_type
 
 create table if not exists note
 (
-    id           uuid                                   not null
-        primary key,
     header       varchar(250)                           not null,
     created_date timestamp with time zone default now() not null,
     edited_date  timestamp with time zone default now() not null,
-    source_path  text                                   not null,
+    id           uuid                                   not null
+        primary key,
     type_id      integer
         references note_type,
     owner_id     uuid
@@ -77,5 +65,17 @@ create table if not exists shared_notes
         references users,
     permissions_level_id integer
         references permissions_level
+);
+
+create table if not exists note_images
+(
+    id      uuid              not null
+        primary key,
+    note_id uuid              not null
+        references note,
+    x       integer default 0 not null,
+    y       integer default 0 not null,
+    width   integer default 1 not null,
+    height  integer default 1 not null
 );
 
