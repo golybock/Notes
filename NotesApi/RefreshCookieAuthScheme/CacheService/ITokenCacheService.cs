@@ -7,7 +7,7 @@ public interface ITokenCacheService
 {
     public Task<TokensDatabase?> GetTokens(Guid userId, string refreshToken);
 
-    public Task SetTokens(Guid userId, TokensDatabase tokens, DateTime refreshTokenLifeTime);
+    public Task SetTokens(Guid userId, TokensDatabase tokens, TimeSpan refreshTokenLifeTime);
     
     public Task DeleteTokens(Guid userId, string refreshToken);
 }

@@ -19,7 +19,9 @@ public class TokenCacheService : ITokenCacheService
 
     public async Task<TokensDatabase?> GetTokens(Guid userId, string refreshToken)
     {
-        var tokens = await _cache.GetStringAsync(Key(userId, refreshToken));
+        var key = Key(userId, refreshToken);
+        
+        var tokens = await _cache.GetStringAsync(key);
 
         if (tokens == null)
             return null;
@@ -27,9 +29,9 @@ public class TokenCacheService : ITokenCacheService
         return JsonSerializer.Deserialize<TokensDatabase>(tokens);
     }
 
-    public async Task SetTokens(Guid userId, TokensDatabase tokens, DateTime refreshTokenLifeTime)
+    public async Task SetTokens(Guid userId, TokensDatabase tokens, TimeSpan refreshTokenLifeTime)
     {
-        var tokenLifeTime = DateTime.UtcNow.AddTicks(refreshTokenLifeTime.Ticks);
+        var tokenLifeTime = DateTime.UtcNow.AddDays(7);
         
         var options = new DistributedCacheEntryOptions()
         {

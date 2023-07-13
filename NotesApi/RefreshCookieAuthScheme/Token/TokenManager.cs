@@ -7,81 +7,25 @@ namespace NotesApi.RefreshCookieAuthScheme.Token;
 
 public class TokenManager : ITokenManager
 {
-    public TokenManager(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-
     public TokenManager(RefreshCookieOptions options)
     {
         _options = options;
     }
 
-    private readonly IConfiguration? _configuration;
-
-    private readonly RefreshCookieOptions? _options;
+    private readonly RefreshCookieOptions _options;
 
     private string ErrorNotFound =>
         "Token manager: options and configuration not found";
 
     #region validate params from appsettings or options
 
-    private string? Secret
-    {
-        get
-        {
-            if (_configuration != null)
-                return _configuration["JWT:Secret"];
+    private string? Secret =>  _options.Secret;
 
-            if (_options == null)
-                throw new Exception(ErrorNotFound);
+    private string? ValidAudience => _options.ValidAudience;
 
-            return _options.Secret;
-        }
-    }
+    private string? ValidIssuer => _options.ValidIssuer;
 
-    private string? ValidAudience
-    {
-        get
-        {
-            if (_configuration != null)
-                return _configuration["JWT:ValidAudience"];
-
-            if (_options == null)
-                throw new Exception(ErrorNotFound);
-
-            return _options.ValidAudience;
-        }
-    }
-
-    private string? ValidIssuer
-    {
-        get
-        {
-            if (_configuration != null)
-                return _configuration["JWT:ValidIssuer"];
-
-            if (_options == null)
-                throw new Exception(ErrorNotFound);
-
-            return _options.ValidIssuer;
-        }
-    }
-
-    private int? TokenValidityInMinutes
-    {
-        get
-        {
-            if (_configuration != null)
-                return int.Parse(_configuration["JWT:TokenValidityInMinutes"] ??
-                                 throw new Exception("TokenValidityInMinutes Not found"));
-
-            if (_options == null)
-                throw new Exception(ErrorNotFound);
-
-            return _options.TokenLifeTimeInMinutes;
-        }
-    }
+    private int? TokenValidityInMinutes => _options.TokenLifeTimeInMinutes;
 
     private SymmetricSecurityKey IssuerSigningKey =>
         new(Encoding.UTF8.GetBytes(Secret!));

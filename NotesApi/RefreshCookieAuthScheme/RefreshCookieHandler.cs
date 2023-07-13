@@ -36,7 +36,7 @@ public class RefreshCookieHandler : AuthenticationHandler<RefreshCookieOptions>
         }
 
         // validate without lifetime
-        if (_authManager.TokenManager.TokenValid(tokens.Token!))
+        if (_authManager.TokenManager.TokenValid(tokens.Token))
         {
             var tokenActive = _authManager.TokenManager.TokenActive(tokens.Token!);
             

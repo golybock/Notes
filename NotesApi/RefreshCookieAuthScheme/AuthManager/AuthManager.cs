@@ -17,29 +17,37 @@ public class AuthManager : IAuthManager
     public ITokenCacheService TokenCacheService { get; set; }
 
     private readonly UserManager _userManager;
-    
-    public RefreshCookieOptions? Options { get; set; }
+
+    private RefreshCookieOptions _options;
+
+    public RefreshCookieOptions Options
+    {
+        get => _options;
+        set
+        {
+            _options = value;
+            TokenManager = new TokenManager(value);
+        }
+    }
 
     public AuthManager(IConfiguration configuration,
         ICookieManager cookieManager,
-        ITokenManager tokenManager,
         ITokenCacheService tokenCacheService)
     {
         CookieManager = cookieManager;
-        TokenManager = tokenManager;
         TokenCacheService = tokenCacheService;
         _userManager = new UserManager(configuration);
     }
 
     // override IpAddress.Parse
-    private IPAddress? GetIpAddress(string ip)
+    private string? GetIpAddress(string ip)
     {
         try
         {
             if (ip == "localhost")
-                return IPAddress.Parse("127.0.0.1");
+                return "127.0.0.1";
 
-            return IPAddress.Parse(ip);
+            return ip;
         }
         catch (Exception e)
         {
@@ -144,9 +152,6 @@ public class AuthManager : IAuthManager
             CreationDate = DateTime.UtcNow
         };
 
-        if (Options == null)
-            throw new Exception("Options is null");
-        
         await TokenCacheService.SetTokens(userId, tokensDatabase, Options.RefreshTokenLifeTime);
     }
 

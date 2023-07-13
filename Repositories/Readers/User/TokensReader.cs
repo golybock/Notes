@@ -24,7 +24,7 @@ public class TokensReader : IReader<TokensDatabase>
             tokensDatabase.Token = reader.GetString(reader.GetOrdinal(Token));
             tokensDatabase.RefreshToken = reader.GetString(reader.GetOrdinal(RefreshToken));
             tokensDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal(CreatedDate));
-            tokensDatabase.Ip = (IPAddress) reader.GetValue(reader.GetOrdinal(Ip));
+            tokensDatabase.Ip = reader.GetString(reader.GetOrdinal(Ip));
 
             return tokensDatabase;
         }
@@ -45,7 +45,7 @@ public class TokensReader : IReader<TokensDatabase>
             tokensDatabase.Token = reader.GetString(reader.GetOrdinal(Token));
             tokensDatabase.RefreshToken = reader.GetString(reader.GetOrdinal(RefreshToken));
             tokensDatabase.CreationDate = reader.GetDateTime(reader.GetOrdinal(CreatedDate));
-            tokensDatabase.Ip = (IPAddress) reader.GetValue(reader.GetOrdinal(Ip));
+            tokensDatabase.Ip = reader.GetString(reader.GetOrdinal(Ip));
 
             tokensDatabases.Add(tokensDatabase);
         }

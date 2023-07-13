@@ -1,11 +1,12 @@
 using Blank.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Services.Auth;
 using NotesApi.Services.Interfaces.User;
 
 namespace NotesApi.Controllers.Auth;
 
-[ApiController]
+[ApiController, AllowAnonymous]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase, IAuthController
 {

@@ -36,6 +36,6 @@ public class RefreshCookieOptions : AuthenticationSchemeOptions
 
     #endregion
 
-    public DateTime RefreshTokenLifeTime =>
-        new DateTime(9999, RefreshTokenLifeTimeInDays, 1);
+    public TimeSpan RefreshTokenLifeTime =>
+        new TimeSpan(RefreshTokenLifeTimeInDays, 0, 0,0,0,0);
 }

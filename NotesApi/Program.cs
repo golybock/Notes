@@ -19,6 +19,7 @@ void SetRefreshCookieAuth(IServiceCollection services, IConfiguration configurat
     services.AddAuthentication(RefreshCookieDefaults.AuthenticationScheme)
         .AddRefreshCookie(
             RefreshCookieDefaults.AuthenticationScheme,
+            RefreshCookieDefaults.AuthenticationScheme,
             options =>
             {
                 options.ConnectionString = configuration.GetConnectionString("notes")!;
@@ -52,7 +53,6 @@ void SetServices(IServiceCollection services)
     services.AddScoped<IAuthManager, AuthManager>();
     services.AddScoped<ITokenRepository, TokensRepository>();
     services.AddScoped<ICookieManager, CookieManager>();
-    services.AddScoped<ITokenManager, TokenManager>();
 }
 
 void SetCors(IServiceCollection services)
