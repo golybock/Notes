@@ -105,14 +105,7 @@ public class AuthManager : IAuthManager
         if (cachedTokens == null)
             throw new Exception("Tokens in cache not found");
 
-        // todo refactor to get time from settings
-        // check refresh token on alive
-        if (cachedTokens.CreationDate.AddDays(7) < DateTime.UtcNow)
-        {
-            await SignOutAsync(response);
-
-            throw new Exception("Refresh token died");
-        }
+        DeleteTokensCache(cachedTokens);
 
         await SignInAsync(response, user);
     }
@@ -149,7 +142,6 @@ public class AuthManager : IAuthManager
             RefreshToken = tokens.RefreshToken,
             Ip = GetIpAddress(context.Request.Host.Host),
             UserId = userId,
-            CreationDate = DateTime.UtcNow
         };
 
         await TokenCacheService.SetTokens(userId, tokensDatabase, Options.RefreshTokenLifeTime);
@@ -179,5 +171,14 @@ public class AuthManager : IAuthManager
         var user = await _userManager.GetUser(claims);
 
         await TokenCacheService.DeleteTokens(user.Id ,tokens.RefreshToken);
+    }
+    
+    private async Task DeleteTokensCache(TokensDatabase tokensDatabase)
+    {
+        var claims = TokenManager.GetPrincipalFromToken(tokensDatabase.Token);
+        
+        var user = await _userManager.GetUser(claims);
+
+        await TokenCacheService.DeleteTokens(user.Id ,tokensDatabase.RefreshToken);
     }
 }

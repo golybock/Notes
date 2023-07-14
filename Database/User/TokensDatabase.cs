@@ -1,5 +1,3 @@
-using System.Net;
-
 namespace Database.User;
 
 public class TokensDatabase
@@ -11,8 +9,6 @@ public class TokensDatabase
     public string Token { get; set; } = null!;
 
     public string RefreshToken { get; set; } = null!;
-    
-    public DateTime CreationDate { get; set; }
 
-    public string Ip { get; set; } = null!;
+    public string? Ip { get; set; } = null!;
 }

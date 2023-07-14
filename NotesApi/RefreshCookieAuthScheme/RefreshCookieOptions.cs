@@ -30,12 +30,6 @@ public class RefreshCookieOptions : AuthenticationSchemeOptions
 
     #endregion
 
-    #region auth database
-
-    public string ConnectionString { get; set; } = null!;
-
-    #endregion
-
     public TimeSpan RefreshTokenLifeTime =>
         new TimeSpan(RefreshTokenLifeTimeInDays, 0, 0,0,0,0);
 }

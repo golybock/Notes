@@ -19,7 +19,6 @@ void SetRefreshCookieAuth(IServiceCollection services, IConfiguration configurat
             RefreshCookieDefaults.AuthenticationScheme,
             options =>
             {
-                options.ConnectionString = configuration.GetConnectionString("notes")!;
                 options.Secret = configuration["JWT:Secret"];
                 options.TokenLifeTimeInMinutes = int.Parse(configuration["JWT:TokenValidityInMinutes"]!);
                 options.RefreshTokenLifeTimeInDays = Int32.Parse(configuration["JWT:RefreshTokenValidityInDays"]!);
