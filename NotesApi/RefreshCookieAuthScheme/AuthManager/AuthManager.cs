@@ -105,7 +105,7 @@ public class AuthManager : IAuthManager
         if (cachedTokens == null)
             throw new Exception("Tokens in cache not found");
 
-        DeleteTokensCache(cachedTokens);
+        await DeleteTokensCache(cachedTokens);
 
         await SignInAsync(response, user);
     }
