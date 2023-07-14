@@ -8,10 +8,12 @@
 - Asp.Net Core 7 (REST)
 - PostgreSQL
 - React
+- Redis
 
 ### Features
 - Custom auth scheme (Refresh tokens + cookie)
 - Full Async
+- Caching tokens
 
 Схема взаимеодействия компонентов:
 
