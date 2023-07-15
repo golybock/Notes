@@ -8,8 +8,6 @@ namespace NotesApi.RefreshCookieAuthScheme.AuthManager;
 
 public interface IAuthManager
 {
-    public RefreshCookieOptions Options { set; }
-    
     public ICookieManager CookieManager { get; protected set; }
     
     public ITokenManager TokenManager { get; protected set; }

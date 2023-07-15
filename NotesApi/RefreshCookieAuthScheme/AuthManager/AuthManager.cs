@@ -1,11 +1,10 @@
-using System.Net;
 using System.Security.Claims;
 using Database.User;
 using Domain.User;
+using Microsoft.Extensions.Options;
 using NotesApi.RefreshCookieAuthScheme.CacheService;
 using NotesApi.RefreshCookieAuthScheme.Token;
 using NotesApi.Services.User;
-using Repositories.Interfaces.User;
 using ICookieManager = NotesApi.RefreshCookieAuthScheme.Cookie.ICookieManager;
 
 namespace NotesApi.RefreshCookieAuthScheme.AuthManager;
@@ -16,26 +15,21 @@ public class AuthManager : IAuthManager
     public ITokenManager TokenManager { get; set; }
     public ITokenCacheService TokenCacheService { get; set; }
 
+    // todo refactor to di
     private readonly UserManager _userManager;
 
-    private RefreshCookieOptions _options;
-
-    public RefreshCookieOptions Options
-    {
-        get => _options;
-        set
-        {
-            _options = value;
-            TokenManager = new TokenManager(value);
-        }
-    }
+    private RefreshCookieOptions Options { get; set; }
 
     public AuthManager(IConfiguration configuration,
         ICookieManager cookieManager,
-        ITokenCacheService tokenCacheService)
+        ITokenCacheService tokenCacheService,
+        IOptions<RefreshCookieOptions> options,
+        ITokenManager tokenManager)
     {
         CookieManager = cookieManager;
+        Options = options.Value;
         TokenCacheService = tokenCacheService;
+        TokenManager = tokenManager;
         _userManager = new UserManager(configuration);
     }
 
@@ -101,7 +95,7 @@ public class AuthManager : IAuthManager
         var user = await _userManager.GetUser(claimsPrincipal);
 
         var cachedTokens = await TokenCacheService.GetTokens(user.Id, tokens.RefreshToken);
-        
+
         if (cachedTokens == null)
             throw new Exception("Tokens in cache not found");
 
@@ -167,18 +161,18 @@ public class AuthManager : IAuthManager
     private async Task DeleteTokensCache(Tokens tokens)
     {
         var claims = TokenManager.GetPrincipalFromToken(tokens.Token);
-        
+
         var user = await _userManager.GetUser(claims);
 
-        await TokenCacheService.DeleteTokens(user.Id ,tokens.RefreshToken);
+        await TokenCacheService.DeleteTokens(user.Id, tokens.RefreshToken);
     }
-    
+
     private async Task DeleteTokensCache(TokensDatabase tokensDatabase)
     {
         var claims = TokenManager.GetPrincipalFromToken(tokensDatabase.Token);
-        
+
         var user = await _userManager.GetUser(claims);
 
-        await TokenCacheService.DeleteTokens(user.Id ,tokensDatabase.RefreshToken);
+        await TokenCacheService.DeleteTokens(user.Id, tokensDatabase.RefreshToken);
     }
 }

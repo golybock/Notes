@@ -1,7 +1,6 @@
 using System.Text.Json;
 using Database.User;
 using Microsoft.Extensions.Caching.Distributed;
-using NotesApi.RefreshCookieAuthScheme.Token;
 
 namespace NotesApi.RefreshCookieAuthScheme.CacheService;
 
@@ -9,12 +8,14 @@ public class TokenCacheService : ITokenCacheService
 {
     private readonly IDistributedCache _cache;
 
-    private string Key(Guid userId, string refreshToken) => $"{userId}:{refreshToken}";
+    private readonly RefreshCookieOptions _options;
 
-    public TokenCacheService(IDistributedCache cache)
+    private string Key(Guid userId, string refreshToken) => $"{userId}:{refreshToken}";
+    
+    public TokenCacheService(IDistributedCache cache, RefreshCookieOptions options)
     {
         _cache = cache;
-        
+        _options = options;
     }
 
     public async Task<TokensDatabase?> GetTokens(Guid userId, string refreshToken)
@@ -31,8 +32,9 @@ public class TokenCacheService : ITokenCacheService
 
     public async Task SetTokens(Guid userId, TokensDatabase tokens, TimeSpan refreshTokenLifeTime)
     {
-        var tokenLifeTime = DateTime.UtcNow.AddDays(7);
+        var tokenLifeTime = DateTime.UtcNow.AddDays(_options.RefreshTokenLifeTimeInDays);
         
+        // tokens pair can be deleted when refresh token expired
         var options = new DistributedCacheEntryOptions()
         {
             AbsoluteExpiration = new DateTimeOffset(tokenLifeTime)

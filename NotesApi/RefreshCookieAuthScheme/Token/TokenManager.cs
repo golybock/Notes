@@ -1,25 +1,23 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace NotesApi.RefreshCookieAuthScheme.Token;
 
 public class TokenManager : ITokenManager
 {
+    private readonly RefreshCookieOptions _options;
+    
     public TokenManager(RefreshCookieOptions options)
     {
         _options = options;
     }
 
-    private readonly RefreshCookieOptions _options;
-
-    private string ErrorNotFound =>
-        "Token manager: options and configuration not found";
-
     #region validate params from appsettings or options
 
-    private string? Secret =>  _options.Secret;
+    private string? Secret => _options.Secret;
 
     private string? ValidAudience => _options.ValidAudience;
 
@@ -34,23 +32,23 @@ public class TokenManager : ITokenManager
         new(IssuerSigningKey, SecurityAlgorithms.HmacSha256);
 
     #endregion
-    
+
     #region validate
 
-    private bool ValidateIssuerSigningKey => 
-        _options?.ValidateIssuerSigningKey ?? false;
+    private bool ValidateIssuerSigningKey =>
+        _options.ValidateIssuerSigningKey;
 
     private bool ValidateLifetime =>
-        _options?.ValidateLifetime ?? false;
+        _options.ValidateLifetime;
 
     private bool ValidateIssuer =>
-        _options?.ValidateIssuer ?? false;
+        _options.ValidateIssuer;
 
     private bool ValidateAudience =>
-        _options?.ValidateAudience ?? false;
+        _options.ValidateAudience;
 
     #endregion
-    
+
     #region token parsing
 
     private TokenValidationParameters GetValidationParameters(bool validateLifeTime = true)
@@ -74,7 +72,7 @@ public class TokenManager : ITokenManager
         var tokenHandler = new JwtSecurityTokenHandler();
 
         var claims = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
-        
+
         return claims;
     }
 
@@ -112,10 +110,10 @@ public class TokenManager : ITokenManager
             // время не указано
             if (TokenValidityInMinutes == null)
                 throw new Exception("Cannot read TokenValidityInMinutes, but validatingLifeTime = true");
-            
+
             expires = DateTime.UtcNow.AddMinutes(TokenValidityInMinutes.Value);
         }
-        
+
         // creating token
         var token = new JwtSecurityToken(
             issuer: ValidIssuer,
@@ -135,7 +133,7 @@ public class TokenManager : ITokenManager
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public string GenerateRefreshToken() => 
+    public string GenerateRefreshToken() =>
         Guid.NewGuid().ToString();
 
     #endregion
@@ -145,7 +143,7 @@ public class TokenManager : ITokenManager
     public bool TokenActive(string token)
     {
         var validTo = GetTokenExpirationTime(token);
-        
+
         var now = DateTime.UtcNow;
 
         return validTo >= now;
@@ -165,7 +163,7 @@ public class TokenManager : ITokenManager
             if (securityToken is not JwtSecurityToken jwtSecurityToken ||
                 !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
                     StringComparison.InvariantCultureIgnoreCase))
-                
+
                 return false;
 
             return true;
@@ -179,9 +177,9 @@ public class TokenManager : ITokenManager
     private DateTime GetTokenExpirationTime(string token)
     {
         var handler = new JwtSecurityTokenHandler();
-        
+
         var jwtSecurityToken = handler.ReadJwtToken(token);
-        
+
         return jwtSecurityToken.ValidTo;
     }
 
