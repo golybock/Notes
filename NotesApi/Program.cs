@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Authorization;
 using NotesApi.RefreshCookieAuthScheme;
 using NotesApi.RefreshCookieAuthScheme.AuthManager;
 using NotesApi.RefreshCookieAuthScheme.CacheService;
 using NotesApi.RefreshCookieAuthScheme.Token;
 using NotesApi.Services.Auth;
 using NotesApi.Services.Note;
+using NotesApi.Services.Note.NoteFileManager;
 using NotesApi.Services.Note.Tag;
 using NotesApi.Services.User;
 using NotesApi.Services.User.UserManager;
@@ -39,10 +39,10 @@ void ConfigureAuth(IServiceCollection services, IConfiguration configuration)
         .AddRefreshCookie(
             RefreshCookieDefaults.AuthenticationScheme,
             RefreshCookieDefaults.AuthenticationScheme,
-            options => GetOptions(configuration));
+            _ => GetOptions(configuration));
     
     // auth options
-    services.AddSingleton<RefreshCookieOptions>(sp => GetOptions(configuration));
+    services.AddSingleton<RefreshCookieOptions>(_ => GetOptions(configuration));
 }
 
 void ConfigureRepositories(IServiceCollection services)
@@ -61,6 +61,9 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<ITagService, TagService>();
     services.AddScoped<IAuthService, AuthService>();
+    services.AddScoped<INoteFileManager, NoteFileManager>();
+    
+    // auth
     services.AddScoped<IAuthManager, AuthManager>();
     services.AddScoped<IUserManager, UserManager>();
     services.AddScoped<ITokenCacheService, TokenCacheService>();
@@ -86,7 +89,7 @@ void ConfigureCors(IServiceCollection services)
 
 void ConfigureRedis(IServiceCollection services)
 {
-    // добавление кэширования
+    // add caching
     services.AddStackExchangeRedisCache(options =>
     {
         options.Configuration = "127.0.0.1:6379";

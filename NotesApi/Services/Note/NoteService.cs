@@ -11,6 +11,7 @@ using DomainBuilder.Note.Tag;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Enums;
+using NotesApi.Services.Note.NoteFileManager;
 using NotesApi.Services.User.UserManager;
 using Repositories.Repositories.Note;
 using Repositories.Repositories.Note.NoteImage;
@@ -30,13 +31,15 @@ public class NoteService : INoteService
     private readonly INoteRepository _noteRepository;
     private readonly IUserManager _userManager;
     private readonly ITagRepository _tagRepository;
+    private readonly INoteFileManager _noteFileManager;
 
     public NoteService(ITagRepository tagRepository,
         IUserManager userManager,
         INoteRepository noteRepository,
         INoteTypeRepository noteTypeRepository,
         INoteImageRepository noteImageRepository,
-        IShareNotesRepository shareNoteRepository)
+        IShareNotesRepository shareNoteRepository,
+        INoteFileManager noteFileManager)
     {
         _tagRepository = tagRepository;
         _userManager = userManager;
@@ -44,6 +47,7 @@ public class NoteService : INoteService
         _noteTypeRepository = noteTypeRepository;
         _noteImageRepository = noteImageRepository;
         _shareNoteRepository = shareNoteRepository;
+        _noteFileManager = noteFileManager;
     }
 
     #region controller funcs (used in controllers)
@@ -117,7 +121,7 @@ public class NoteService : INoteService
 
         var newNoteDatabase = NoteDatabaseBuilder.Create(noteBlank);
 
-        await NoteFileManager.UpdateNoteText(noteDatabase.Id, noteBlank.Text ?? string.Empty);
+        await _noteFileManager.SetNoteText(noteDatabase.Id, noteBlank.Text ?? string.Empty);
 
         await _noteImageRepository.Clear(guid);
 
@@ -297,7 +301,7 @@ public class NoteService : INoteService
     // todo refactor
     private async Task<NoteDomain> GetFullNoteDomain(NoteDatabase noteDatabase)
     {
-        var text = await NoteFileManager.GetNoteText(noteDatabase.Id);
+        var text = await _noteFileManager.GetNoteText(noteDatabase.Id);
 
         var type = await _noteTypeRepository.Get(noteDatabase.TypeId);
 
