@@ -2,7 +2,7 @@ namespace Blank.Note;
 
 public class NoteBlank
 {
-    public string Header { get; set; } = string.Empty;
+    public string Header { get; set; }
     
     public string? Text { get; set; }
     
