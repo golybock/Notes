@@ -2,14 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using NotesApi.RefreshCookieAuthScheme;
 using NotesApi.RefreshCookieAuthScheme.AuthManager;
 using NotesApi.RefreshCookieAuthScheme.CacheService;
-using NotesApi.RefreshCookieAuthScheme.Cookie;
 using NotesApi.RefreshCookieAuthScheme.Token;
 using NotesApi.Services.Auth;
-using NotesApi.Services.Interfaces.Note;
-using NotesApi.Services.Interfaces.Note.Tag;
 using NotesApi.Services.Note;
 using NotesApi.Services.Note.Tag;
 using NotesApi.Services.User;
+using NotesApi.Services.User.UserManager;
 using Repositories.Repositories.Note;
 using Repositories.Repositories.Note.NoteImage;
 using Repositories.Repositories.Note.NoteType;
@@ -72,6 +70,10 @@ void SetServices(IServiceCollection services)
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<ITagService, TagService>();
     services.AddScoped<IAuthService, AuthService>();
+    services.AddScoped<IAuthManager, AuthManager>();
+    services.AddScoped<IUserManager, UserManager>();
+    services.AddScoped<ITokenCacheService, TokenCacheService>();
+    services.AddScoped<ITokenManager, TokenManager>();
 }
 
 void SetCors(IServiceCollection services)
@@ -102,6 +104,9 @@ void SetRedis(IServiceCollection services)
 }
 
 var builder = WebApplication.CreateBuilder(args);
+
+// auth options
+builder.Services.AddSingleton<RefreshCookieOptions>(sp => GetOptions(builder.Configuration));
 
 SetRefreshCookieAuth(builder.Services, builder.Configuration);
 

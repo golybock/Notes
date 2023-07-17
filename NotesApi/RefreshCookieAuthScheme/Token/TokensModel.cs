@@ -1,7 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace Database.User;
+namespace NotesApi.RefreshCookieAuthScheme.Token;
 
+// todo delete refresh token and userId from value (stored in key)
 public class TokensModel
 {
     [JsonPropertyName("userId")]

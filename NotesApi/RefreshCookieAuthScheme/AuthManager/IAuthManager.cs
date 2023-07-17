@@ -22,7 +22,7 @@ public interface IAuthManager
     
     public Task SignInAsync(HttpContext context, ClaimsPrincipal principal);
     
-    public Task RefreshTokensAsync(HttpResponse response, ClaimsPrincipal claimsPrincipal, Tokens tokens);
+    public Task RefreshTokensAsync(HttpResponse response, Tokens tokens);
 
     public Task SignOutAsync(HttpContext context);
 

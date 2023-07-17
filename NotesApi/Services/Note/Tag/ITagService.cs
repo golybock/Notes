@@ -1,8 +1,7 @@
 using Blank.Note.Tag;
 using Microsoft.AspNetCore.Mvc;
-using Views.Note.Tag;
 
-namespace NotesApi.Services.Interfaces.Note.Tag;
+namespace NotesApi.Services.Note.Tag;
 
 public interface ITagService
 {

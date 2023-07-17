@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace NotesApi.RefreshCookieAuthScheme.Token;
@@ -85,6 +84,38 @@ public class TokenManager : ITokenManager
         var claims = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
 
         return claims;
+    }
+
+    public Guid GetUserIdFromToken(string token)
+    {
+        var claims = GetPrincipalFromToken(token);
+        
+        var id = claims.FindFirst(ClaimTypes.Authentication)?.Value;
+
+        return Guid.Parse(id!);
+    }
+
+    public string? GetEmailFromToken(string token)
+    {
+        var claims = GetPrincipalFromToken(token);
+        
+        var email = claims.FindFirst(ClaimTypes.Name)?.Value;
+
+        return email;
+    }
+
+    public Guid GetUserIdFromClaims(ClaimsPrincipal claims)
+    {
+        var id = claims.FindFirst(ClaimTypes.Authentication)?.Value;
+
+        return Guid.Parse(id!);
+    }
+
+    public string? GetEmailFromClaims(ClaimsPrincipal claims)
+    {
+        var email = claims.FindFirst(ClaimTypes.Name)?.Value;
+
+        return email;
     }
 
     #endregion

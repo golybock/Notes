@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Database.User;
 using Microsoft.Extensions.Caching.Distributed;
+using NotesApi.RefreshCookieAuthScheme.Token;
 
 namespace NotesApi.RefreshCookieAuthScheme.CacheService;
 
@@ -15,7 +16,26 @@ public class TokenCacheService : ITokenCacheService
     /// <param name="refreshToken"></param>
     /// <returns>key</returns>
     private string Key(Guid userId, string refreshToken) => $"{userId}:{refreshToken}";
+
+    #region parse key
+
+        private Guid GetUserIdFromKey(string key)
+    {
+        var values = key.Split(':');
+
+        return Guid.Parse(values[0]); 
+    }
     
+    private string GetRefreshTokenFromKey(string key)
+    {
+        var values = key.Split(':');
+
+        return values[1];
+    }
+    
+
+    #endregion
+
     public TokenCacheService(IDistributedCache cache)
     {
         _cache = cache;

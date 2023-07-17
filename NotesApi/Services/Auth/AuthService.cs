@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
-using DatabaseBuilder.User;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.RefreshCookieAuthScheme.AuthManager;
 using NotesApi.Services.User.UserManager;

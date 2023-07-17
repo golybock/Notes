@@ -1,10 +1,6 @@
 using Blank.Note;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NotesApi.RefreshCookieAuthScheme;
-using NotesApi.RefreshCookieAuthScheme.AuthManager;
-using NotesApi.Services.Interfaces.Note;
 using NotesApi.Services.Note;
 
 namespace NotesApi.Controllers;

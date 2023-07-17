@@ -2,21 +2,9 @@ using NotesApi.RefreshCookieAuthScheme.Token;
 
 namespace NotesApi.RefreshCookieAuthScheme.Cookie;
 
+// todo maybe delete code duplicate lines (if can be needed)
 public class CookieManager : CookieManagerBase, ICookieManager
 {
-    private readonly RefreshCookieOptions? _options;
-    private readonly IConfiguration? _configuration;
-
-    public CookieManager(RefreshCookieOptions options)
-    {
-        _options = options;
-    }
-
-    public CookieManager(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-
     private CookieOptions DefaultOptions(DateTime expires) =>
         new (){Expires = expires, Secure = true, SameSite = SameSiteMode.None};
     
@@ -59,11 +47,10 @@ public class CookieManager : CookieManagerBase, ICookieManager
         return tokens;
     }
 
-    public void SetTokens(HttpContext context, Tokens tokensDomain)
+    public void SetTokens(HttpContext context, Tokens tokensDomain, int refreshTokenLifeTimeInDays)
     {
         // validation lifetime from options
-        int tokenValidityInDays = RefreshTokenLifeTimeInDays;
-        var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
+        var expires = DateTime.UtcNow.AddDays(refreshTokenLifeTimeInDays);
 
         // cookie expires and mode
         var options = DefaultOptions(expires);
@@ -72,11 +59,10 @@ public class CookieManager : CookieManagerBase, ICookieManager
         AppendResponseCookie(context, CookiesList.RefreshToken, tokensDomain.RefreshToken, options);
     }
     
-    public void SetTokens(HttpResponse response, Tokens tokensDomain)
+    public void SetTokens(HttpResponse response, Tokens tokensDomain, int refreshTokenLifeTimeInDays)
     {
         // validation lifetime from options
-        int tokenValidityInDays = RefreshTokenLifeTimeInDays;
-        var expires = DateTime.UtcNow.AddDays(tokenValidityInDays);
+        var expires = DateTime.UtcNow.AddDays(refreshTokenLifeTimeInDays);
 
         // cookie expires and mode
         var options = DefaultOptions(expires);
@@ -100,7 +86,4 @@ public class CookieManager : CookieManagerBase, ICookieManager
         DeleteCookie(response, CookiesList.Token, options);
         DeleteCookie(response, CookiesList.RefreshToken, options);
     }
-
-    private int RefreshTokenLifeTimeInDays =>
-        _options.RefreshTokenLifeTimeInDays;
 }

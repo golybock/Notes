@@ -14,6 +14,14 @@ public interface ITokenManager
     public string GenerateToken(IEnumerable<Claim> claims);
 
     public ClaimsPrincipal GetPrincipalFromToken(string token);
+    
+    public Guid GetUserIdFromToken(string token);
+    
+    public string? GetEmailFromToken(string token);
+    
+    public Guid GetUserIdFromClaims(ClaimsPrincipal claims);
+    
+    public string? GetEmailFromClaims(ClaimsPrincipal claims);
 
     public IEnumerable<Claim> CreateIdentityClaims(Guid userId, string email);
 

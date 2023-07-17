@@ -1,10 +1,8 @@
 using System.Security.Claims;
-using Database.User;
 using Domain.User;
-using Microsoft.Extensions.Options;
 using NotesApi.RefreshCookieAuthScheme.CacheService;
+using NotesApi.RefreshCookieAuthScheme.Cookie;
 using NotesApi.RefreshCookieAuthScheme.Token;
-using NotesApi.Services.User.UserManager;
 using ICookieManager = NotesApi.RefreshCookieAuthScheme.Cookie.ICookieManager;
 
 namespace NotesApi.RefreshCookieAuthScheme.AuthManager;
@@ -15,22 +13,15 @@ public class AuthManager : IAuthManager
     public ITokenManager TokenManager { get; set; }
     public ITokenCacheService TokenCacheService { get; set; }
 
-    // todo refactor to di
-    private readonly UserManager _userManager;
-
+    // auth scheme options
     private RefreshCookieOptions Options { get; set; }
 
-    public AuthManager(IConfiguration configuration,
-        ICookieManager cookieManager,
-        ITokenCacheService tokenCacheService,
-        IOptions<RefreshCookieOptions> options,
-        ITokenManager tokenManager)
+    public AuthManager(RefreshCookieOptions options, ITokenCacheService tokenCacheService, ITokenManager tokenManager)
     {
-        CookieManager = cookieManager;
-        Options = options.Value;
+        Options = options;
         TokenCacheService = tokenCacheService;
         TokenManager = tokenManager;
-        _userManager = new UserManager(configuration);
+        CookieManager = new CookieManager();
     }
 
     // override IpAddress.Parse
@@ -52,56 +43,62 @@ public class AuthManager : IAuthManager
     // signIn
     public async Task SignInAsync(HttpContext context, UserDomain user)
     {
-        var tokens = CreateTokens(user);
+        var tokens = CreateTokens(user.Id, user.Email);
 
         await SaveTokensAsync(context, tokens, user.Id);
 
-        CookieManager.SetTokens(context, tokens);
+        CookieManager.SetTokens(context, tokens, Options.RefreshTokenLifeTimeInDays);
     }
 
     public async Task SignInAsync(HttpResponse response, UserDomain user)
     {
-        var tokens = CreateTokens(user);
+        var tokens = CreateTokens(user.Id, user.Email);
 
         await SaveTokensAsync(response.HttpContext, tokens, user.Id);
 
-        CookieManager.SetTokens(response, tokens);
+        CookieManager.SetTokens(response, tokens, Options.RefreshTokenLifeTimeInDays);
     }
 
-    public async Task SignInAsync(HttpResponse response, ClaimsPrincipal principal)
+    public async Task SignInAsync(HttpResponse response, ClaimsPrincipal claims)
     {
-        var user = await _userManager.GetUser(principal);
+        var userId = TokenManager.GetUserIdFromClaims(claims);
 
-        var tokens = CreateTokens(user);
+        var userEmail = TokenManager.GetEmailFromClaims(claims);
+        
+        var tokens = CreateTokens(userId, userEmail!);
 
-        await SaveTokensAsync(response.HttpContext, tokens, user.Id);
+        await SaveTokensAsync(response.HttpContext, tokens, userId);
 
-        CookieManager.SetTokens(response, tokens);
+        CookieManager.SetTokens(response, tokens, Options.RefreshTokenLifeTimeInDays);
     }
 
-    public async Task SignInAsync(HttpContext context, ClaimsPrincipal principal)
+    public async Task SignInAsync(HttpContext context, ClaimsPrincipal claims)
     {
-        var user = await _userManager.GetUser(principal);
+        var userId = TokenManager.GetUserIdFromClaims(claims);
 
-        var tokens = CreateTokens(user);
+        var userEmail = TokenManager.GetEmailFromClaims(claims);
 
-        await SaveTokensAsync(context, tokens, user.Id);
+        var tokens = CreateTokens(userId, userEmail!);
 
-        CookieManager.SetTokens(context, tokens);
+        await SaveTokensAsync(context, tokens, userId);
+
+        CookieManager.SetTokens(context, tokens, Options.RefreshTokenLifeTimeInDays);
     }
 
-    public async Task RefreshTokensAsync(HttpResponse response, ClaimsPrincipal claimsPrincipal, Tokens tokens)
+    public async Task RefreshTokensAsync(HttpResponse response, Tokens tokens)
     {
-        var user = await _userManager.GetUser(claimsPrincipal);
+        var userId = TokenManager.GetUserIdFromToken(tokens.Token);
 
-        var cachedTokens = await TokenCacheService.GetTokens(user.Id, tokens.RefreshToken);
+        var claims = TokenManager.GetPrincipalFromExpiredToken(tokens.Token);
+
+        var cachedTokens = await TokenCacheService.GetTokens(userId, tokens.RefreshToken);
 
         if (cachedTokens == null)
             throw new Exception("Tokens in cache not found");
 
-        await DeleteTokensCache(cachedTokens);
+        await DeleteTokensCache(cachedTokens, userId);
 
-        await SignInAsync(response, user);
+        await SignInAsync(response, claims);
     }
 
     public async Task SignOutAsync(HttpContext context)
@@ -113,7 +110,9 @@ public class AuthManager : IAuthManager
         if (tokens == null)
             return;
 
-        await DeleteTokensCache(tokens);
+        var userId = TokenManager.GetUserIdFromToken(tokens.Token);
+
+        await DeleteTokensCache(tokens, userId);
     }
 
     public async Task SignOutAsync(HttpResponse response)
@@ -125,7 +124,9 @@ public class AuthManager : IAuthManager
         if (tokens == null)
             return;
 
-        await DeleteTokensCache(tokens);
+        var userId = TokenManager.GetUserIdFromToken(tokens.Token);
+
+        await DeleteTokensCache(tokens, userId);
     }
 
     private async Task SaveTokensAsync(HttpContext context, Tokens tokens, Guid userId)
@@ -141,9 +142,9 @@ public class AuthManager : IAuthManager
         await TokenCacheService.SetTokens(userId, tokensDatabase, Options.RefreshTokenLifeTime);
     }
 
-    private Tokens CreateTokens(UserDomain user)
+    private Tokens CreateTokens(Guid userId, string userEmail)
     {
-        var claims = TokenManager.CreateIdentityClaims(user.Id, user.Email);
+        var claims = TokenManager.CreateIdentityClaims(userId, userEmail);
 
         var token = TokenManager.GenerateToken(claims);
         var refreshToken = TokenManager.GenerateRefreshToken();
@@ -157,22 +158,10 @@ public class AuthManager : IAuthManager
         return tokens;
     }
 
-    // get user from claims and delete pair user:refreshToken from cache
-    private async Task DeleteTokensCache(Tokens tokens)
-    {
-        var claims = TokenManager.GetPrincipalFromToken(tokens.Token);
+    // delete pair with key 'user:refreshToken' from cache
+    private Task DeleteTokensCache(Tokens tokens, Guid userId) => 
+        TokenCacheService.DeleteTokens(userId, tokens.RefreshToken);
 
-        var user = await _userManager.GetUser(claims);
-
-        await TokenCacheService.DeleteTokens(user.Id, tokens.RefreshToken);
-    }
-
-    private async Task DeleteTokensCache(TokensModel tokensModel)
-    {
-        var claims = TokenManager.GetPrincipalFromToken(tokensModel.Token);
-
-        var user = await _userManager.GetUser(claims);
-
-        await TokenCacheService.DeleteTokens(user.Id, tokensModel.RefreshToken);
-    }
+    private Task DeleteTokensCache(TokensModel tokensModel, Guid userId) => 
+        TokenCacheService.DeleteTokens(userId, tokensModel.RefreshToken);
 }

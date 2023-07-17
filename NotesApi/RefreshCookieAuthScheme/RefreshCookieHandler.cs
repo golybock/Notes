@@ -44,7 +44,7 @@ public class RefreshCookieHandler : AuthenticationHandler<RefreshCookieOptions>
 
             try
             {
-                await _authManager.RefreshTokensAsync(Response, principal, tokens);
+                await _authManager.RefreshTokensAsync(Response, tokens);
                 
                 return AuthenticateResult.Success(ticket);
             }

@@ -1,7 +1,6 @@
 using Blank.Note.Tag;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NotesApi.Services.Interfaces.Note.Tag;
 using NotesApi.Services.Note.Tag;
 
 namespace NotesApi.Controllers;

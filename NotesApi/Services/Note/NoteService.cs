@@ -11,15 +11,12 @@ using DomainBuilder.Note.Tag;
 using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Enums;
-using NotesApi.Services.Interfaces.Note;
-using NotesApi.Services.User;
 using NotesApi.Services.User.UserManager;
 using Repositories.Repositories.Note;
 using Repositories.Repositories.Note.NoteImage;
 using Repositories.Repositories.Note.NoteType;
 using Repositories.Repositories.Note.ShareNote;
 using Repositories.Repositories.Note.Tag;
-using Repositories.Repositories.User;
 using ViewBuilder.Note;
 
 namespace NotesApi.Services.Note;
