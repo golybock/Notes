@@ -1,6 +1,6 @@
 namespace NotesApi.Enums;
 
-public enum NoteTypes
+public enum NoteType
 {
     Private = 1,
     Public = 2,

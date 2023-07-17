@@ -127,7 +127,7 @@ public class NoteRepository : RepositoryBase, INoteRepository
                     new NpgsqlParameter() { Value = noteDatabase.Header },
                     new NpgsqlParameter() { Value = noteDatabase.OwnerId },
                     new NpgsqlParameter() { Value = noteDatabase.Id },
-                    new NpgsqlParameter() { Value = 1 },
+                    new NpgsqlParameter() { Value = 1 }
                 }
             };
 

@@ -33,13 +33,15 @@ public class NoteService : INoteService
     private readonly ITagRepository _tagRepository;
     private readonly INoteFileManager _noteFileManager;
 
-    public NoteService(ITagRepository tagRepository,
+    public NoteService(
+        ITagRepository tagRepository,
         IUserManager userManager,
         INoteRepository noteRepository,
         INoteTypeRepository noteTypeRepository,
         INoteImageRepository noteImageRepository,
         IShareNotesRepository shareNoteRepository,
-        INoteFileManager noteFileManager)
+        INoteFileManager noteFileManager
+    )
     {
         _tagRepository = tagRepository;
         _userManager = userManager;
@@ -50,7 +52,7 @@ public class NoteService : INoteService
         _noteFileManager = noteFileManager;
     }
 
-    #region controller funcs (used in controllers)
+    #region main funcs (IActionResult)
 
     public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
@@ -92,7 +94,7 @@ public class NoteService : INoteService
         return new OkObjectResult(noteView);
     }
 
-    // not save text and tags, only name and returns id
+    // only create note id db and returns id
     public async Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank)
     {
         var id = Guid.NewGuid();
@@ -171,7 +173,7 @@ public class NoteService : INoteService
         if (sharedUser == null)
             return new NotFoundResult();
 
-        await _noteRepository.UpdateType(note.Id, (int) NoteTypes.Public);
+        await _noteRepository.UpdateType(note.Id, (int) NoteType.Public);
 
         var shareNote = new SharedNoteDatabase()
         {
@@ -312,9 +314,9 @@ public class NoteService : INoteService
         noteDomain.Tags = await GetNoteTags(noteDatabase.Id);
 
         noteDomain.Images = await GetNoteImagesDomain(noteDatabase.Id);
-        
+
         noteDomain.SharedUsers = await GetSharedUsers(noteDomain.Id);
-        
+
         if (user != null)
             noteDomain.OwnerUser = user;
 
@@ -370,8 +372,10 @@ public class NoteService : INoteService
 
     private async Task CreateNoteTags(Guid noteId, List<Guid> noteTags)
     {
+        // clear tags
         await _tagRepository.DeleteNoteTags(noteId);
 
+        // add tags
         foreach (var noteTag in noteTags)
             await _tagRepository.Create(new NoteTagDatabase() {NoteId = noteId, TagId = noteTag});
     }
