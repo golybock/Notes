@@ -33,29 +33,19 @@ RefreshCookieOptions GetOptions(IConfiguration configuration)
     };
 }
 
-void SetRefreshCookieAuth(IServiceCollection services, IConfiguration configuration)
+void ConfigureAuth(IServiceCollection services, IConfiguration configuration)
 {
     services.AddAuthentication(RefreshCookieDefaults.AuthenticationScheme)
         .AddRefreshCookie(
             RefreshCookieDefaults.AuthenticationScheme,
             RefreshCookieDefaults.AuthenticationScheme,
             options => GetOptions(configuration));
-
-    services.AddAuthorization(options =>
-    {
-        options.DefaultPolicy = new AuthorizationPolicyBuilder()
-            .AddAuthenticationSchemes(RefreshCookieDefaults.AuthenticationScheme)
-            .RequireAuthenticatedUser()
-            .Build();
-    });
+    
+    // auth options
+    services.AddSingleton<RefreshCookieOptions>(sp => GetOptions(configuration));
 }
 
-void SetOptions(IServiceCollection services, IConfiguration configuration)
-{
-    services.Configure<RefreshCookieOptions>(configuration.GetSection("RefreshCookieOptions"));
-}
-
-void SetRepositories(IServiceCollection services)
+void ConfigureRepositories(IServiceCollection services)
 {
     services.AddScoped<IUserRepository, UserRepository>();
     services.AddScoped<INoteRepository, NoteRepository>();
@@ -65,7 +55,7 @@ void SetRepositories(IServiceCollection services)
     services.AddScoped<INoteImageRepository, NoteImageRepository>();
 }
 
-void SetServices(IServiceCollection services)
+void ConfigureServices(IServiceCollection services)
 {
     services.AddScoped<INoteService, NoteService>();
     services.AddScoped<IUserService, UserService>();
@@ -77,7 +67,7 @@ void SetServices(IServiceCollection services)
     services.AddScoped<ITokenManager, TokenManager>();
 }
 
-void SetCors(IServiceCollection services)
+void ConfigureCors(IServiceCollection services)
 {
     // Default Policy
     services.AddCors(options =>
@@ -94,7 +84,7 @@ void SetCors(IServiceCollection services)
     });
 }
 
-void SetRedis(IServiceCollection services)
+void ConfigureRedis(IServiceCollection services)
 {
     // добавление кэширования
     services.AddStackExchangeRedisCache(options =>
@@ -106,28 +96,21 @@ void SetRedis(IServiceCollection services)
 
 var builder = WebApplication.CreateBuilder(args);
 
-// auth options
-builder.Services.AddSingleton<RefreshCookieOptions>(sp => GetOptions(builder.Configuration));
+ConfigureCors(builder.Services);
 
-SetRefreshCookieAuth(builder.Services, builder.Configuration);
+ConfigureRepositories(builder.Services);
 
-SetCors(builder.Services);
+ConfigureServices(builder.Services);
 
-SetRepositories(builder.Services);
+ConfigureAuth(builder.Services, builder.Configuration);
 
-SetServices(builder.Services);
-
-SetOptions(builder.Services, builder.Configuration);
-
-SetRedis(builder.Services);
+ConfigureRedis(builder.Services);
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
