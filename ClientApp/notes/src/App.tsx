@@ -1,20 +1,30 @@
+import React from 'react';
+import Cat from "./resources/cat.webp"
 import './App.css';
-import React from "react";
+import UserApi from "./api/user/UserApi";
 import {Link, Route, Routes} from "react-router-dom";
 import Home from "./components/home/Home";
 import Account from "./components/auth/Account";
-import Cat from "./resources/cat.webp"
-import UserApi from "./api/user/UserApi";
-import Auth from "./components/auth/Auth";
 import PageNotFound from "./components/codes/PageNotFound";
+import Auth from "./components/auth/Auth";
 
-export default class App extends React.Component {
+export interface IProps {
 
-    constructor(props) {
+}
+
+export interface IState {
+    isAuthed: boolean
+}
+
+export default class App extends React.Component<IProps, IState> {
+
+    constructor(props: IProps) {
         super(props);
+
         this.state = {
-            isAuthed: false
+            isAuthed : false
         }
+    
     }
 
     async componentDidMount() {
@@ -22,12 +32,12 @@ export default class App extends React.Component {
         let user = await UserApi.getUser();
 
         let isAuth = user != null;
-
-        this.setState({isAuth: isAuth})
+        
+        this.setState({isAuthed: isAuth})
     }
 
     auth() {
-        this.setState({isAuth: true});
+        this.setState({isAuthed: true});
     }
 
     render() {
@@ -35,20 +45,20 @@ export default class App extends React.Component {
             <div className="App">
 
                 {/*nav bar*/}
-                {this.state.isAuth && (
+                {this.state.isAuthed && (
                     <nav className="Nav-panel">
-                        
+
                         <Link className="Navbar-item" to="/">
                             <img src={Cat} alt={Cat} className="App-logo"/>
                         </Link>
-                        
+
                         <Link className="Navbar-item" to="/account">Акаунт</Link>
-                        
+
                     </nav>
                 )}
 
                 {/*main content*/}
-                {this.state.isAuth && (
+                {this.state.isAuthed && (
                     <div>
                         <Routes>
                             <Route path="/" element={<Home/>}/>
@@ -59,9 +69,10 @@ export default class App extends React.Component {
                 )}
 
                 {/*auth */}
-                {!this.state.isAuth && <Auth onClose={() => this.auth()}/>}
+                {!this.state.isAuthed && <Auth onClose={() => this.auth()}/>}
 
             </div>
         );
     }
 }
+

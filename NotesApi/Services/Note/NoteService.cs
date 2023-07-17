@@ -116,7 +116,7 @@ public class NoteService : INoteService
     {
         var user = await _userManager.Get(claims);
 
-        var noteDatabase = await _noteRepository.GetNote(guid, user.Id);
+        var noteDatabase = await GetNoteDatabase(guid, user.Id);
 
         if (noteDatabase == null)
             return new NotFoundResult();
@@ -125,20 +125,22 @@ public class NoteService : INoteService
 
         await _noteFileManager.SetNoteText(noteDatabase.Id, noteBlank.Text ?? string.Empty);
 
+        // todo scope to func (images)
         await _noteImageRepository.Clear(guid);
 
         foreach (var image in noteBlank.Images)
             await CreateOrUpdateImage(image, guid);
-
-        newNoteDatabase.EditedDate = DateTime.UtcNow;
-
+        
         await CreateNoteTags(guid, noteBlank.Tags);
+        
+        newNoteDatabase.EditedDate = DateTime.UtcNow;
 
         var result = await _noteRepository.Update(guid, newNoteDatabase);
 
         return result ? new OkResult() : new BadRequestResult();
     }
 
+    // todo refactor to svg (add mode)
     public async Task<IActionResult> UploadImage(IFormFile formFile, Guid noteId)
     {
         var fileName = Guid.NewGuid();
@@ -160,12 +162,12 @@ public class NoteService : INoteService
     {
         var user = await _userManager.Get(claims);
 
-        var note = await GetNote(shareBlank.NoteId, user.Id);
+        var note = await GetNoteDatabase(shareBlank.NoteId, user.Id);
 
         if (note == null)
             return new NotFoundResult();
 
-        if (user.Id != note.OwnerUser?.Id)
+        if (user.Id != note.OwnerId)
             return new BadRequestObjectResult("Access denied");
 
         var sharedUser = await _userManager.Get(shareBlank.Email);
@@ -191,12 +193,12 @@ public class NoteService : INoteService
     {
         var user = await _userManager.Get(claims);
 
-        var note = await GetNote(shareBlank.NoteId, user.Id);
+        var note = await GetNoteDatabase(shareBlank.NoteId, user.Id);
 
         if (note == null)
             return new NotFoundResult();
 
-        if (user.Id != note.OwnerUser?.Id)
+        if (user.Id != note.OwnerId)
             return new BadRequestObjectResult("Access denied");
 
         var sharedUser = await _userManager.Get(shareBlank.Email);
@@ -213,12 +215,13 @@ public class NoteService : INoteService
     {
         var user = await _userManager.Get(claims);
 
-        var note = await GetNote(id, user.Id);
+        var note = await GetNoteDatabase(id, user.Id);
 
         if (note == null)
             return new NotFoundResult();
 
-        if (user.Id != note.OwnerUser?.Id)
+        // only owner can edit shared users list 
+        if (user.Id != note.OwnerId)
             return new BadRequestObjectResult("Access denied");
 
         var sharedUser = await _userManager.Get(email);
@@ -231,7 +234,7 @@ public class NoteService : INoteService
         return res ? new OkResult() : new BadRequestObjectResult("Error delete");
     }
 
-    // todo refactor to set type 'deleted' and add trash
+    // todo maybe refactor to set type 'deleted' and add to trash
     public async Task<IActionResult> Delete(ClaimsPrincipal claims, Guid id)
     {
         var user = await _userManager.Get(claims);
@@ -241,6 +244,7 @@ public class NoteService : INoteService
         if (note == null)
             return new NotFoundResult();
 
+        // only owner can delete
         if (note.OwnerId != user.Id)
             return new BadRequestObjectResult("Access denied");
 
@@ -287,6 +291,13 @@ public class NoteService : INoteService
         var noteDomain = await GetFullNoteDomain(noteDatabase);
 
         return noteDomain;
+    }
+    
+    private async Task<NoteDatabase?> GetNoteDatabase(Guid id, Guid userId)
+    {
+        var noteDatabase = await _noteRepository.GetNote(id, userId);
+        
+        return noteDatabase;
     }
 
     private async Task<List<UserDomain>> GetSharedUsers(Guid noteId)
