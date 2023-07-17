@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Blank.User;
 using DatabaseBuilder.User;
 using Microsoft.AspNetCore.Mvc;
-using NotesApi.RefreshCookieAuthScheme.AuthManager;
+using NotesApi.Services.User.UserManager;
 using Repositories.Repositories.User;
 using ViewBuilder.User;
 
@@ -10,20 +10,21 @@ namespace NotesApi.Services.User;
 
 public class UserService : IUserService
 {
-    private readonly UserRepository _userRepository;
-    private readonly IAuthManager _authManager;
-    private readonly UserManager _userManager;
+    private readonly IUserRepository _userRepository;
+    private readonly IUserManager _userManager;
 
-    public UserService(IAuthManager authManager, UserManager userManager, UserRepository userRepository)
+    public UserService(IUserRepository userRepository, IUserManager userManager)
     {
-        _authManager = authManager;
-        _userManager = userManager;
         _userRepository = userRepository;
+        _userManager = userManager;
     }
     
     public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
-        var user = await _userManager.GetUser(claims);
+        var user = await _userManager.Get(claims);
+        
+        if (user == null)
+            return new BadRequestObjectResult("Invalid token claims, please login again");
         
         var userView = UserViewBuilder.Create(user);
         
@@ -32,7 +33,10 @@ public class UserService : IUserService
     
     public async Task<IActionResult> Update(ClaimsPrincipal claims, UserBlank userBlank)
     {
-        var user = await _userManager.GetUser(claims);
+        var user = await _userManager.Get(claims);
+
+        if (user == null)
+            return new BadRequestObjectResult("Invalid token claims, please login again");
         
         var userDatabase = UserDatabaseBuilder.Create(userBlank);
 
