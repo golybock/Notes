@@ -209,7 +209,7 @@ public class TagRepository : RepositoryBase, ITagRepository
         }
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<bool> Delete(Guid id)
     {
         return await DeleteAsync("tag", "id", id) > 0;
     }

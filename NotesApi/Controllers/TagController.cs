@@ -35,7 +35,7 @@ public class TagController : ControllerBase
     }
 
     [HttpDelete("Tag")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         return await _tagService.Delete(id);
     }

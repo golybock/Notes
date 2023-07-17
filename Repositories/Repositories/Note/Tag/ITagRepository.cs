@@ -21,5 +21,5 @@ public interface ITagRepository
     
     public Task<bool> DeleteNoteTags(Guid noteId);
 
-    public Task<bool> Delete(int id);
+    public Task<bool> Delete(Guid id);
 }

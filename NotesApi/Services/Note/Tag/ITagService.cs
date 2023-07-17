@@ -11,5 +11,5 @@ public interface ITagService
 
     public Task<IActionResult> Create(TagBlank tagBlank);
 
-    public Task<IActionResult> Delete(int id);
+    public Task<IActionResult> Delete(Guid id);
 }
