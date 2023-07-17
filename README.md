@@ -17,7 +17,7 @@
 
 Схема взаимеодействия компонентов:
 
-![scheme](https://imgur.com/Iwl3oWB)
+![scheme](https://i.imgur.com/4LN8Gky.png)
 
 ## Backend
 
