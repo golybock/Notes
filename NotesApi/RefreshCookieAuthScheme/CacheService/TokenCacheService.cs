@@ -7,18 +7,21 @@ namespace NotesApi.RefreshCookieAuthScheme.CacheService;
 public class TokenCacheService : ITokenCacheService
 {
     private readonly IDistributedCache _cache;
-
-    private readonly RefreshCookieOptions _options;
-
+    
+    /// <summary>
+    /// Allows delete all user tokens
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="refreshToken"></param>
+    /// <returns>key</returns>
     private string Key(Guid userId, string refreshToken) => $"{userId}:{refreshToken}";
     
-    public TokenCacheService(IDistributedCache cache, RefreshCookieOptions options)
+    public TokenCacheService(IDistributedCache cache)
     {
         _cache = cache;
-        _options = options;
     }
 
-    public async Task<TokensDatabase?> GetTokens(Guid userId, string refreshToken)
+    public async Task<TokensModel?> GetTokens(Guid userId, string refreshToken)
     {
         var key = Key(userId, refreshToken);
         
@@ -27,12 +30,29 @@ public class TokenCacheService : ITokenCacheService
         if (tokens == null)
             return null;
 
-        return JsonSerializer.Deserialize<TokensDatabase>(tokens);
+        return JsonSerializer.Deserialize<TokensModel>(tokens);
     }
 
-    public async Task SetTokens(Guid userId, TokensDatabase tokens, TimeSpan refreshTokenLifeTime)
+    public async Task SetTokens(Guid userId, TokensModel tokens, TimeSpan refreshTokenLifeTime)
     {
-        var tokenLifeTime = DateTime.UtcNow.AddDays(_options.RefreshTokenLifeTimeInDays);
+        var tokenLifeTime = DateTime.UtcNow.AddDays(refreshTokenLifeTime.TotalDays);
+        
+        // tokens pair can be deleted when refresh token expired
+        var options = new DistributedCacheEntryOptions()
+        {
+            AbsoluteExpiration = new DateTimeOffset(tokenLifeTime)
+        };
+
+        var key = Key(userId, tokens.RefreshToken);
+
+        var value = JsonSerializer.Serialize(tokens);
+
+        await _cache.SetStringAsync(key, value, options);
+    }
+
+    public async Task SetTokens(Guid userId, TokensModel tokens, int refreshTokenLifeTimeInDays)
+    {
+        var tokenLifeTime = DateTime.UtcNow.AddDays(refreshTokenLifeTimeInDays);
         
         // tokens pair can be deleted when refresh token expired
         var options = new DistributedCacheEntryOptions()

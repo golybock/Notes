@@ -130,7 +130,7 @@ public class AuthManager : IAuthManager
 
     private async Task SaveTokensAsync(HttpContext context, Tokens tokens, Guid userId)
     {
-        var tokensDatabase = new TokensDatabase()
+        var tokensDatabase = new TokensModel()
         {
             Token = tokens.Token,
             RefreshToken = tokens.RefreshToken,
@@ -167,12 +167,12 @@ public class AuthManager : IAuthManager
         await TokenCacheService.DeleteTokens(user.Id, tokens.RefreshToken);
     }
 
-    private async Task DeleteTokensCache(TokensDatabase tokensDatabase)
+    private async Task DeleteTokensCache(TokensModel tokensModel)
     {
-        var claims = TokenManager.GetPrincipalFromToken(tokensDatabase.Token);
+        var claims = TokenManager.GetPrincipalFromToken(tokensModel.Token);
 
         var user = await _userManager.GetUser(claims);
 
-        await TokenCacheService.DeleteTokens(user.Id, tokensDatabase.RefreshToken);
+        await TokenCacheService.DeleteTokens(user.Id, tokensModel.RefreshToken);
     }
 }
