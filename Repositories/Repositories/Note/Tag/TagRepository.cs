@@ -100,7 +100,7 @@ public class TagRepository : RepositoryBase, ITagRepository
 
     public async Task<Guid?> Create(TagDatabase tagDatabase)
     {
-        string query = "insert into tag(id, name) values ($1) returning id";
+        string query = "insert into tag(id, name) values ($1, $2) returning id";
 
         var connection = GetConnection();
 
@@ -110,7 +110,11 @@ public class TagRepository : RepositoryBase, ITagRepository
 
             NpgsqlCommand command = new NpgsqlCommand(query, connection)
             {
-                Parameters = { new NpgsqlParameter() { Value = tagDatabase.Name } }
+                Parameters =
+                {
+                    new NpgsqlParameter() { Value = tagDatabase.Id },
+                    new NpgsqlParameter() { Value = tagDatabase.Name }
+                }
             };
 
             await using var reader = await command.ExecuteReaderAsync();

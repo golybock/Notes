@@ -66,7 +66,7 @@ public class TagService : ITagService
         if (string.IsNullOrEmpty(tagBlank.Name))
             return new BadRequestObjectResult("Name not can be empty");
 
-        var tagDatabase = TagDatabaseBuilder.Create(tagBlank);
+        var tagDatabase = TagDatabaseBuilder.Create(Guid.NewGuid(), tagBlank);
         
         try
         {

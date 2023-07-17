@@ -16,6 +16,7 @@ using Repositories.Repositories.Note.Tag;
 using Repositories.Repositories.User;
 
 // todo get from appsettings.json
+// todo clear
 RefreshCookieOptions GetOptions(IConfiguration configuration)
 {
     return new RefreshCookieOptions()
