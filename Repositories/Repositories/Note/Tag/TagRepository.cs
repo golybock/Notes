@@ -98,7 +98,7 @@ public class TagRepository : RepositoryBase, ITagRepository
         }
     }
 
-    public async Task<int> Create(TagDatabase tagDatabase)
+    public async Task<Guid?> Create(TagDatabase tagDatabase)
     {
         string query = "insert into tag(id, name) values ($1) returning id";
 
@@ -116,9 +116,9 @@ public class TagRepository : RepositoryBase, ITagRepository
             await using var reader = await command.ExecuteReaderAsync();
             
             while (await reader.ReadAsync())
-                return reader.GetInt32(reader.GetOrdinal("id"));
+                return reader.GetGuid(reader.GetOrdinal("id"));
 
-            return 1;
+            return null;
         }
         catch (Exception e)
         {

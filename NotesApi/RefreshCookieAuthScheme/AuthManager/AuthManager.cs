@@ -4,7 +4,6 @@ using Domain.User;
 using Microsoft.Extensions.Options;
 using NotesApi.RefreshCookieAuthScheme.CacheService;
 using NotesApi.RefreshCookieAuthScheme.Token;
-using NotesApi.Services.User;
 using NotesApi.Services.User.UserManager;
 using ICookieManager = NotesApi.RefreshCookieAuthScheme.Cookie.ICookieManager;
 

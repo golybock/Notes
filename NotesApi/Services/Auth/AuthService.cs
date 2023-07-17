@@ -1,41 +1,33 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
-using System.Text;
-using Blank.User;
 using DatabaseBuilder.User;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.RefreshCookieAuthScheme.AuthManager;
-using NotesApi.Services.User;
 using NotesApi.Services.User.UserManager;
-using Repositories.Repositories.User;
+using System.Text;
+using Blank.User;
 
 namespace NotesApi.Services.Auth;
 
 public class AuthService : IAuthService
 {
-    private readonly UserRepository _userRepository;
     private readonly IAuthManager _authManager;
-    private readonly UserManager _userManager;
+    private readonly IUserManager _userManager;
 
-    public AuthService(IConfiguration configuration, IAuthManager authManager, UserRepository userRepository)
+    public AuthService(IUserManager userManager, IAuthManager authManager)
     {
+        _userManager = userManager;
         _authManager = authManager;
-        _userRepository = userRepository;
-        _userManager = new UserManager(configuration);
     }
 
     private async Task<Guid> CreateUser(UserBlank userBlank)
     {
         string hashedPassword = HashPassword(userBlank.Password);
 
-        var id = Guid.NewGuid();
-
-        var newUser = UserDatabaseBuilder.Create(userBlank, hashedPassword, id);
-
-        return await _userRepository.Create(newUser);
+        return await _userManager.Create(userBlank, hashedPassword);
     }
 
-    #region compute hash
+    #region compute hash md5
 
     // md5 hash password
     private string HashPassword(string password)
@@ -61,7 +53,7 @@ public class AuthService : IAuthService
 
     public async Task<IActionResult> SignIn(HttpContext context, LoginBlank loginBlank)
     {
-        var user = await _userManager.GetUser(loginBlank.Email);
+        var user = await _userManager.Get(loginBlank.Email);
 
         if (user == null)
             return new UnauthorizedResult();
@@ -78,7 +70,7 @@ public class AuthService : IAuthService
     {
         #region check client data
 
-        var user = await _userManager.GetUser(userBlank.Email);
+        var user = await _userManager.Get(userBlank.Email);
 
         if (user != null)
             return new BadRequestObjectResult("Такой email уже зарегистрирован");
@@ -95,7 +87,7 @@ public class AuthService : IAuthService
 
         var id = await CreateUser(userBlank);
         // todo minimaze db requests 
-        var newUser = await _userManager.GetUser(id);
+        var newUser = await _userManager.Get(id);
 
         if (newUser == null)
             return new BadRequestResult();

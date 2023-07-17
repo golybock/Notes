@@ -14,7 +14,7 @@ public interface ITagRepository
     public Task<List<TagDatabase>> GetNoteTags(Guid noteId);
 
     // create tag
-    public Task<int> Create(TagDatabase tagDatabase);
+    public Task<Guid?> Create(TagDatabase tagDatabase);
     
     // create note-tag
     public Task<int> Create(NoteTagDatabase noteTagDatabase);

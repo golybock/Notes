@@ -9,7 +9,5 @@ public interface IAuthService
     
     public Task<IActionResult> SignUp(HttpContext context, UserBlank userBlank);
 
-    // public Task<IActionResult> UpdatePassword(string newPassword, HttpContext context);
-    
     public Task<IActionResult> SignOut(HttpContext context);
 }

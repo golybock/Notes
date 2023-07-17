@@ -24,32 +24,36 @@ using ViewBuilder.Note;
 
 namespace NotesApi.Services.Note;
 
+// todo refactor
 public class NoteService : INoteService
 {
-    private readonly ShareNoteRepository _shareNoteRepository;
-    private readonly NoteImageRepository _noteImageRepository;
-    private readonly NoteTypeRepository _noteTypeRepository;
-    private readonly NoteRepository _noteRepository;
-    private readonly UserRepository _userRepository;
-    private readonly TagRepository _tagRepository;
-    private readonly UserManager _userManager;
+    private readonly IShareNotesRepository _shareNoteRepository;
+    private readonly INoteImageRepository _noteImageRepository;
+    private readonly INoteTypeRepository _noteTypeRepository;
+    private readonly INoteRepository _noteRepository;
+    private readonly IUserManager _userManager;
+    private readonly ITagRepository _tagRepository;
 
-    public NoteService(IConfiguration configuration)
+    public NoteService(ITagRepository tagRepository,
+        IUserManager userManager,
+        INoteRepository noteRepository,
+        INoteTypeRepository noteTypeRepository,
+        INoteImageRepository noteImageRepository,
+        IShareNotesRepository shareNoteRepository)
     {
-        _noteImageRepository = new NoteImageRepository(configuration);
-        _shareNoteRepository = new ShareNoteRepository(configuration);
-        _noteTypeRepository = new NoteTypeRepository(configuration);
-        _noteRepository = new NoteRepository(configuration);
-        _userRepository = new UserRepository(configuration);
-        _tagRepository = new TagRepository(configuration);
-        _userManager = new UserManager(configuration);
+        _tagRepository = tagRepository;
+        _userManager = userManager;
+        _noteRepository = noteRepository;
+        _noteTypeRepository = noteTypeRepository;
+        _noteImageRepository = noteImageRepository;
+        _shareNoteRepository = shareNoteRepository;
     }
 
     #region controller funcs (used in controllers)
 
     public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
-        var user = await _userManager.GetUser(claims);
+        var user = await _userManager.Get(claims);
 
         var notesDomain = await GetNotes(user.Id);
 
@@ -62,7 +66,7 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> GetShared(ClaimsPrincipal claims)
     {
-        var user = await _userManager.GetUser(claims);
+        var user = await _userManager.Get(claims);
 
         var notesDomain = await GetSharedNotes(user.Id);
 
@@ -75,7 +79,7 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> Get(ClaimsPrincipal claims, Guid id)
     {
-        var user = await _userManager.GetUser(claims);
+        var user = await _userManager.Get(claims);
 
         var noteDomain = await GetNote(id, user.Id);
 
@@ -91,11 +95,11 @@ public class NoteService : INoteService
     public async Task<IActionResult> Create(ClaimsPrincipal claims, NoteBlank noteBlank)
     {
         var id = Guid.NewGuid();
-        
-        var user = await _userManager.GetUser(claims);
+
+        var user = await _userManager.Get(claims);
 
         var noteDatabase = NoteDatabaseBuilder.Create(id, noteBlank, user.Id);
-        
+
         noteDatabase.CreationDate = DateTime.UtcNow;
         noteDatabase.EditedDate = DateTime.UtcNow;
 
@@ -107,7 +111,7 @@ public class NoteService : INoteService
     // todo update security level
     public async Task<IActionResult> Update(ClaimsPrincipal claims, Guid guid, NoteBlank noteBlank)
     {
-        var user = await _userManager.GetUser(claims);
+        var user = await _userManager.Get(claims);
 
         var noteDatabase = await _noteRepository.GetNote(guid, user.Id);
 
@@ -119,7 +123,7 @@ public class NoteService : INoteService
         await NoteFileManager.UpdateNoteText(noteDatabase.Id, noteBlank.Text ?? string.Empty);
 
         await _noteImageRepository.Clear(guid);
-        
+
         foreach (var image in noteBlank.Images)
             await CreateOrUpdateImage(image, guid);
 
@@ -151,17 +155,17 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> Share(ClaimsPrincipal claims, ShareBlank shareBlank)
     {
-        var user = await _userManager.GetUser(claims);
+        var user = await _userManager.Get(claims);
 
         var note = await GetNote(shareBlank.NoteId, user.Id);
-        
+
         if (note == null)
             return new NotFoundResult();
-        
+
         if (user.Id != note.OwnerUser?.Id)
             return new BadRequestObjectResult("Access denied");
-        
-        var sharedUser = await _userRepository.Get(shareBlank.Email);
+
+        var sharedUser = await _userManager.Get(shareBlank.Email);
 
         if (sharedUser == null)
             return new NotFoundResult();
@@ -182,17 +186,17 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> UpdateShare(ClaimsPrincipal claims, ShareBlank shareBlank)
     {
-        var user = await _userManager.GetUser(claims);
-        
+        var user = await _userManager.Get(claims);
+
         var note = await GetNote(shareBlank.NoteId, user.Id);
 
         if (note == null)
             return new NotFoundResult();
-        
+
         if (user.Id != note.OwnerUser?.Id)
             return new BadRequestObjectResult("Access denied");
-        
-        var sharedUser = await _userRepository.Get(shareBlank.Email);
+
+        var sharedUser = await _userManager.Get(shareBlank.Email);
 
         if (sharedUser == null)
             return new NotFoundResult();
@@ -204,17 +208,17 @@ public class NoteService : INoteService
 
     public async Task<IActionResult> DeleteShare(ClaimsPrincipal claims, Guid id, string email)
     {
-        var user = await _userManager.GetUser(claims);
+        var user = await _userManager.Get(claims);
 
         var note = await GetNote(id, user.Id);
 
         if (note == null)
             return new NotFoundResult();
-        
+
         if (user.Id != note.OwnerUser?.Id)
             return new BadRequestObjectResult("Access denied");
-        
-        var sharedUser = await _userRepository.Get(email);
+
+        var sharedUser = await _userManager.Get(email);
 
         if (sharedUser == null)
             return new NotFoundObjectResult("User not found");
@@ -227,7 +231,7 @@ public class NoteService : INoteService
     // todo refactor to set type 'deleted' and add trash
     public async Task<IActionResult> Delete(ClaimsPrincipal claims, Guid id)
     {
-        var user = await _userManager.GetUser(claims);
+        var user = await _userManager.Get(claims);
 
         var note = await _noteRepository.GetNote(id, user.Id);
 
@@ -236,7 +240,7 @@ public class NoteService : INoteService
 
         if (note.OwnerId != user.Id)
             return new BadRequestObjectResult("Access denied");
-        
+
         var result = await _noteRepository.Delete(id);
 
         return result ? new OkResult() : new BadRequestObjectResult("Error delete");
@@ -300,18 +304,18 @@ public class NoteService : INoteService
 
         var type = await _noteTypeRepository.Get(noteDatabase.TypeId);
 
-        var user = await _userRepository.Get(noteDatabase.OwnerId);
-        
+        var user = await _userManager.Get(noteDatabase.OwnerId);
+
         var noteDomain = NoteDomainBuilder.Create(noteDatabase, type, text);
 
-        if (user != null)
-            noteDomain.OwnerUser = UserDomainBuilder.Create(user);
-        
         noteDomain.Tags = await GetNoteTags(noteDatabase.Id);
 
         noteDomain.Images = await GetNoteImagesDomain(noteDatabase.Id);
-
+        
         noteDomain.SharedUsers = await GetSharedUsers(noteDomain.Id);
+        
+        if (user != null)
+            noteDomain.OwnerUser = user;
 
         return noteDomain;
     }
@@ -320,13 +324,13 @@ public class NoteService : INoteService
     {
         var type = await _noteTypeRepository.Get(noteDatabase.TypeId);
 
-        var user = await _userRepository.Get(noteDatabase.OwnerId);
+        var user = await _userManager.Get(noteDatabase.OwnerId);
 
         var noteDomain = NoteDomainBuilder.Create(noteDatabase, type);
-        
+
         if (user != null)
-            noteDomain.OwnerUser = UserDomainBuilder.Create(user);
-        
+            noteDomain.OwnerUser = user;
+
         noteDomain.Tags = await GetNoteTags(noteDatabase.Id);
 
         return noteDomain;
@@ -349,7 +353,6 @@ public class NoteService : INoteService
 
         await _noteImageRepository.Create(db);
     }
-    
 
     #region note tags
 
