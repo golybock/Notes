@@ -22,7 +22,7 @@ public static class UserDatabaseBuilder
         };
     } 
     
-    public static UserDatabase Create(UserBlank userBlank, string password, Guid id)
+    public static UserDatabase Create(Guid id, UserBlank userBlank, string password)
     {
         return new UserDatabase()
         {

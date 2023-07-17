@@ -7,10 +7,15 @@ using NotesApi.RefreshCookieAuthScheme.Token;
 using NotesApi.Services.Auth;
 using NotesApi.Services.Interfaces.Note;
 using NotesApi.Services.Interfaces.Note.Tag;
-using NotesApi.Services.Interfaces.User;
 using NotesApi.Services.Note;
 using NotesApi.Services.Note.Tag;
 using NotesApi.Services.User;
+using Repositories.Repositories.Note;
+using Repositories.Repositories.Note.NoteImage;
+using Repositories.Repositories.Note.NoteType;
+using Repositories.Repositories.Note.ShareNote;
+using Repositories.Repositories.Note.Tag;
+using Repositories.Repositories.User;
 
 // todo get from appsettings.json
 RefreshCookieOptions GetOptions(IConfiguration configuration)
@@ -49,6 +54,16 @@ void SetRefreshCookieAuth(IServiceCollection services, IConfiguration configurat
 void SetOptions(IServiceCollection services, IConfiguration configuration)
 {
     services.Configure<RefreshCookieOptions>(configuration.GetSection("RefreshCookieOptions"));
+}
+
+void SetRepositories(IServiceCollection services)
+{
+    services.AddScoped<IUserRepository, UserRepository>();
+    services.AddScoped<INoteRepository, NoteRepository>();
+    services.AddScoped<ITagRepository, TagRepository>();
+    services.AddScoped<IShareNotesRepository, ShareNoteRepository>();
+    services.AddScoped<INoteTypeRepository, NoteTypeRepository>();
+    services.AddScoped<INoteImageRepository, NoteImageRepository>();
 }
 
 void SetServices(IServiceCollection services)
@@ -91,6 +106,8 @@ var builder = WebApplication.CreateBuilder(args);
 SetRefreshCookieAuth(builder.Services, builder.Configuration);
 
 SetCors(builder.Services);
+
+SetRepositories(builder.Services);
 
 SetServices(builder.Services);
 

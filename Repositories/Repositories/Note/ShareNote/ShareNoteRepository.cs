@@ -2,13 +2,12 @@
 using Database.User;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using Repositories.Interfaces.Note;
 using Repositories.Readers.Note;
 using Repositories.Readers.User;
 
-namespace Repositories.Repositories.Note;
+namespace Repositories.Repositories.Note.ShareNote;
 
-public class ShareNoteRepository : RepositoryBase, ISharedNotesRepository
+public class ShareNoteRepository : RepositoryBase, IShareNotesRepository
 {
     public ShareNoteRepository(IConfiguration configuration) : base(configuration)
     {

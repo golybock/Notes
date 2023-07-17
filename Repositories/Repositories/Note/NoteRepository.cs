@@ -1,7 +1,6 @@
 using Database.Note;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using Repositories.Interfaces.Note;
 using Repositories.Readers.Note;
 
 namespace Repositories.Repositories.Note;

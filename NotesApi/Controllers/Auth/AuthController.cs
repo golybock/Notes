@@ -2,7 +2,6 @@ using Blank.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Services.Auth;
-using NotesApi.Services.Interfaces.User;
 
 namespace NotesApi.Controllers.Auth;
 

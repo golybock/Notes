@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Blank.User;
 using Microsoft.AspNetCore.Mvc;
 
-namespace NotesApi.Services.Interfaces.User;
+namespace NotesApi.Services.User;
 
 public interface IUserService
 {

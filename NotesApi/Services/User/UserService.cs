@@ -1,14 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Blank.User;
 using DatabaseBuilder.User;
-using Domain.User;
-using DomainBuilder.User;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NotesApi.RefreshCookieAuthScheme;
 using NotesApi.RefreshCookieAuthScheme.AuthManager;
-using NotesApi.Services.Interfaces.User;
 using Repositories.Repositories.User;
 using ViewBuilder.User;
 
@@ -20,14 +14,13 @@ public class UserService : IUserService
     private readonly IAuthManager _authManager;
     private readonly UserManager _userManager;
 
-    public UserService(IConfiguration configuration, IAuthManager authManager)
+    public UserService(IAuthManager authManager, UserManager userManager, UserRepository userRepository)
     {
         _authManager = authManager;
-        _userManager = new UserManager(configuration);
-        _userRepository = new UserRepository(configuration);
+        _userManager = userManager;
+        _userRepository = userRepository;
     }
-
-    [Authorize]
+    
     public async Task<IActionResult> Get(ClaimsPrincipal claims)
     {
         var user = await _userManager.GetUser(claims);
@@ -36,8 +29,7 @@ public class UserService : IUserService
         
         return new OkObjectResult(userView);
     }
-
-    [Authorize]
+    
     public async Task<IActionResult> Update(ClaimsPrincipal claims, UserBlank userBlank)
     {
         var user = await _userManager.GetUser(claims);

@@ -1,6 +1,6 @@
 using Database.Note;
 
-namespace Repositories.Interfaces.Note;
+namespace Repositories.Repositories.Note.NoteType;
 
 public interface INoteTypeRepository
 {

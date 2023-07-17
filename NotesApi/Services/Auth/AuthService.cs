@@ -3,13 +3,10 @@ using System.Security.Cryptography;
 using System.Text;
 using Blank.User;
 using DatabaseBuilder.User;
-using Domain.User;
-using DomainBuilder.User;
 using Microsoft.AspNetCore.Mvc;
-using NotesApi.RefreshCookieAuthScheme;
 using NotesApi.RefreshCookieAuthScheme.AuthManager;
-using NotesApi.Services.Interfaces.User;
 using NotesApi.Services.User;
+using NotesApi.Services.User.UserManager;
 using Repositories.Repositories.User;
 
 namespace NotesApi.Services.Auth;
@@ -20,11 +17,11 @@ public class AuthService : IAuthService
     private readonly IAuthManager _authManager;
     private readonly UserManager _userManager;
 
-    public AuthService(IConfiguration configuration, IAuthManager authManager)
+    public AuthService(IConfiguration configuration, IAuthManager authManager, UserRepository userRepository)
     {
         _authManager = authManager;
+        _userRepository = userRepository;
         _userManager = new UserManager(configuration);
-        _userRepository = new UserRepository(configuration);
     }
 
     private async Task<Guid> CreateUser(UserBlank userBlank)

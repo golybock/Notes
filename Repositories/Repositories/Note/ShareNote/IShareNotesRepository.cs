@@ -1,9 +1,9 @@
 using Database.Note;
 using Database.User;
 
-namespace Repositories.Interfaces.Note;
+namespace Repositories.Repositories.Note.ShareNote;
 
-public interface ISharedNotesRepository
+public interface IShareNotesRepository
 {
     public Task<List<SharedNoteDatabase>> Get(Guid noteId);
 

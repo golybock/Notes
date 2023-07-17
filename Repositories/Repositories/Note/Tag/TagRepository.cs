@@ -1,7 +1,6 @@
 using Database.Note.Tag;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using Repositories.Interfaces.Note.Tag;
 using Repositories.Readers.Note.Tag;
 
 namespace Repositories.Repositories.Note.Tag;
