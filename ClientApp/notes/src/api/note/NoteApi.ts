@@ -50,7 +50,7 @@ export default class NoteApi extends ApiBase {
             });
     }
 
-    static async createNote(noteBlank: INoteBlank) : Promise<boolean> {
+    static async createNote(noteBlank: INoteBlank) : Promise<Guid> {
 
         let url = this.baseAddress + "/Note/Note";
 

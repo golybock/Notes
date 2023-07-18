@@ -1,0 +1,21 @@
+.buttons{
+    margin-left: 20px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    align-self: flex-start;
+    text-align: center;
+    vertical-align: center;
+}
+
+.editor{
+    margin: 20px;
+}
+
+.btn.transparent-btn {
+    background-color: transparent;
+    color: #ee82ee;
+    border: 0;
+    padding: 0;
+    font-size: 14px;
+}
