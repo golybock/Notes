@@ -2,16 +2,35 @@ import React from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import TagApi from "../../api/note/tag/TagApi";
+import TagApi from "../../../api/note/tag/TagApi";
 import AsyncSelect from "react-select/async";
+import INoteView from "../../../models/view/note/INoteView";
+import {Guid} from "guid-typescript";
+import ITagView from "../../../models/view/note/ITagView";
+import INoteBlank from "../../../models/blank/note/INoteBlank";
+import {MultiValue} from "react-select";
 
-export default class TagDialog extends React.Component {
+interface IProps {
+    show: boolean;
+    noteView: INoteView;
+    noteBlank : INoteBlank;
+    update: Function;
+    onCloseDialog: Function;
+}
 
-    constructor(props) {
+interface IState {
+    selected: MultiValue<{label : string, value : Guid}>;
+    default_tags: Array<ITagView>;
+}
+
+export default class TagDialog extends React.Component<IProps, IState> {
+
+    constructor(props: IProps) {
         super(props);
+
         this.state = {
             selected: [],
-            default_tags : this.props.note.tags
+            default_tags: this.props.noteView.tags
         }
     }
 
@@ -20,9 +39,9 @@ export default class TagDialog extends React.Component {
     }
 
     setSelectedTags() {
-        let tags = this.props.note.tags;
+        let tags = this.props.noteView.tags;
 
-        let arr = []
+        let arr: Array<{ label: string, value: Guid }> = []
 
         tags.forEach(element => {
             let dropDownEle = {label: element.name, value: element.id};
@@ -36,7 +55,7 @@ export default class TagDialog extends React.Component {
 
         let tags = await TagApi.getTags()
 
-        let arr = []
+        let arr: Array<{ label: string, value: Guid }> = []
 
         tags.forEach(element => {
             let dropDownEle = {label: element.name, value: element.id};
@@ -46,19 +65,19 @@ export default class TagDialog extends React.Component {
         return arr;
     }
 
-    async tagChosen(e) {
-        let arr = []
+    async tagChosen(e : MultiValue<{label : string, value : Guid}>) {
+        let arr : Array<Guid> = []
 
         e.forEach(element => {
-            arr.push({ id : element.value, name : element.label});
+            arr.push(element.value);
         });
 
         this.setState({selected: e})
 
-        this.props.note.tags = arr;
+        this.props.noteBlank.tags = arr;
     }
-    
-    async updateTags(){
+
+    async updateTags() {
         await this.props.update()
         await this.props.onCloseDialog()
     }
@@ -67,7 +86,7 @@ export default class TagDialog extends React.Component {
         return (
             <Modal
                 show={this.props.show}
-                onHide={this.props.onCloseDialog}
+                onHide={() => this.props.onCloseDialog()}
                 backdrop="static"
                 centered>
 
@@ -90,7 +109,7 @@ export default class TagDialog extends React.Component {
                                 defaultOptions
                                 value={this.state.selected}
                                 loadOptions={this.getTags}
-                                onChange={async (e) => await this.tagChosen(e)}
+                                onChange={async (e : MultiValue<{label : string, value : Guid}>) => await this.tagChosen(e)}
                             />
 
                         </Form.Group>
@@ -103,7 +122,7 @@ export default class TagDialog extends React.Component {
 
                     <Button className="btn"
                             variant="secondary"
-                            onClick={this.props.onCloseDialog}>
+                            onClick={() => this.props.onCloseDialog()}>
                         Close
                     </Button>
 
