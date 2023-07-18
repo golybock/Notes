@@ -23,9 +23,9 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet("Note")]
-    public async Task<IActionResult> Get(Guid guid)
+    public async Task<IActionResult> Get(Guid id)
     {
-        return await _noteService.Get(User, guid);
+        return await _noteService.Get(User, id);
     }
 
     [HttpPost("Note")]
@@ -35,15 +35,15 @@ public class NoteController : ControllerBase
     }
 
     [HttpPut("Note")]
-    public async Task<IActionResult> Update(Guid guid, NoteBlank blank)
+    public async Task<IActionResult> Update(Guid id, NoteBlank blank)
     {
-        return await _noteService.Update(User, guid, blank);
+        return await _noteService.Update(User, id, blank);
     }
     
     [HttpDelete("Note")]
-    public async Task<IActionResult> Delete(Guid guid)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        return await _noteService.Delete(User, guid);
+        return await _noteService.Delete(User, id);
     }
     
     [HttpPost("Image")]
