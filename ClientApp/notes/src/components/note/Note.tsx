@@ -116,17 +116,21 @@ export default class Note extends React.Component<IProps, IState> {
     // update note
     async update() {
 
-        let note = this.state.noteBlank
+        let note = this.state.noteView
+        
+        if(note != undefined){
+            
+            
 
-        let arr = []
-
-        this.state.note.tags.forEach(element => {
-            arr.push(element.id);
-        });
-
-        note.tags = arr
-
-        await NoteApi.updateNote(this.props.id, note)
+           
+            
+            if(this.state.noteBlank != undefined){
+                
+                this.state.noteBlank.tags = arr
+                
+                await NoteApi.updateNote(this.props.id, this.state.noteBlank)
+            }
+        }
     }
 
     async uploadImage() {
