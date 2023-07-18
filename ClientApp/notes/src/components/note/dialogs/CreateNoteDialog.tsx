@@ -8,7 +8,6 @@ interface IProps{
     open : Function;
     handleClose : Function;
     show : boolean;
-    handleClos : Function;
 }
 
 interface IState{

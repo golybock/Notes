@@ -8,6 +8,7 @@ import DeleteNoteDialog from "./dialogs/DeleteNoteDialog";
 import ShareNoteDialog from "./dialogs/ShareNoteDialog";
 import TagDialog from "./dialogs/TagsDialog";
 import {Guid} from "guid-typescript";
+import NoteBuilder from "../../models/noteBuilder";
 
 interface IProps {
     id: Guid;
@@ -105,7 +106,12 @@ export default class Note extends React.Component<IProps, IState> {
             // save in state
             this.setState({noteView: note})
 
-            // render text
+            // save blank
+            let blank = NoteBuilder.convertViewToBlank(note);
+
+            this.setState({noteBlank: blank})
+            
+            // editable text
             let text = RichTextEditor.createValueFromString(note.text, "html");
 
             // save text in html mode in state
@@ -115,21 +121,8 @@ export default class Note extends React.Component<IProps, IState> {
 
     // update note
     async update() {
-
-        let note = this.state.noteView
-        
-        if(note != undefined){
-            
-            
-
-           
-            
-            if(this.state.noteBlank != undefined){
-                
-                this.state.noteBlank.tags = arr
-                
-                await NoteApi.updateNote(this.props.id, this.state.noteBlank)
-            }
+        if(this.state.noteBlank != undefined){
+            await NoteApi.updateNote(this.props.id, this.state.noteBlank)
         }
     }
 
@@ -140,7 +133,7 @@ export default class Note extends React.Component<IProps, IState> {
         await this.loadNote();
     }
 
-    // onchange text
+    // set text to blank and rte
     onChange = async (value: EditorValue) => {
 
         if (this.state.noteBlank != undefined) {
