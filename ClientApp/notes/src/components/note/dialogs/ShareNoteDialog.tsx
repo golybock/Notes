@@ -10,7 +10,7 @@ import INoteView from "../../../models/view/note/INoteView";
 interface IProps {
     show : boolean;
     onCloseDialog: Function;
-    note: INoteView;
+    noteView: INoteView;
 }
 
 interface IState {
@@ -46,7 +46,7 @@ export default class ShareNoteDialog extends React.Component<IProps, IState> {
     async share() {
 
         let shareBlank: IShareBlank = {
-            noteId: this.props.note.id,
+            noteId: this.props.noteView.id,
             email: this.state.email,
             permissionLevel: this.state.permission_level
         }

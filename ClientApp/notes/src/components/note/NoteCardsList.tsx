@@ -1,9 +1,20 @@
 import React from "react";
 import "./NoteCardsList.css"
 import NoteCard from "./NoteCard";
+import INoteView from "../../models/view/note/INoteView";
 
-export default class NoteCardsList extends React.Component{
+interface IProps{
+    header : string;
+    notes : Array<INoteView>
+    open : Function
+}
 
+interface IState{
+    
+}
+
+export default class NoteCardsList extends React.Component<IProps, IState>{
+    
     render() {
         return(
             <div>
@@ -14,7 +25,7 @@ export default class NoteCardsList extends React.Component{
 
                     {this.props.notes
                         .map(note =>
-                            <NoteCard key={note.id} note={note} open={this.props.open}/>)
+                            <NoteCard key={note.id.toString()} note={note} open={this.props.open}/>)
                     }
 
                 </div>

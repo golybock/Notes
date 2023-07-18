@@ -5,7 +5,7 @@ import {FormLabel} from "react-bootstrap";
 import INoteView from "../../../models/view/note/INoteView";
 
 interface IProps{
-    note : INoteView
+    noteView : INoteView
     onClose : Function
     show : boolean
     onCloseDialog : Function
@@ -27,7 +27,7 @@ export default class DeleteNoteDialog extends React.Component<IProps, IState> {
 
     async delete() {
         
-        await NoteApi.deleteNote(this.props.note.id)
+        await NoteApi.deleteNote(this.props.noteView.id)
 
         this.props.onClose()
     }
@@ -46,7 +46,7 @@ export default class DeleteNoteDialog extends React.Component<IProps, IState> {
 
                 <Modal.Body>
 
-                    <FormLabel>Удалить {this.props.note.header}?</FormLabel>
+                    <FormLabel>Удалить {this.props.noteView.header}?</FormLabel>
 
                 </Modal.Body>
 

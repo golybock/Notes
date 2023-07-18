@@ -1,14 +1,22 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import Cat from "../../resources/cat.webp";
-import Button from "react-bootstrap/Button";
+import INoteView from "../../models/view/note/INoteView";
 
-export default class NoteCard extends React.Component {
+interface IProps{
+    note : INoteView;
+    open : Function;
+}
+
+interface IState{
+    
+}
+
+export default class NoteCard extends React.Component<IProps, IState> {
 
     render() {
         return (
             <Card style={{width: '16rem'}}
-                  key={this.props.note.id}
                   onClick={() => this.props.open(this.props.note.id)}>
 
                 <Card.Img variant="top"
