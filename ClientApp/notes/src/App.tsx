@@ -7,6 +7,7 @@ import Home from "./components/home/Home";
 import Account from "./components/auth/Account";
 import PageNotFound from "./components/codes/PageNotFound";
 import Auth from "./components/auth/Auth";
+import {Navbar} from "react-bootstrap";
 
 export interface IProps {
 
@@ -46,7 +47,7 @@ export default class App extends React.Component<IProps, IState> {
 
                 {/*nav bar*/}
                 {this.state.isAuthed && (
-                    <nav className="Nav-panel">
+                    <Navbar className="Nav-panel">
 
                         <Link className="Navbar-item" to="/">
                             <img src={Cat} alt={Cat} className="App-logo"/>
@@ -54,7 +55,7 @@ export default class App extends React.Component<IProps, IState> {
 
                         <Link className="Navbar-item" to="/account">Акаунт</Link>
 
-                    </nav>
+                    </Navbar>
                 )}
 
                 {/*main content*/}

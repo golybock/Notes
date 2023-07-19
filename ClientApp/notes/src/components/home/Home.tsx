@@ -14,7 +14,6 @@ interface IProps{
 interface IState {
     notes: Array<INoteView>;
     shared_notes: Array<INoteView>;
-    card_opened: boolean;
     opened_card_id?: Guid;
     show: boolean;
 }
@@ -26,7 +25,6 @@ export default class Home extends React.Component<IProps, IState> {
         this.state = {
             notes: [],
             shared_notes: [],
-            card_opened: false,
             opened_card_id: undefined,
             show: false,
         };
@@ -48,15 +46,13 @@ export default class Home extends React.Component<IProps, IState> {
     }
     
     async onClose() {
-
-        this.setState({card_opened: false})
+        
         this.setState({opened_card_id: undefined})
 
         await this.loadNotes();
     }
 
     open(id: Guid) {
-        this.setState({card_opened: true})
 
         this.setState({opened_card_id: id})
     }
@@ -73,7 +69,7 @@ export default class Home extends React.Component<IProps, IState> {
         return (
             <div className="background">
 
-                {!this.state.card_opened && (
+                {!this.state.opened_card_id && (
                     <div className="buttons">
                         <button className="btn btn-primary-submit"
                                 onClick={() => this.handleOpen()}>
@@ -83,7 +79,7 @@ export default class Home extends React.Component<IProps, IState> {
                 )}
 
                 {/*render only if notes exists*/}
-                {(!this.state.card_opened && this.state.notes.length !== 0)&& (
+                {(!this.state.opened_card_id && this.state.notes.length !== 0)&& (
 
                     <NoteCardsList header="Заметки"
                                    open={(id : Guid) => this.open(id)}
@@ -92,7 +88,7 @@ export default class Home extends React.Component<IProps, IState> {
                 )}
 
                 {/*render only if shared notes exists*/}
-                {(!this.state.card_opened && this.state.shared_notes.length !== 0)&& (
+                {(!this.state.opened_card_id && this.state.shared_notes.length !== 0)&& (
 
                     <NoteCardsList header="Общие заметки"
                                    open={(id : Guid) => this.open(id)}
@@ -101,7 +97,7 @@ export default class Home extends React.Component<IProps, IState> {
                 )}
 
                 {/*dont work if onClose = this.onClose*/}
-                {this.state.card_opened && (
+                {this.state.opened_card_id && (
 
                     <Note id={this.state.opened_card_id}
                           onClose={async () => await this.onClose()}/>
