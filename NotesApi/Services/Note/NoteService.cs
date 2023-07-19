@@ -143,9 +143,14 @@ public class NoteService : INoteService
     // todo refactor to svg (add mode)
     public async Task<IActionResult> UploadImage(IFormFile formFile, Guid noteId)
     {
+        var format = Path.GetExtension(formFile.FileName);
+
+        if (format != ".svg" || format != ".png")
+            return new BadRequestObjectResult("Only images available");
+        
         var fileName = Guid.NewGuid();
 
-        var path = "wwwroot/" + fileName + ".png";
+        var path = "wwwroot/" + fileName + format;
 
         await using StreamWriter sw = new StreamWriter(path);
 

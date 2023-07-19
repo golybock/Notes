@@ -49,6 +49,7 @@ public class NoteController : ControllerBase
     [HttpPost("Image")]
     public async Task<IActionResult> UploadImage(Guid noteId)
     {
+        // select file from request
         var file = Request.Form.Files.FirstOrDefault();
 
         if (file == null)
