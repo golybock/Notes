@@ -10,7 +10,6 @@ interface IProps{
 }
 
 interface IState{
-    
 }
 
 export default class NoteCardsList extends React.Component<IProps, IState>{

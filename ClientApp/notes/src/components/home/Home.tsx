@@ -7,8 +7,8 @@ import CreateNoteDialog from "../note/dialogs/CreateNoteDialog";
 import INoteView from "../../models/view/note/INoteView";
 import {Guid} from "guid-typescript";
 
-interface IProps{
-    
+interface IProps {
+
 }
 
 interface IState {
@@ -16,10 +16,11 @@ interface IState {
     shared_notes: Array<INoteView>;
     opened_card_id?: Guid;
     show: boolean;
+    interval?: NodeJS.Timer;
 }
 
 export default class Home extends React.Component<IProps, IState> {
-    
+
     constructor(props: IProps) {
         super(props);
         this.state = {
@@ -27,13 +28,36 @@ export default class Home extends React.Component<IProps, IState> {
             shared_notes: [],
             opened_card_id: undefined,
             show: false,
+            interval: undefined
         };
+    }
+
+    async startTimer() {
+        let interval = setInterval(async () => {
+
+            await this.loadNotes();
+
+            console.log("timer")
+
+        }, 3000);
+
+        this.setState({interval: interval});
+    }
+
+    stopTimer() {
+        clearInterval(this.state.interval);
     }
 
     async componentDidMount() {
         await this.loadNotes();
+
+        await this.startTimer();
     }
-    
+
+    async componentWillUnmount() {
+        this.stopTimer();
+    }
+
     async loadNotes() {
 
         let notes = await NoteApi.getNotes();
@@ -44,9 +68,9 @@ export default class Home extends React.Component<IProps, IState> {
 
         this.setState({shared_notes: sharedNotes})
     }
-    
+
     async onClose() {
-        
+
         this.setState({opened_card_id: undefined})
 
         await this.loadNotes();
@@ -79,19 +103,19 @@ export default class Home extends React.Component<IProps, IState> {
                 )}
 
                 {/*render only if notes exists*/}
-                {(!this.state.opened_card_id && this.state.notes.length !== 0)&& (
+                {(!this.state.opened_card_id && this.state.notes.length !== 0) && (
 
                     <NoteCardsList header="Заметки"
-                                   open={(id : Guid) => this.open(id)}
+                                   open={(id: Guid) => this.open(id)}
                                    notes={this.state.notes}/>
 
                 )}
 
                 {/*render only if shared notes exists*/}
-                {(!this.state.opened_card_id && this.state.shared_notes.length !== 0)&& (
+                {(!this.state.opened_card_id && this.state.shared_notes.length !== 0) && (
 
                     <NoteCardsList header="Общие заметки"
-                                   open={(id : Guid) => this.open(id)}
+                                   open={(id: Guid) => this.open(id)}
                                    notes={this.state.shared_notes}/>
 
                 )}
@@ -108,7 +132,7 @@ export default class Home extends React.Component<IProps, IState> {
                 <CreateNoteDialog
                     show={this.state.show}
                     handleClose={() => this.handleClose()}
-                    open={(id : Guid) => this.open(id)}/>
+                    open={(id: Guid) => this.open(id)}/>
 
             </div>
         );

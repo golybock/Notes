@@ -51,8 +51,11 @@ export default class Note extends React.Component<IProps, IState> {
 
     async startTimer() {
         let interval = setInterval(async () => {
+            
             await this.update();
+            
             console.log("timer")
+            
         }, 3000);
 
         this.setState({interval: interval});
@@ -70,20 +73,26 @@ export default class Note extends React.Component<IProps, IState> {
         await this.update();
     }
 
-    showDialogDelete() {
+    async showDialogDelete() {
         this.setState({show_dialog_delete: true})
+
+        await this.loadNote()
     }
 
-    closeDialogDelete() {
+    async closeDialogDelete() {
         this.setState({show_dialog_delete: false})
+
+        await this.loadNote()
     }
 
     showDialogShare() {
         this.setState({show_dialog_share: true})
     }
 
-    closeDialogShare() {
+    async closeDialogShare() {
         this.setState({show_dialog_share: false})
+
+        await this.loadNote()
     }
 
     showTags() {
@@ -124,13 +133,6 @@ export default class Note extends React.Component<IProps, IState> {
         if(this.state.noteBlank != undefined){
             await NoteApi.updateNote(this.props.id, this.state.noteBlank)
         }
-    }
-
-    async uploadImage() {
-
-        await this.update();
-
-        await this.loadNote();
     }
 
     // set text to blank and rte
@@ -214,8 +216,8 @@ export default class Note extends React.Component<IProps, IState> {
 
                         <DeleteNoteDialog show={this.state.show_dialog_delete}
                                           noteView={this.state.noteView}
-                                          onCloseDialog={() => this.closeDialogDelete()}
-                                          onClose={() => this.props.onClose()}/>
+                                          onClose={() => this.props.onClose()}
+                                          onCloseDialog={async () => await this.closeDialogDelete()}/>
 
                     }
 
@@ -223,7 +225,7 @@ export default class Note extends React.Component<IProps, IState> {
 
                         <ShareNoteDialog show={this.state.show_dialog_share}
                                          noteView={this.state.noteView}
-                                         onCloseDialog={() => this.closeDialogShare()}/>
+                                         onCloseDialog={async () => await this.closeDialogShare()}/>
                     }
 
                     {this.state.show_tags &&

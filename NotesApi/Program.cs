@@ -93,7 +93,7 @@ void ConfigureRedis(IServiceCollection services)
     services.AddStackExchangeRedisCache(options =>
     {
         options.Configuration = "127.0.0.1:6379";
-        options.InstanceName = "local";
+        options.InstanceName = "notes:";
     });
 }
 
