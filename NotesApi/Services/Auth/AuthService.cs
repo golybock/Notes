@@ -72,13 +72,13 @@ public class AuthService : IAuthService
         var user = await _userManager.Get(userBlank.Email);
 
         if (user != null)
-            return new BadRequestObjectResult("Такой email уже зарегистрирован");
+            return new BadRequestObjectResult("Email already used");
 
         if (!ValidatePassword(userBlank.Password))
-            return new BadRequestObjectResult("Неверный формат пароля");
+            return new BadRequestObjectResult("Incorrect password");
         
         if(!ValidateEmail(userBlank.Email))
-            return new BadRequestObjectResult("Неверный формат почты");
+            return new BadRequestObjectResult("Incorrect email");
 
         #endregion
 
