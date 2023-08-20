@@ -7,7 +7,7 @@ namespace NotesApi.Controllers.User;
 
 [ApiController, Authorize]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class UserController : ControllerBase, IUserController
 {
     private readonly IUserService _userService;
 

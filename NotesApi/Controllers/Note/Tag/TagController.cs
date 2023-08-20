@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Services.Note.Tag;
 
-namespace NotesApi.Controllers;
+namespace NotesApi.Controllers.Note.Tag;
 
 [ApiController, Authorize]
 [Route("api/[controller]")]

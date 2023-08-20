@@ -40,7 +40,7 @@ void ConfigureAuth(IServiceCollection services, IConfiguration configuration)
             RefreshCookieDefaults.AuthenticationScheme,
             RefreshCookieDefaults.AuthenticationScheme,
             _ => GetOptions(configuration));
-    
+
     // auth options
     services.AddSingleton<RefreshCookieOptions>(_ => GetOptions(configuration));
 }
@@ -62,7 +62,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<ITagService, TagService>();
     services.AddScoped<IAuthService, AuthService>();
     services.AddScoped<INoteFileManager, NoteFileManager>();
-    
+
     // auth
     services.AddScoped<IAuthManager, AuthManager>();
     services.AddScoped<IUserManager, UserManager>();
